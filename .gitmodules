@@ -1,0 +1,6 @@
+[submodule "lib/moai-dev"]
+	path = lib/moai-dev
+	url = https://github.com/theypsilon/moai-dev.git
+[submodule "lib/rapanui"]
+	path = lib/rapanui
+	url = https://github.com/theypsilon/rapanui.git
