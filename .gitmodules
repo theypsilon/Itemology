@@ -4,3 +4,6 @@
 [submodule "lib/rapanui"]
 	path = lib/rapanui
 	url = https://github.com/theypsilon/rapanui.git
+[submodule "lib/penlight"]
+	path = lib/penlight
+	url = git://github.com/stevedonovan/Penlight.git
