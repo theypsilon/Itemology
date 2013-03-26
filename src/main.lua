@@ -20,4 +20,4 @@ addPackagePath(mainpath)
 addPackagePath(mainpath .. '../lib/rapanui/')
 addPackagePath(mainpath .. '../lib/penlight/lua/')
 
-require 'demo'
+require 'Itemology'

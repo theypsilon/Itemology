@@ -1,6 +1,5 @@
 -- require "config"
 -- require "rapanui-sdk.rapanui"
-require "second"
 -- require 'pl'
 
 -- utils.printf("%s\n","That feels better")
@@ -41,4 +40,9 @@ textbox:setString ( "Te huele el culo a canela!!!!!!!!.\n<c:0F0>Meow.<c>" )
 textbox:spool ()
 
 thread = MOAIThread.new ()
-thread:run ( twirlingTowardsFreedom )
+thread:run ( function()
+	while true do
+		MOAIThread.blockOnAction ( prop:moveRot ( 100, 1.5 ))
+		MOAIThread.blockOnAction ( prop:moveRot ( -100, 1.5 ))
+	end
+end)
