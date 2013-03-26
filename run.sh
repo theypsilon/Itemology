@@ -1,17 +1,15 @@
 #/bin/sh
 
 echo ''
-echo '## starting itemology! ##'
+echo '## STARTING ITEMOLOGY ##'
 echo ''
 
 command_exists () {
     type "$1" &> /dev/null ;
 }
 
-runThisAndExit()
-{
+runThisAndExit () {
 	if command_exists $1 ; then
-		echo ''
 		echo '#  GO!!'
 		echo ''
 		$1 src/main.lua;
@@ -25,5 +23,15 @@ runThisAndExit './lib/moai-dev/cmake/moai/moai'
 runThisAndExit 'moai'
 
 echo ''
-echo '## cant initialize itemology, cause moai was not found! ##'
+echo '## compiling moai... ##'
+echo ''
+
+pushd lib/moai-dev/cmake
+cmake . && make
+popd
+
+runThisAndExit './lib/moai-dev/cmake/moai/moai'
+
+echo ''
+echo '## cant initialize itemology, cause moai could not be compiled! ##'
 echo ''
