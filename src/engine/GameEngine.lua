@@ -1,22 +1,6 @@
-class = require 'pl.class'
-
-class.Engine()
-
-function Engine:_init()
-    self.entities = {}
-    self.factory  = {}
-    print 'init Engine!'
-end
-
-function Engine:setup()
-end
-
-function Engine:update()
-end
-
+require 'engine.Engine'
 
 class.GameEngine(Engine)
-
 
 function GameEngine:_init()
     self:super()
@@ -27,7 +11,7 @@ function GameEngine:setup()
 end
 
 function GameEngine:update()
-    print 'update game'
+	self:base():update()
 end
 
 -- GameEngine = Class.extend({

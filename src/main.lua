@@ -6,8 +6,8 @@
 
 mainpath = (function ()
 	local path = debug.getinfo(1).source
-		  path =                     string.gsub(path, '@'       , '/')
-	      path = lfs.currentdir() .. string.gsub(path, 'main.lua', '' )
+		  path =                     path:gsub('@'       , '/')
+	      path = lfs.currentdir() .. path:gsub('main.lua', '' )
 	return path
 end)()
 

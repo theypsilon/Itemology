@@ -1,12 +1,16 @@
-require "rapanui-sdk.rapanui"
-require 'GameEngine'
+require 'rapanui-sdk.rapanui'
+require 'pl'
+require 'engine.GameEngine'
 
 local engine = nil
 
-function setCurrentEngine(engineClass)
-	if engineClass == nil then error 'there has to be always one valid engine' end
-	engine = engineClass()
-	engine:setup()
+function setCurrentEngine   (engineClass)
+	assert(utils.is_callable(engineClass))
+	local  instance =        engineClass()
+	assert(instance:is_a(Engine))
+	       instance:setup()
+	
+	engine = instance
 end
 
 function getCurrentEngine()
