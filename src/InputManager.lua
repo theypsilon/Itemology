@@ -5,9 +5,10 @@ function initInput()
 	input.keyboardBinding   = {}
 	input.keyboardCallbacks = {[true] = {}, [false] = {}}
 	--local actionDevice      = {}
-end
 
-initInput()
+	bindActionToKeyCode('ESC'  , 27 )
+	bindAction('ESC', function() os.exit() end)
+end
 
 local inputStash = {}
 function inputStatusPush()
@@ -59,6 +60,8 @@ local function onKeyboardEvent ( keyCode, down )
 	elseif down then print(keyCode) end
 end
 
+initInput()
+
 MOAIInputMgr.device.keyboard   :setCallback ( onKeyboardEvent)
 MOAIInputMgr.device.pointer    :setCallback ( function() end )
 MOAIInputMgr.device.mouseLeft  :setCallback ( function() end )
@@ -72,7 +75,3 @@ bindActionToKeyCode('down' , 115)
 
 bindActionToKeyCode('b1'   , 13 )
 bindActionToKeyCode('b2'   , 32 )
-
-bindActionToKeyCode('ESC'  , 27 )
-
-bindAction('ESC', function() os.exit() end)
