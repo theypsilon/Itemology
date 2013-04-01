@@ -11,6 +11,6 @@ end
 function Engine:setup()
 end
 
-function Engine:update()
-	updateInstance(self)
+function Engine:__call()
+	reload.instance(self)
 end

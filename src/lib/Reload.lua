@@ -1,18 +1,36 @@
-class =         require 'pl.class'
-path  = path or require 'pl.path'
+if type(class) ~= 'table' then 
+	class = require 'pl.class'
+end
 
 local class_to_file = {}
 local function getFileFromClass(class)
 	if class_to_file[class] == nil then
-		local file = nil
 		for k,_ in pairs(package.loaded) do
-			if stringx.endswith(k,'.'..class) then file = k end
+			if stringx.endswith(k, '.' .. class) then 
+				class_to_file[class] = k 
+			end
 		end
-
-		class_to_file[class] = file
 	end
 
 	return class_to_file[class]
+end
+
+local ospath_last_time = {}
+local function reloadFile(file, alwaysload)
+	if package.loaded[file] ~= nil then
+
+		local ospath    = mainpath .. file:gsub('%.' , '/') .. '.lua'
+		local time      =   path. getmtime(ospath) 
+		local last_time = ospath_last_time[ospath]
+
+		if alwaysload or not last_time or last_time < time then
+			ospath_last_time[ospath] = time
+			package.loaded  [file]   = nil
+			require(file)
+			return true
+		end
+	end
+	return false
 end
 
 local function reloadBases(metaClass)
@@ -20,15 +38,13 @@ local function reloadBases(metaClass)
 	if metaClass._base ~= nil then
 		alwaysload = reloadBases(metaClass._base)
 	end
-	return reloadClass(getFileFromClass(metaClass._name), alwaysload)
+	return reloadFile(getFileFromClass(metaClass._name), alwaysload)
 end
 
-function updateInstance(instance)
+local function updateInstance(instance)
 	local meta = getmetatable(instance)
 
-	reloadBases(meta)
-
-	if _G[meta._name] ~= meta._class then
+	if reloadBases(meta) then
 		local class = _G[meta._name]
 		setmetatable(instance,class)
 		return true
@@ -36,20 +52,8 @@ function updateInstance(instance)
 	return false
 end
 
-local file_last_time = {}
-function reloadClass(class, alwaysload)
-	if package.loaded[class] ~= nil then
+reload = reload or {}
+reload.instance = updateInstance
+reload.file     = reloadFile
 
-		local file      = mainpath .. class:gsub('%.' , '/') .. '.lua'
-		local time      =  path.getmtime(file) 
-		local last_time = file_last_time[file]
-
-		if alwaysload or not last_time or last_time < time then
-			file_last_time[file ] = time
-			package.loaded[class] = nil
-			require(class)
-			return true
-		end
-	end
-	return false
-end
+return reload

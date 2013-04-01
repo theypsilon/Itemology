@@ -1,24 +1,43 @@
+name = 'Itemology'
+
 require 'rapanui-sdk.rapanui'
 require 'pl'
 require 'engine.GameEngine'
+require 'InputManager'
 
 local engine = nil
 
-function setCurrentEngine   (engineClass)
-	assert(utils.is_callable(engineClass))
-	local  instance =        engineClass()
-	assert(instance:is_a(Engine))
-	       instance:setup()
-	
-	engine = instance
+endFrameTasks = {}
+
+function setCurrentEngine   (newEngine)
+	assert(utils.is_callable(newEngine))
+	engine = newEngine
+end
+
+function setCurrentEngineWithSetup(newEngine)
+	newEngine:setup()
+	newEngine()
+	setCurrentEngine(newEngine)
+end
+
+function addEndFrameTask      (task)
+	assert(utils.is_callable  (task))
+	table.insert(endFrameTasks,task)
 end
 
 function getCurrentEngine()
 	return engine
 end
 
-setCurrentEngine(GameEngine)
+local function frame()
+	engine()
+	if next(endFrameTasks) ~= nil then
+		for _,task in pairs(endFrameTasks) do
+			task()
+		end
+		endFrameTasks = {}
+	end
+end
 
-RNListeners:addEventListener("enterFrame", function()
-	engine:update()
-end)
+setCurrentEngineWithSetup(GameEngine())
+RNListeners:addEventListener("enterFrame", frame)

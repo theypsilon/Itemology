@@ -10,8 +10,8 @@ end
 function GameEngine:setup()
 end
 
-function GameEngine:update()
-	self:base():update()
+function GameEngine:__call()
+	self:base():__call()
 end
 
 -- GameEngine = Class.extend({
