@@ -1,9 +1,12 @@
 [submodule "lib/moai-dev"]
 	path = lib/moai-dev
 	url = https://github.com/theypsilon/moai-dev.git
+	ignore = dirty
 [submodule "lib/rapanui"]
 	path = lib/rapanui
 	url = https://github.com/theypsilon/rapanui.git
+	ignore = dirty
 [submodule "lib/penlight"]
 	path = lib/penlight
-	url = git://github.com/stevedonovan/Penlight.git
+	url = https://github.com/theypsilon/Penlight.git
+	ignore = dirty
