@@ -5,7 +5,7 @@ require 'rapanui-sdk.rapanui'
 require 'pl'
 require 'engine.GameEngine'
 require 'InputManager'
-require 'lib.Operations'
+require 'lib.Extensions'
 
 local engine = nil
 local tasks  = {}
