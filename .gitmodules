@@ -10,3 +10,6 @@
 	path = lib/penlight
 	url = https://github.com/theypsilon/Penlight.git
 	ignore = dirty
+[submodule "lib/hanappe"]
+	path = lib/hanappe
+	url = https://github.com/theypsilon/Hanappe.git

@@ -16,8 +16,20 @@ function addPackagePath(path)
 	package.path = package.path .. ';' .. path .. '?/init.lua'
 end
 
+function hackedRequire(floorpath, match)
+    local len     = match ~= nil and match:len() or nil
+    local require = require
+    return function(path)
+        if match and path:sub(0,len) == match then
+            return require(floorpath .. path)
+        else
+            return require(path)
+        end
+    end
+end
+
 addPackagePath(mainpath)
-addPackagePath(mainpath .. '../lib/rapanui/')
+addPackagePath(mainpath .. '../lib/')
 addPackagePath(mainpath .. '../lib/penlight/lua/')
 
 require 'Itemology'

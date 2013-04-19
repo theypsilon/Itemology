@@ -1,8 +1,9 @@
 name = 'Itemology'
 main = {}
 
-require 'rapanui-sdk.rapanui'
 require 'pl'
+require 'rapanui'
+require 'flower'
 require 'engine.GameEngine'
 require 'InputManager'
 require 'lib.Extensions'
