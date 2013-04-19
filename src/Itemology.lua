@@ -1,16 +1,9 @@
-name = 'Itemology'
-main = {}
-
-require 'pl'
-require 'rapanui'
-require 'flower'
-require 'engine.GameEngine'
-require 'InputManager'
-require 'lib.Extensions'
+require 'Includes'
 
 local engine = nil
 local tasks  = {}
 
+main = {}
 main.endFrameTask = tasks
 
 function main.setEngine   (newEngine)

@@ -4,7 +4,7 @@
 
 -- utils.printf("%s\n","That feels better")
 
-projectpath = mainpath .. '../'
+projectpath = srcpath .. '../'
 
 MOAISim.openWindow ( "test", 320, 480 )
 

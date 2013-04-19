@@ -1,9 +1,8 @@
-local oldrequire = require
-require = hackedRequire('../lib/hanappe/projects/flower-library/src/','flower')
+import({
 
-require '../lib/hanappe/projects/flower-library/src/flower'
-require '../lib/hanappe/projects/flower-extensions/src/tiled'
-require '../lib/hanappe/projects/flower-extensions/src/physics'
-require '../lib/hanappe/projects/flower-extensions/src/widget'
+    'flower',
+    --'hanappe/projects/flower-extensions/src/tiled',
+    --'hanappe/projects/flower-extensions/src/physics',
+    --'hanappe/projects/flower-extensions/src/widget',
 
-require = oldrequire
+},'hanappe/projects/flower-library/src/','flower')
