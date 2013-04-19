@@ -17,10 +17,10 @@ function addPackagePath(path)
 end
 
 function hackedRequire(floorpath, match)
-    local len     = match ~= nil and match:len() or nil
+    local len     = type(match) == 'string' and match:len() or nil
     local require = require
     return function(path)
-        if match and path:sub(0,len) == match then
+        if len and path:sub(0,len) == match then
             return require(floorpath .. path)
         else
             return require(path)
