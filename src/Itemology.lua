@@ -57,3 +57,11 @@ aTileset = map:getTileset(0)
 
 map:drawMapAt(0, 0, aTileset)
 --map:setAlpha(0.5)
+
+
+    mapLoader = TMXMapLoader()
+    mapData = mapLoader:loadFile("platform.tmx")
+
+    mapView = TMXMapView()
+    mapView:loadMap(mapData)
+    mapView:setScene(scene)
