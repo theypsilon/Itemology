@@ -11,6 +11,7 @@ require 'inspect'
 require 'penlight'
 require 'rapanui'
 require 'flower'
+require 'hanappe'
 
 -- application
 
