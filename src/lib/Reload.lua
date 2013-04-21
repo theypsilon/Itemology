@@ -1,7 +1,3 @@
-if type(class) ~= 'table' then 
-	class = require 'pl.class'
-end
-
 local class_to_file = {}
 local function getFileFromClass(class)
 	if class_to_file[class] == nil then

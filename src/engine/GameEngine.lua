@@ -2,16 +2,15 @@ require 'engine.Engine'
 
 class.GameEngine(Engine)
 
-function GameEngine:_init()
-    self:super()
+function GameEngine:initialize()
+    Engine.initialize(self)
     print 'init GameEngine!'
 end
 
 function GameEngine:setup()
 end
-
 function GameEngine:__call()
-	self:base():__call()
+	Engine.__call(self)
 end
 
 -- GameEngine = Class.extend({

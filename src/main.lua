@@ -4,17 +4,18 @@
 -- http://getmoai.com
 ----------------------------------------------------------------
 
-srcpath = (function ()
+srcpath = (debug and lfs) and (function ()
 	local path = debug.getinfo(1).source
 		  path =                     path:gsub('@'       , '/')
 	      path = lfs.currentdir() .. path:gsub('main.lua', '' )
 	return path
-end)()
+end)() or ''
 
 project = srcpath ..  '../'
 libpath = project .. 'lib/'
 
 function addPackagePath(path)
+    if path == '' then return end
 	package.path = package.path .. ';' .. path .. '?.lua'
 	package.path = package.path .. ';' .. path .. '?/init.lua'
 end

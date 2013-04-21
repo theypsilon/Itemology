@@ -2,7 +2,7 @@ require 'lib.Reload'
 
 class.Engine()
 
-function Engine:_init()
+function Engine:initialize()
     self.entities = {}
     self.factory  = {}
     print 'init Engine!'

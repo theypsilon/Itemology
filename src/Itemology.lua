@@ -6,8 +6,13 @@ local tasks  = {}
 main = {}
 main.endFrameTask = tasks
 
+local function is_callable(func)
+	return (type(func) == 'function') or 
+	       (type(func) == 'table' and is_callable(getmetatable(func).__call))
+end
+
 function main.setEngine   (newEngine)
-	assert(utils.is_callable(newEngine))
+	assert(is_callable(newEngine))
 	engine = newEngine
 end
 
@@ -18,7 +23,7 @@ function main.setEngineWithSetup(newEngine)
 end
 
 function main.addEndFrameTask      (task)
-	assert(utils.is_callable  (task))
+	assert(is_callable  (task))
 	table.insert(tasks,task)
 end
 

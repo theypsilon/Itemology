@@ -14,8 +14,8 @@ MOAITileDeck2D.new = function()
 	local oldSetTexture = new.setTexture
 	new.setTexture = function (self, source)
 		local function correctImage(newDir)
-		    if not path.exists(source) 
-		       and path.exists(newDir .. source) then
+		    if path and not path.exists(source) 
+		                and path.exists(newDir .. source) then
 		        source = newDir .. source
 		    end
 		end
@@ -24,4 +24,33 @@ MOAITileDeck2D.new = function()
 		oldSetTexture(self, source)
 	end
 	return new
+end
+
+if inspect and debug then
+    if dump then error 'dump already defined' end
+    local function internal_dump(object, level)
+        if     type(v) == 'function' then
+            object = debug.func(object)
+        elseif type(v) ~= 'string'   then
+            object = inspect(object,level)
+        end
+        return object
+    end
+    
+    function dump(...)
+        local args = pack(...)
+        for k,v in ipairs(args) do
+            args[k] = internal_dump(v)
+        end
+        print(unpack(args))
+    end
+
+    function dumpi(object, level)
+        object = internal_dump(object,level)
+        print(object)
+    end
+
+    function debug.func(f)
+        return inspect(debug.getinfo(f))
+    end
 end

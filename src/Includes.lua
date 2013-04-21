@@ -5,9 +5,10 @@ require 'lib.Import'
 -- libs
 
 addPackagePath(libpath)
-addPackagePath(libpath .. 'penlight/lua/')
 
-require 'pl'
+--require 'middleclass'
+require 'inspect'
+require 'penlight'
 require 'rapanui'
 require 'flower'
 
