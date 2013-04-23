@@ -60,8 +60,8 @@ map:drawMapAt(0, 0, aTileset)
 
 
     mapLoader = TMXMapLoader()
-    mapData = mapLoader:loadFile("platform.tmx")
+    mapData = mapLoader:loadLueFile(project .. "res/maps/plattform.lua")
 
-    mapView = TMXMapView()
-    mapView:loadMap(mapData)
-    mapView:setScene(scene)
+    -- mapView = TMXMapView()
+    -- mapView:loadMap(mapData)
+    -- mapView:setScene(scene)
