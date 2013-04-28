@@ -1,4 +1,4 @@
 import({
-    'hanappe/projects/hanappe-framework/src/',
+    libpath .. 'hanappe/projects/hanappe-framework/src/',
     'hanappe/projects/hanappe-framework/src/modules',
 })
