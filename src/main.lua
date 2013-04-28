@@ -14,13 +14,9 @@ end)() or ''
 project = srcpath ..  '../'
 libpath = project .. 'lib/'
 
-function addPackagePath(path)
-    if path == '' then return end
-	package.path = package.path .. ';' .. path .. '?.lua'
-	package.path = package.path .. ';' .. path .. '?/init.lua'
-end
+require 'src.lib.Import'
 
 addPackagePath(srcpath)
 
-name  = 'Itemology'
-require 'Itemology'
+name  = 'tiled_flower_test'
+require 'tiled_flower_test'

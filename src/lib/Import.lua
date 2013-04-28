@@ -1,3 +1,9 @@
+function addPackagePath(path)
+    if path == '' then return end
+    package.path = package.path .. ';' .. path .. '?.lua'
+    package.path = package.path .. ';' .. path .. '?/init.lua'
+end
+
 local function assert_string(string)
     if type(string) ~= 'string' then
         error('wrong format, string expected, but got '..type(string))

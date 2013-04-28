@@ -42,26 +42,21 @@ local function frame()
 end
 
 main.setEngineWithSetup(GameEngine())
-RNListeners:addEventListener("enterFrame", frame)
-
--- local table = dofile('res/maps/plattform.lua')
--- for k,v in pairs(table.layers) do
--- 	table.layers[k].data = '...'
--- end
--- pretty.dump(table)
-
-map = RNMapFactory.loadMap(RNMapFactory.TILEDLUA, "res/maps/plattform.lua")
-
-aTileset = map:getTileset(0)
---aTileset:updateImageSource("res/maps/plattform.png")
-
-map:drawMapAt(0, 0, aTileset)
---map:setAlpha(0.5)
+-- RNListeners:addEventListener("enterFrame", frame)
 
 
-    mapLoader = TMXMapLoader()
-    mapData = mapLoader:loadFile(project .. "res/maps/plattform.tmx")
+-- map = RNMapFactory.loadMap(RNMapFactory.TILEDLUA, "res/maps/plattform.lua")
 
-    -- mapView = TMXMapView()
-    -- mapView:loadMap(mapData)
-    -- mapView:setScene(scene)
+-- aTileset = map:getTileset(0)
+
+-- map:drawMapAt(0, 0, aTileset)
+
+-- setting
+local screenWidth = MOAIEnvironment.horizontalResolution or 320
+local screenHeight = MOAIEnvironment.verticalResolution or 480
+local screenDpi = MOAIEnvironment.screenDpi or 120
+local viewScale = math.floor(screenDpi / 240) + 1
+
+-- open scene
+flower.openWindow("Flower samples", screenWidth, screenHeight, viewScale)
+flower.openScene("scene.Main")
