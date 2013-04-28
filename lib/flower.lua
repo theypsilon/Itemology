@@ -1,8 +1,5 @@
 import({
-
-    'flower',
-    {'hanappe/projects/flower-extensions/src/tiled','tiled'},
-    --{'hanappe/projects/flower-extensions/src/physics','physics'},
-    {'hanappe/projects/flower-extensions/src/widget','widget'},
-
-},'hanappe/projects/flower-library/src/','flower',_G)
+    'hanappe/projects/flower-library/src/',
+    flower                         = 'hanappe/projects/flower-library/src/',
+    [{'tiled','physics','widget'}] = 'hanappe/projects/flower-extensions/src/'
+},_G)
