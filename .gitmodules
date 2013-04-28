@@ -13,9 +13,12 @@
 [submodule "lib/hanappe"]
 	path = lib/hanappe
 	url = https://github.com/theypsilon/Hanappe.git
+	ignore = dirty
 [submodule "lib/inspect"]
 	path = lib/inspect
 	url = git://github.com/kikito/inspect.lua.git
+	ignore = dirty
 [submodule "lib/middleclass"]
 	path = lib/middleclass
 	url = git://github.com/kikito/middleclass.git
+	ignore = dirty
