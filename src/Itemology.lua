@@ -1,62 +1,60 @@
 require 'Includes'
 
-local engine = nil
-local tasks  = {}
+ -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
+loader.path = "res/maps/"
 
-main = {}
-main.endFrameTask = tasks
+ -- Loads the map file and returns it
+map = loader.load("plattform.tmx")
 
-local function is_callable(func)
-	return (type(func) == 'function') or 
-	       (type(func) == 'table' and is_callable(getmetatable(func).__call))
+function flow.draw()
+    love.graphics.print("Hello World", 400, 300)
+    map:draw()
 end
 
-function main.setEngine   (newEngine)
-	assert(is_callable(newEngine))
-	engine = newEngine
-end
+function flow.update() end
 
-function main.setEngineWithSetup(newEngine)
-	newEngine:setup()
-	newEngine()
-	main.setEngine(newEngine)
-end
+-- -- Limits the drawing range of the map. Important for performance
+-- map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
 
-function main.addEndFrameTask      (task)
-	assert(is_callable  (task))
-	table.insert(tasks,task)
-end
+-- -- Automatically sets the drawing range to the size of the screen.
+-- map:autoDrawRange(tx, ty, scale, padding)
 
-function main.getEngine()
-	return engine
-end
+-- -- Accessing individual layers
+-- map.layers["layer name"]
 
-local function frame()
-	engine()
-	if next(tasks) ~= nil then
-		for _,task in pairs(tasks) do
-			task()
-		end
-		tasks = {}
-	end
-end
+-- -- A shortcut for accessing specific layers
+-- map("layer name")
 
-main.setEngineWithSetup(GameEngine())
--- RNListeners:addEventListener("enterFrame", frame)
+-- -- Finding a specific tile
+-- map.layers["layer name"]:get(5,5)
 
+-- -- A shortcut for finding a specific tile
+-- map("layer name")(5,5)
 
--- map = RNMapFactory.loadMap(RNMapFactory.TILEDLUA, "res/maps/plattform.lua")
+-- -- Iterating over all tiles in a layer
+-- for x, y, tile in map("layer name"):iterate() do
+--    print( string.format("Tile at (%d,%d) has an id of %d", x, y, tile.id) )
+-- end
 
--- aTileset = map:getTileset(0)
+-- -- Iterating over all objects in a layer
+-- for i, obj in pairs( map("object layer").objects ) do
+--     print( "Hi, my name is " .. obj.name )
+-- end
 
--- map:drawMapAt(0, 0, aTileset)
+-- -- Find all objects of a specific type in all layers
+-- for _, layer in pairs(map.layers) do
+--    if layer.class == "ObjectLayer" then
+--         for _, obj in pairs(player.objects) do
+--             if obj.type == "enemy" then print(obj.name) end
+--         end
+--    end
+-- end
 
--- setting
-local screenWidth = MOAIEnvironment.horizontalResolution or 320
-local screenHeight = MOAIEnvironment.verticalResolution or 480
-local screenDpi = MOAIEnvironment.screenDpi or 120
-local viewScale = math.floor(screenDpi / 240) + 1
+-- -- draw the tile with the id 4 at (100,100)
+-- map.tiles[4]:draw(100,100)
 
--- open scene
-flower.openWindow("Flower samples", screenWidth, screenHeight, viewScale)
-flower.openScene("scene.Main")
+-- -- Access the tile's properties set by Tiled
+-- map.tiles[4].properties
+
+-- -- Turns off drawing of non-tiled objects.
+-- map.drawObjects = false

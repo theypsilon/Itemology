@@ -22,3 +22,6 @@
 	path = lib/middleclass
 	url = git://github.com/kikito/middleclass.git
 	ignore = dirty
+[submodule "lib/ATL"]
+	path = lib/ATL
+	url = https://github.com/Kadoba/Advanced-Tiled-Loader.git

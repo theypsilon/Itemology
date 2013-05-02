@@ -8,6 +8,7 @@ function table.flip ( tab )
     return newTable
 end
 
+if MOAITileDeck2D then
 local oldTileDeck2Dnew = MOAITileDeck2D.new
 MOAITileDeck2D.new = function()
 	local new = oldTileDeck2Dnew()
@@ -24,6 +25,7 @@ MOAITileDeck2D.new = function()
 		oldSetTexture(self, source)
 	end
 	return new
+end
 end
 
 if inspect and debug then

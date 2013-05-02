@@ -3,7 +3,7 @@ import({
     'pl.utils',
     'pl.class',
     'pl.stringx',
-    'pl.path'
+--    'pl.path'
 },_G)
 
 -- utils = require 'pl.utils'
