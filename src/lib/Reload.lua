@@ -16,8 +16,8 @@ local function reloadFile(file, alwaysload)
 	if package.loaded[file] ~= nil then
 
 		local ospath    = srcpath .. file:gsub('%.' , '/') .. '.lua'
-		local time      =   path. getmtime(ospath) 
-		local last_time = ospath_last_time[ospath]
+		local time      = path and   path. getmtime(ospath) or nil
+		local last_time = time and ospath_last_time[ospath] or nil
 
 		if alwaysload or not last_time or last_time < time then
 			ospath_last_time[ospath] = time

@@ -1,17 +1,32 @@
 require 'Includes'
 
  -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
-loader.path = "res/maps/"
+-- loader.path = "res/maps/"
 
  -- Loads the map file and returns it
-map = loader.load("plattform.tmx")
+-- map = loader.load("plattform.tmx")
 
-function flow.draw()
-    love.graphics.print("Hello World", 400, 300)
-    map:draw()
+local dir = {left = 0, right = 0, up = 0, down = 0}
+
+for k,_ in pairs(dir) do
+	input.bindAction(k, function() dir[k] = 1 end, function() dir[k] = 0 end)
 end
 
-function flow.update() end
+local x = 400
+local y = 300
+
+function flow.draw()
+    --map:draw()
+    --love.graphics.print("Que pasa Claudia", x, y)
+	sprites.get('gr1'):draw(x,y)
+end
+
+function flow.update() 
+	local dx = -1*dir.left + dir.right
+	local dy = -1*dir.up   + dir.down
+	x = x + 10*dx
+	y = y + 10*dy
+end
 
 -- -- Limits the drawing range of the map. Important for performance
 -- map:setDrawRange(0,0,love.graphics.getWidth(), love.graphics.getHeight())
