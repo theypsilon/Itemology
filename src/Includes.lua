@@ -23,5 +23,6 @@ require 'lib.Reload'
 
 require 'Flow'
 require 'Input'
+require 'Atlass'
 require 'Sprites'
 require 'Scenes'

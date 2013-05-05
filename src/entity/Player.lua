@@ -23,6 +23,6 @@ function Player:tick(dt)
 end
 
 function Player:draw()
-	sprites.get('gr1'):draw(self.x, self.y)
+	sprites:get('gr1'):draw(self.x, self.y)
 	super.draw(self)
 end
