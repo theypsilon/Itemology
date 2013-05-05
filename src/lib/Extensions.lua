@@ -8,26 +8,6 @@ function table.flip ( tab )
     return newTable
 end
 
-if MOAITileDeck2D then
-local oldTileDeck2Dnew = MOAITileDeck2D.new
-MOAITileDeck2D.new = function()
-	local new = oldTileDeck2Dnew()
-	local oldSetTexture = new.setTexture
-	new.setTexture = function (self, source)
-		local function correctImage(newDir)
-		    if path and not path.exists(source) 
-		                and path.exists(newDir .. source) then
-		        source = newDir .. source
-		    end
-		end
-		correctImage('res/')
-		correctImage('res/maps/')
-		oldSetTexture(self, source)
-	end
-	return new
-end
-end
-
 if inspect and debug then
     if dump then error 'dump already defined' end
     local function internal_dump(object, level)

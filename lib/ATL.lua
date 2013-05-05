@@ -1,1 +1,1 @@
-loader = require "ATL/Loader"
+tiled = require "ATL/Loader"

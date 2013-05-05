@@ -1,4 +1,4 @@
-flow = love;
+flow = love
 
 local callbacks = {
 	'load', 'update', 'draw', 'mousepressed', 'mousereleased',

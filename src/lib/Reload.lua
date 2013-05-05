@@ -48,8 +48,16 @@ local function updateInstance(instance)
 	return false
 end
 
+local function reloadTasks()
+	for _,v in ipairs(reload.tasks) do
+		if type(v) == 'string' then reload.file(v) else reload.instance(v) end
+	end
+end
+
 reload = reload or {}
 reload.instance = updateInstance
 reload.file     = reloadFile
+reload.tasks    = reload.tasks or {}
+reload.all      = reloadTasks
 
 return reload

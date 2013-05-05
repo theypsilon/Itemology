@@ -1,6 +1,5 @@
 return {
-
-    onCreate = function(e)
+    load = function()
         flower.Resources.addResourceDirectory(project .. 'res/maps')
 
         layer = flower.Layer()
@@ -39,5 +38,4 @@ return {
         -- tileMap:addEventListener("touchMove", tileMap_OnTouchMove)
         -- tileMap:addEventListener("touchCancel", tileMap_OnTouchUp)
     end
-
 }

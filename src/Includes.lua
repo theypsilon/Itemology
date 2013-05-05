@@ -14,10 +14,14 @@ require 'ATL'
 -- require 'flower'
 -- require 'hanappe'
 
--- application
+-- ad-hoc libs
 
 require 'lib.Extensions'
-require 'MainCallbacks'
-require 'engine.GameEngine'
-require 'InputManager'
+require 'lib.Reload'
+
+-- application
+
+require 'Flow'
+require 'Input'
 require 'Sprites'
+require 'Scenes'
