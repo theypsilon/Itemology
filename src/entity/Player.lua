@@ -3,8 +3,8 @@ local super   = Entity
 
 class.Player(super)
 
-function Player:_init()
-	super._init(self, 400, 300)
+function Player:_init(x, y)
+	super._init(self, x, y)
 	self.dir = {left = 0, right = 0, up = 0, down = 0}
 	for k,_ in pairs(self.dir) do
 		input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)

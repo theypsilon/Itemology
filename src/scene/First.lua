@@ -1,23 +1,33 @@
 local scene = {}
 
-local map, player = nil, nil
+local map, entities, player = nil, nil, nil
 
 function scene.load()
 	require 'entity.Player'
 
-	map    = tiled.load("plattform.tmx")
-	player = Player()
+	map      = tiled.load("plattform.tmx")
+    player   =  Player(300, 400)
+	entities = {player}
 end
 
 function scene.draw()
     map   :draw()
-    player:draw()
+    love.graphics.print(
+        "tick " .. player.t .. 
+        "\nx: " .. player.x ..
+        "\ny: " .. player.y , 
+        20, 20 )
+    
+    for _,entity in ipairs(entities) do
+    	entity:draw()
+    end
 end
 
-function scene.update(dt) 
+function scene.update(dt)
 	if pause then return end
-	player:tick(dt)
-	reload.all (  )
+    for _,entity in ipairs(entities) do
+    	entity:tick(dt)
+    end
 end
 
 function scene.focus(inside)

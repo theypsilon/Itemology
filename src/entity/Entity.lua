@@ -10,6 +10,5 @@ function Entity:tick()
 	self.t = self.t + 1
 end
 
-function Entity:draw() 
-	love.graphics.print(self.t, self.x, self.y)
+function Entity:draw()	
 end
