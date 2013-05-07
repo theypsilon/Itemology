@@ -1,6 +1,6 @@
 local scene = {}
 
-local map, entities, player = nil, nil, nil
+local level, entities, player = nil, nil, nil
 
 function scene.load()
 	require 'entity.Player'

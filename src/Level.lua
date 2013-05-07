@@ -7,14 +7,12 @@ function Level:_init(mapfile)
 end
 
 function Level:add(entity)
-    table.insert(self.entities, entity) 
+    self.entities[entity] = true
     self:insertEntity(entity, entity.x, entity.y)
 end
 
 function Level:remove(entity)
-    for k,v in ipairs(self.entities) do
-        if v == entity then self.entities[k] = nil return end
-    end
+    self.entities[entity] = nil
     self:removeEntity(entity, entity.x, entity.y)
 end
 
@@ -29,19 +27,16 @@ function Level:getEntities(xo, yo)
     return list
 end
 
-function Level:insertEntity(entity, xo, yo)
-    table.insert(self:getEntities(xo, yo), entity)
+function Level:insertEntity (entity, xo, yo)
+    self:getEntities(xo, yo)[entity] = true
 end
 
-function Level:removeEntity(entity, xo, yo)
-    local list = self:getEntities(xo, yo)
-    for k,v in ipairs(list) do
-        if v == entity then list[k] = nil return end
-    end
+function Level:removeEntity (entity, xo, yo)
+    self:getEntities(xo, yo)[entity] = nil
 end
 
 function Level:tick(dt)
-    for _,e in ipairs(self.entities) do
+    for e,_ in pairs(self.entities) do
         local ixo, iyo = e.x, e.y
         e:tick(dt)
         local fxo, fyo = e.x, e.y
