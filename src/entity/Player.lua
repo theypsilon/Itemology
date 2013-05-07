@@ -1,10 +1,10 @@
-require 'entity.Entity'
-local super   = Entity
+require 'entity.Mob'
+local super   = Mob
 
 class.Player(super)
 
-function Player:_init(x, y)
-	super._init(self, x, y)
+function Player:_init(level, x, y)
+	super._init(self, level, x, y)
 	self.dir = {left = 0, right = 0, up = 0, down = 0}
 	for k,_ in pairs(self.dir) do
 		input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
@@ -23,6 +23,5 @@ function Player:tick(dt)
 end
 
 function Player:draw()
-	sprites:get('gr1'):draw(self.x, self.y)
 	super.draw(self)
 end
