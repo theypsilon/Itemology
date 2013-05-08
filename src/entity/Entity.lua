@@ -1,6 +1,12 @@
 class.Entity()
 
+local function validate(level, x, y)
+    
+end
+
 function Entity:_init(level, x, y)
+    validate(level, x, y)
+
 	self.x = x or 0
 	self.y = y or 0
 	self._ticks = 0

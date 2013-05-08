@@ -11,7 +11,9 @@ function Mob:tick(dt)
     super.tick (self)
 end
 
-function Mob:draw()
-    sprites:get('gr1'):draw(self.x, self.y)
+function Mob:draw(x, y, z)
+    x = x or self.x
+    y = y or self.y
+    sprites:get('gr1'):draw(x, y)
     super.draw(self)
 end

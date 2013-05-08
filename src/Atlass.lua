@@ -1,6 +1,12 @@
 class.Atlass()
 
+local function validate(path, max_x, max_y)
+
+end
+
 function Atlass:_init(path, max_x, max_y)
+	validate(path, max_x, max_y)
+
 	self.atlass = love.graphics.newImage('res/img/' .. path)
 	self.max_x, self.max_y = max_x, max_y
 	function self.graphic_draw(that, x,y) 

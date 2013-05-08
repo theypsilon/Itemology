@@ -1,35 +1,33 @@
 local scene = {}
 
-local level, entities, player = nil, nil, nil
+local level, player, camera = nil, nil, nil, nil
 
 function scene.load()
 	require 'entity.Player'
 
 	level    = Level("plattform.tmx")
-    player   = Player(level, 300, 400)
-	entities = {player}
+    player   = Player(level, 100, 100)
+    camera   = Camera(player)
+    Mob(level, 1250, 250)
 end
 
 function scene.draw()
-    level.map    :draw()
     love.graphics.print(
         "tick " .. player._ticks .. 
         "\nx: " .. player.x ..
         "\ny: " .. player.y , 
         20, 20 )
     
-    for _,entity in ipairs(entities) do
-    	entity:draw()
-    end
+    camera:draw()
 end
 
 function scene.update(dt)
-	if pause then return end
+    if pause then return end
     level:tick(dt)
 end
 
 function scene.focus(inside)
-	pause = not inside
+    pause = not inside
 end
 
 return scene
