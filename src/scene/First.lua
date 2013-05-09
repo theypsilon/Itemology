@@ -8,17 +8,18 @@ function scene.load()
 	level    = Level("plattform.tmx")
     player   = Player(level, 100, 100)
     camera   = Camera(player)
-    Mob(level, 1250, 250)
 end
 
 function scene.draw()
+    love.graphics.push()
+    if scale then love.graphics.scale(scale) end
+    camera:draw()
+    love.graphics.pop()
     love.graphics.print(
         "tick " .. player._ticks .. 
         "\nx: " .. player.x ..
         "\ny: " .. player.y , 
         20, 20 )
-    
-    camera:draw()
 end
 
 function scene.update(dt)
