@@ -60,10 +60,10 @@ function Camera:draw()
     for entity,_ in pairs(entities) do
         entity:draw()
     end
-
+    love.graphics.pop()
     love.graphics.setCanvas()
     love.graphics.draw(c, area.x, area.y)
-    love.graphics.pop()
+    
 end
 
 local abs = math.abs
