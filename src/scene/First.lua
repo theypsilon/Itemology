@@ -26,12 +26,14 @@ function scene.draw()
 end
 
 function scene.update(dt)
-    if pause then return end
-    scene.level:tick(dt)
+    if scene.pause then return end
+    for camera,_ in pairs(scene.cameras) do
+        camera._level:tick(dt)
+    end
 end
 
 function scene.focus(inside)
-    pause = not inside
+    scene.pause = not inside
 end
 
 return scene

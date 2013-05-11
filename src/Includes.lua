@@ -24,6 +24,7 @@ require 'lib.Reload'
 -- application
 
 require 'Flow'
+require 'Graphics'
 require 'Input'
 require 'Atlass'
 require 'Sprites'

@@ -10,10 +10,10 @@ function Camera:_init(target, area, padding)
     self._scale  = scale or 1
     self.area    = area or { 
         x = 0, y = 0, 
-        w = love.graphics.getWidth () <  self._limit.x and
-            love.graphics.getWidth () or self._limit.x, 
-        h = love.graphics.getHeight() <  self._limit.y and
-            love.graphics.getHeight() or self._limit.y,
+        w = graphics.getWidth () <  self._limit.x and
+            graphics.getWidth () or self._limit.x, 
+        h = graphics.getHeight() <  self._limit.y and
+            graphics.getHeight() or self._limit.y,
     }
 
     self.padding = padding or { x = 0, y = 0 }
@@ -21,7 +21,7 @@ function Camera:_init(target, area, padding)
 end
 
 function Camera:_buildCanvas()
-    self._canvas  = love.graphics.newCanvas(self.area.w + 1, self.area.h + 1)
+    self._canvas  = graphics.newCanvas(self.area.w + 1, self.area.h + 1)
 end
 
 local function validateTarget(target)
@@ -51,20 +51,20 @@ function Camera:draw()
     local x = self:_calcCorner('x', area.w)
     local y = self:_calcCorner('y', area.h)
 
-    love.graphics.push()
-    love.graphics.setCanvas(c)
-    love.graphics.translate(-x, -y)
+    graphics.push()
+    graphics.setCanvas(c)
+    graphics.translate(-x, -y)
     map:setDrawRange(x, y, area.w, area.h)
     map:draw()
     for entity,_ in pairs(entities) do
         entity:draw()
     end
-    love.graphics.pop()
-    love.graphics.setCanvas()
-    love.graphics.push()
-    love.graphics.scale(self._scale)
-    love.graphics.draw(c, area.x, area.y)
-    love.graphics.pop()
+    graphics.pop()
+    graphics.setCanvas()
+    graphics.push()
+    graphics.scale(self._scale)
+    graphics.draw(c, area.x, area.y)
+    graphics.pop()
     
 end
 
