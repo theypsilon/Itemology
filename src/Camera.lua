@@ -48,11 +48,10 @@ function Camera:draw()
         self:_buildCanvas()
     end
 
-    local x = self:_calcCorner('x', area.x, area.w)
-    local y = self:_calcCorner('y', area.y, area.h)
+    local x = self:_calcCorner('x', area.w)
+    local y = self:_calcCorner('y', area.h)
 
     love.graphics.push()
-    --love.graphics.scale(self._scale)
     love.graphics.setCanvas(c)
     love.graphics.translate(-x, -y)
     map:setDrawRange(x, y, area.w, area.h)
@@ -62,12 +61,15 @@ function Camera:draw()
     end
     love.graphics.pop()
     love.graphics.setCanvas()
+    love.graphics.push()
+    love.graphics.scale(self._scale)
     love.graphics.draw(c, area.x, area.y)
+    love.graphics.pop()
     
 end
 
 local abs = math.abs
-function Camera:_calcCorner(index, base, long)
+function Camera:_calcCorner(index, length)
     local padding = self.padding[index]
     local tloc    = self._target[index]
     local  loc    = self[index] or tloc
@@ -80,11 +82,11 @@ function Camera:_calcCorner(index, base, long)
 
     self[index] = loc
 
-    local corner = loc - (base + long) / 2
+    local corner = loc - length/2
     local limit  = self._limit[index]
 
-    if corner + long > limit then corner = limit - long end 
-    if corner < 0            then corner = 0            end
+    if corner + length > limit then corner = limit - length end 
+    if corner < 0              then corner = 0              end
 
     return corner
 end

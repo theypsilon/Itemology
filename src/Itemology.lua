@@ -3,7 +3,7 @@ require 'Includes'
  -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
 tiled.path = "res/maps/"
 
-scale = 1
+scale = 2
 
 
 function setStrict(strict, env)
