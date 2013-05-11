@@ -1,20 +1,25 @@
 local scene = {}
 
-local level, player, camera = nil, nil, nil, nil
-
+local cameras = {}
+local level   = nil
+local player  = nil
 function scene.load()
 	require 'entity.Player'
 
-	level    = Level("plattform.tmx")
+    level    = Level("plattform.tmx")
     player   = Player(level, 100, 100)
-    camera   = Camera(player)
+    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+    cameras[Camera(player, {x=0,   y=0  , w=w, h=h})] = true
+    -- cameras[Camera(player, {x=0,   y=0  , w=w/2, h=h/2})] = true
+    -- cameras[Camera(player, {x=w/2, y=0  , w=w/2, h=h/2})] = true
+    -- cameras[Camera(player, {x=0  , y=h/2, w=w/2, h=h/2})] = true
+    -- cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2})] = true
 end
 
 function scene.draw()
-    love.graphics.push()
-    if scale then love.graphics.scale(scale) end
-    camera:draw()
-    love.graphics.pop()
+    for camera,_ in pairs(cameras) do
+        camera:draw()
+    end
     love.graphics.print(
         "tick " .. player._ticks .. 
         "\nx: " .. player.x ..

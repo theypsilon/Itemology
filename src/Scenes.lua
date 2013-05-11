@@ -1,4 +1,5 @@
 scenes = {}
+scene  = nil
 
 local callbacks = { 
 	'update', 'draw', 'mousepressed', 'mousereleased',

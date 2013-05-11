@@ -9,6 +9,8 @@ addPackagePath(libpath)
 --require 'middleclass'
 require 'inspect'
 require 'penlight'
+
+require 'lib.Strict'
 require 'ATL'
 -- require 'rapanui'
 -- require 'flower'

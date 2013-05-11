@@ -14,6 +14,6 @@ end
 function Mob:draw(x, y, z)
     x = x or self.x
     y = y or self.y
-    sprites:get('gr1'):draw(x, y)
+    sprites:get('stand'):draw(x, y)
     super.draw(self)
 end

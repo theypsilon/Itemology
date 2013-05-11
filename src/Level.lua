@@ -2,6 +2,7 @@ class.Level()
 
 function Level:_init(mapfile)
     self.map = tiled.load(mapfile)
+
     self.entitiesInMap = {}
     self.entities      = {}
 end

@@ -1,53 +1,90 @@
 class.Camera()
 
-local function validate(target, rect)
-
+local function validate(area, padding)
 end
 
-function Camera:_init(target, rect)
-    validate(target, rect)
+function Camera:_init(target, area, padding)
+    validate(area, padding)
 
-    self._target       = target
-	self._level        = target.level
-    self._lx, self._ly = target.level:getBorder()
-    self.rect    = rect or { 
+    self:setTarget(target)
+    self._scale  = scale or 1
+    self.area    = area or { 
         x = 0, y = 0, 
-        w = love.graphics.getWidth () > self._lx and self._lx or love.graphics.getWidth(), 
-        h = love.graphics.getHeight() > self._ly and self._ly or love.graphics.getHeight()
+        w = love.graphics.getWidth () <  self._limit.x and
+            love.graphics.getWidth () or self._limit.x, 
+        h = love.graphics.getHeight() <  self._limit.y and
+            love.graphics.getHeight() or self._limit.y,
     }
-    self._level.map:setDrawRange(0, 0, self._lx, self._ly)
 
+    self.padding = padding or { x = 0, y = 0 }
+    self:_buildCanvas()
+end
+
+function Camera:_buildCanvas()
+    self._canvas  = love.graphics.newCanvas(self.area.w + 1, self.area.h + 1)
+end
+
+local function validateTarget(target)
+end
+
+function Camera:setTarget(target)
+    validateTarget(target)
+    self._target                 = target
+    self._level                  = target.level
+    self._limit                  = {}
+    self._limit.x, self._limit.y = target.level:getBorder()
 end
 
 function Camera:draw()
-    local x, y          = self._target.x , self._target.y
     local map, entities = self._level.map, self._level.entities
-    local rect = self.rect
+    local area          = self.area
+    local c             = self._canvas
 
-    if map then
-        local mx, my = ((rect.x + rect.w) / 2), ((rect.y + rect.h) / 2)
-        local xo, yo = x - mx, y - my
-        if xo < 0 then xo = 0 end
-        if yo < 0 then yo = 0 end
-        local x1, y1 = xo + rect.w, yo + rect.h
-        local lx, ly = self._lx, self._ly
-        if x1 > lx then 
-            x1 = lx
-            xo = lx - rect.w 
-        end 
-        if y1 > ly then
-            y1 = ly
-            yo = ly - rect.h
-        end
-        love.graphics.push()
-        love.graphics.translate(-xo, -yo)
-        --map:setDrawRange(xo, yo, x1, y1)
-        map:draw()
-        for entity,_ in pairs(entities) do
-            entity:draw()
-        end
-        love.graphics.pop()
-    else
-
+    if not map then
+        error('this is a scrolled camera, target needs a tiled map')
     end
+
+    if c:getWidth() ~= area.w or c:getHeight() ~= area.h then
+        self:_buildCanvas()
+    end
+
+    local x = self:_calcCorner('x', area.x, area.w)
+    local y = self:_calcCorner('y', area.y, area.h)
+
+    love.graphics.push()
+    --love.graphics.scale(self._scale)
+    love.graphics.setCanvas(c)
+    love.graphics.translate(-x, -y)
+    map:setDrawRange(x, y, area.w, area.h)
+    map:draw()
+    for entity,_ in pairs(entities) do
+        entity:draw()
+    end
+
+    love.graphics.setCanvas()
+    love.graphics.draw(c, area.x, area.y)
+    love.graphics.pop()
+end
+
+local abs = math.abs
+function Camera:_calcCorner(index, base, long)
+    local padding = self.padding[index]
+    local tloc    = self._target[index]
+    local  loc    = self[index] or tloc
+    local diff    = loc - tloc
+
+    if abs(diff) > padding then
+        if diff < 0 then loc = tloc - padding
+                    else loc = tloc + padding end
+    end    
+
+    self[index] = loc
+
+    local corner = loc - (base + long) / 2
+    local limit  = self._limit[index]
+
+    if corner + long > limit then corner = limit - long end 
+    if corner < 0            then corner = 0            end
+
+    return corner
 end
