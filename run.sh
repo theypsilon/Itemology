@@ -12,7 +12,7 @@ runThisAndExit () {
 	if command_exists $1 ; then
 		echo '#  GO!!'
 		echo ''
-		$1 src/main.lua;
+		$1 moai.lua;
 		exit 1; 
 	else
 		echo '! "'$1'" not present in the system'
