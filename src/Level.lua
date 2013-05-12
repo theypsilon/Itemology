@@ -1,7 +1,13 @@
 class.Level()
 
+require 'map.Map'
+
+ -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
+--tiled.path = "res/maps/"
+
 function Level:_init(mapfile)
-    self.map = tiled.load(mapfile)
+    local map = Map('res/maps/'..mapfile)
+    self.map = setmetatable({ draw = function() end }, {__index = function() return 0 end}) --tiled.load(mapfile)
 
     self.entitiesInMap = {}
     self.entities      = {}

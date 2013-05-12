@@ -11,9 +11,9 @@ require 'inspect'
 require 'penlight'
 
 -- require 'lib.Strict'
-require 'ATL'
+-- require 'ATL'
 -- require 'rapanui'
--- require 'flower'
+require 'flower'
 -- require 'hanappe'
 
 -- ad-hoc libs

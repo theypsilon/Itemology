@@ -16,17 +16,17 @@ end
 
 function scene.draw()
     for camera,_ in pairs(scene.cameras) do
-        camera:draw()
+        --camera:draw()
     end
-    love.graphics.print(
-        "tick " .. scene.player._ticks .. 
-        " fps " .. tostring(love.timer.getFPS()) ..
-        "\nx: " .. scene.player.x ..
-        "\ny: " .. scene.player.y , 
-        20, 20 )
+    -- love.graphics.print(
+    --     "tick " .. scene.player._ticks .. 
+    --     " fps " .. tostring(love.timer.getFPS()) ..
+    --     "\nx: " .. scene.player.x ..
+    --     "\ny: " .. scene.player.y , 
+    --     20, 20 )
 end
-
-function scene.update(dt)
+function
+ scene.update(dt)
     if scene.pause then return end
     for camera,_ in pairs(scene.cameras) do
         camera._level:tick(dt)

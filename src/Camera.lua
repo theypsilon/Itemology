@@ -31,7 +31,7 @@ function Camera:_init(target, area, padding)
 end
 
 function Camera:_buildCanvas()
-    self._canvas  = graphics.newCanvas(self.area.w + 1, self.area.h + 1)
+    --self._canvas  = graphics.newCanvas(self.area.w + 1, self.area.h + 1)
 end
 
 local function validateTarget(target)

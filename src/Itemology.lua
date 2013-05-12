@@ -1,8 +1,5 @@
 require 'Includes'
 
- -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
-tiled.path = "res/maps/"
-
 scale = 2
 
 if scale == 1 then scale = nil end
