@@ -1,5 +1,4 @@
 local scene = {}
-
 function scene.load()
 	require 'entity.Player'
 
@@ -11,6 +10,7 @@ function scene.load()
     cameras[Camera(player, {x=w/2, y=0  , w=w/2, h=h/2}              )] = true
     cameras[Camera(player, {x=0  , y=h/2, w=w/2, h=h/2}, {x=80, y=65})] = true
     cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2}, {x=10, y=10})] = true
+    
     scene.cameras, scene.level, scene.player = cameras, level, player
 end
 
@@ -20,6 +20,7 @@ function scene.draw()
     end
     love.graphics.print(
         "tick " .. scene.player._ticks .. 
+        " fps " .. tostring(love.timer.getFPS()) ..
         "\nx: " .. scene.player.x ..
         "\ny: " .. scene.player.y , 
         20, 20 )

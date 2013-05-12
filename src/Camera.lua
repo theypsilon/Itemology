@@ -1,7 +1,15 @@
 class.Camera()
 
 local function validate(area, padding)
+    if area and (not area.x or not area.y or not area.w or not area.h) then
+        error 'incorrect area: not recognized {x,y,w,h}'
+    end
+    if padding and (not padding.x or not padding.y) then
+        error 'incorrect padding: not recognized {x,y}'
+    end
 end
+
+local cameras = setmetatable({}, {__mode = "k"})
 
 function Camera:_init(target, area, padding)
     validate(area, padding)
@@ -18,6 +26,8 @@ function Camera:_init(target, area, padding)
 
     self.padding = padding or { x = 0, y = 0 }
     self:_buildCanvas()
+
+    cameras[#cameras + 1] = self
 end
 
 function Camera:_buildCanvas()
@@ -25,6 +35,9 @@ function Camera:_buildCanvas()
 end
 
 local function validateTarget(target)
+    if target:is_a(Entity) == false then
+        error 'the target is not a valid "Entity" object'
+    end
 end
 
 function Camera:setTarget(target)
@@ -39,6 +52,8 @@ function Camera:draw()
     local map, entities = self._level.map, self._level.entities
     local area          = self.area
     local c             = self._canvas
+    local avoidCanvas   = #cameras == 1 and 
+          graphics.getWidth() == area.w and graphics.getHeight() == area.h
 
     if not map then
         error('this is a scrolled camera, target needs a tiled map')
@@ -52,7 +67,11 @@ function Camera:draw()
     local y = self:_calcCorner('y', area.h)
 
     graphics.push()
-    graphics.setCanvas(c)
+    if avoidCanvas then
+        graphics.scale(self._scale)
+    else
+        graphics.setCanvas(c)
+    end
     graphics.translate(-x, -y)
     map:setDrawRange(x, y, area.w, area.h)
     map:draw()
@@ -60,12 +79,14 @@ function Camera:draw()
         entity:draw()
     end
     graphics.pop()
-    graphics.setCanvas()
-    graphics.push()
-    graphics.scale(self._scale)
-    graphics.draw(c, area.x, area.y)
-    graphics.pop()
-    
+
+    if not avoidCanvas then
+        graphics.setCanvas()
+        graphics.push()
+        graphics.scale(self._scale)
+        graphics.draw(c, area.x, area.y)
+        graphics.pop()
+    end
 end
 
 local abs = math.abs

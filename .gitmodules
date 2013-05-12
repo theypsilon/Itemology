@@ -25,3 +25,6 @@
 [submodule "lib/ATL"]
 	path = lib/ATL
 	url = https://github.com/Kadoba/Advanced-Tiled-Loader.git
+[submodule "lib/lovemoai"]
+	path = lib/lovemoai
+	url = git://github.com/SiENcE/lovemoai.git

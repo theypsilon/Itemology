@@ -19,10 +19,11 @@ end
 
 function flow.load()
 	print 'Welcome to Itemology!'
+
+	sprites = require 'Sprites'
+	scenes.run('First')
 end
 
 function flow.quit()
 	print 'Bye bye!'
 end	
-
-scenes.run('First')

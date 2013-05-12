@@ -1,4 +1,4 @@
-sprites = Atlass('grid.png', 800, 600) 
+local sprites = Atlass('grid.png') 
 sprites.graphics = {
 	stand = {x = 0,    y = 0,   w = 15, h = 15},
 	walk  = {x = 16,   y = 0,   w = 15, h = 15},
@@ -9,3 +9,5 @@ sprites.graphics = {
 	fly   = {x = 96,   y = 0,   w = 15, h = 15},
     fall  = {x = 112,  y = 0,   w = 15, h = 15},
 }
+
+return sprites

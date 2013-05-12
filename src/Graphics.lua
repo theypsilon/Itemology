@@ -1,1 +1,1 @@
-graphics = love.graphics
+graphics = love and love.graphics or {}
