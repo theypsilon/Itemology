@@ -6,8 +6,7 @@ require 'map.Map'
 --tiled.path = "res/maps/"
 
 function Level:_init(mapfile)
-    local map = Map('res/maps/'..mapfile)
-    self.map = setmetatable({ draw = function() end }, {__index = function() return 0 end}) --tiled.load(mapfile)
+    self.map = Map('res/maps/'..mapfile)
 
     self.entitiesInMap = {}
     self.entities      = {}
