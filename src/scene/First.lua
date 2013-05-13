@@ -5,19 +5,22 @@ function scene.load()
     local level    = Level("plattform.tmx")
     local player   = Player(level, 100, 100)
     local cameras  = {}
-    local w, h     = love.graphics.getWidth(), love.graphics.getHeight()
-    cameras[Camera(player, {x=0,   y=0  , w=w/2, h=h/2}, {x=40, y=40})] = true
-    cameras[Camera(player, {x=w/2, y=0  , w=w/2, h=h/2}              )] = true
-    cameras[Camera(player, {x=0  , y=h/2, w=w/2, h=h/2}, {x=80, y=65})] = true
-    cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2}, {x=10, y=10})] = true
+    local w, h     = graphics.getWidth(), graphics.getHeight()
+    cameras[Camera(player)] = true
+    -- cameras[Camera(player, {x=0,   y=0  , w=w/2, h=h/2}, {x=40, y=40})] = true
+    -- cameras[Camera(player, {x=w/2, y=0  , w=w/2, h=h/2}              )] = true
+    -- cameras[Camera(player, {x=0  , y=h/2, w=w/2, h=h/2}, {x=80, y=65})] = true
+    -- cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2}, {x=10, y=10})] = true
     
     scene.cameras, scene.level, scene.player = cameras, level, player
+    lastTime = 0
 end
 
 function scene.draw()
     for camera,_ in pairs(scene.cameras) do
-        --camera:draw()
+        camera:draw()
     end
+
     -- love.graphics.print(
     --     "tick " .. scene.player._ticks .. 
     --     " fps " .. tostring(love.timer.getFPS()) ..
@@ -25,8 +28,7 @@ function scene.draw()
     --     "\ny: " .. scene.player.y , 
     --     20, 20 )
 end
-function
- scene.update(dt)
+function scene.update(dt)
     if scene.pause then return end
     for camera,_ in pairs(scene.cameras) do
         camera._level:tick(dt)

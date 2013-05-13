@@ -40,7 +40,76 @@ function flow.reset()
 end
 
 function flow.exit()
-	love.event.push("quit")
+	if love then
+		love.event.push("quit")
+	else
+		os.exit()
+	end
+end
+
+function flow.run(config)
+	if love then return end
+
+	config = config or { 
+		title  = 'Noname', 
+		screen = {width = 800, height = 600}, 
+		world  = {width = 800, height = 600},
+	}
+
+	flow.config = config
+
+	MOAISim.openWindow ( config.title, config.screen.width, config.screen.height )
+	MOAISim.setStep ( 1 / 60 )
+	MOAISim.clearLoopFlags()
+	MOAISim.setLoopFlags ( MOAISim.SIM_LOOP_ALLOW_BOOST )
+	MOAISim.setBoostThreshold ( 0 )
+
+    viewport = MOAIViewport.new()
+    viewport:setSize (config.screen.width, config.screen.height)
+    viewport:setScale(config.world .width,-config.world .height)
+    viewport:setOffset(-1,1)
+
+	if flow.load then flow.load() end
+
+	local renderTable = MOAIRenderMgr.getRenderTable()
+	if not renderTable then
+		renderTable = {}
+		MOAIRenderMgr.setRenderTable(renderTable)
+	end
+
+	local tempLayerIndex = #renderTable + 1
+	local layers = {MOAILayer2D.new(), MOAILayer2D.new()}
+	for _,layer in ipairs(layers) do
+		layer:setViewport(viewport)
+	end
+
+	renderTable[tempLayerIndex] = layers[1]
+
+	local function swapTempLayers()
+		renderTable[tempLayerIndex] = flow.tempLayer
+		flow.tempLayer = flow.tempLayer == layers[1] and layers[2] or layers[1]
+		flow.tempLayer:clear()
+	end
+
+	mainThread = MOAIThread.new ()
+
+	mainThread:run ( 
+		function ()
+			local lastTime, curTime, dt = MOAISim.getElapsedTime(), 0, 0
+			while true do
+			  
+				coroutine.yield ()		
+					
+				curTime  = MOAISim.getElapsedTime()
+				dt       = curTime - lastTime;
+				lastTime = curTime;
+
+				flow.update( dt )
+				swapTempLayers()
+				flow.draw()
+			end				
+		end 
+	)
 end
 
 return flow

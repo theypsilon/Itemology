@@ -5,7 +5,7 @@ function input.init()
 	input.status.keyboardBinding   = {}
 	input.status.keyboardCallbacks = {[true] = {}, [false] = {}}
 
-	input.bindActionToKeyCode('ESC'  , 'escape')
+	input.bindActionToKeyCode('ESC'  , 27)
 	input.bindAction('ESC', function() flow.exit() end)
 end
 
@@ -53,12 +53,18 @@ function flow.keyreleased(key, unicode)
 	onKeyboardEvent(key, false)
 end
 
+MOAIInputMgr.device.keyboard   :setCallback ( onKeyboardEvent)
+MOAIInputMgr.device.pointer    :setCallback ( function() end )
+MOAIInputMgr.device.mouseLeft  :setCallback ( function() end )
+MOAIInputMgr.device.mouseMiddle:setCallback ( function() end )
+MOAIInputMgr.device.mouseRight :setCallback ( function() end )
+
 input.init()
 
-input.bindActionToKeyCode('left' , 'left' )
-input.bindActionToKeyCode('right', 'right')
-input.bindActionToKeyCode('up'   , 'up'   )
-input.bindActionToKeyCode('down' , 'down' )
+input.bindActionToKeyCode('left' , 97 )
+input.bindActionToKeyCode('right', 100)
+input.bindActionToKeyCode('up'   , 119)
+input.bindActionToKeyCode('down' , 115)
 
-input.bindActionToKeyCode('b1'   , 'a' )
-input.bindActionToKeyCode('b2'   , 'b' )
+input.bindActionToKeyCode('b1'   , 13 )
+input.bindActionToKeyCode('b2'   , 32 )

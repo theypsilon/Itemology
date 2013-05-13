@@ -6,7 +6,8 @@ require 'map.Map'
 --tiled.path = "res/maps/"
 
 function Level:_init(mapfile)
-    self.map = Map('res/maps/'..mapfile)
+    self.map = Map('res/maps/' .. mapfile)
+    self.map:setLayer(layer) 
 
     self.entitiesInMap = {}
     self.entities      = {}
@@ -18,13 +19,13 @@ function Level:toXYO(x, y)
 end
 
 function Level:getCenter()
-    return  self.map.tileWidth  * self.map.width  / 2,
-            self.map.tileHeight * self.map.height / 2
+    return  self.map.tileWidth  * self.map.mapWidth  / 2,
+            self.map.tileHeight * self.map.mapHeight / 2
 end
 
 function Level:getBorder()
-    return  self.map.tileWidth  * self.map.width,
-            self.map.tileHeight * self.map.height
+    return  self.map.tileWidth  * self.map.mapWidth,
+            self.map.tileHeight * self.map.mapHeight
 end
 
 function Level:add(entity)
@@ -38,7 +39,7 @@ function Level:remove(entity)
 end
 
 function Level:getEntities(xo, yo, x1, y1)
-    local w, h = self.map.width, self.map.height
+    local w, h = self.map.mapWidth, self.map.mapHeight
     if xo < 0 or yo < 0 or xo > w or yo > h then return {} end
     if not x1 or not y1 then
         local list = self.entitiesInMap[yo * w + xo]

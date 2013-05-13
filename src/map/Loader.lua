@@ -78,8 +78,8 @@ function loader.tmx(source)
             local tileset       = node.xarg
 
             tileset.image       = node[1].xarg.source
-            tileset.imageHeight = node[1].xarg.height
-            tileset.imageWidth  = node[1].xarg.width
+            tileset.imageheight = node[1].xarg.height
+            tileset.imagewidth  = node[1].xarg.width
             tileset.margin      = tileset.margin     or 0
             tileset.properties  = tileset.properties or {}
             tileset.spacing     = tileset.spacing    or 0
@@ -102,7 +102,7 @@ function loader.tmx(source)
         end
     end
 
-    return map
+    return set_numbers(map)
 end
 
 return loader

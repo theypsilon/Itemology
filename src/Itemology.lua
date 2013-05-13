@@ -1,21 +1,28 @@
 require 'Includes'
 
-scale = 2
+local config = { screen = {}, world = {}}
 
-if scale == 1 then scale = nil end
-if scale then
-	local oldGetWidth  = love.graphics.getWidth
-	local oldGetHeight = love.graphics.getHeight
-	function love.graphics.getWidth()
-		return oldGetWidth() / scale
-	end
-	function love.graphics.getHeight()
-		return oldGetHeight() / scale
-	end
-end
+config.title    = 'Itemology'    -- The title of the window the game is in (string)
+config.author   = 'theypsilon'   -- The author of the game (string)
+config.url      = nil            -- The website of the game (string)
+config.console  = false          -- Attach a console (boolean, Windows only)
+config.release  = false          -- Enable release mode (boolean)
+
+config.screen.width      = 800   -- The window width (number)
+config.screen.height     = 600   -- The window height (number)
+config.screen.fullscreen = false -- Enable fullscreen (boolean)
+config.screen.vsync      = false  -- Enable vertical sync (boolean)
+config.screen.fsaa       = 0     -- The number of FSAA-buffers (number)
+
+config.world.width       = 320
+config.world.height      = 224
 
 function flow.load()
 	print 'Welcome to Itemology!'
+
+    layer = MOAILayer2D.new()
+    layer:setViewport(viewport)
+    MOAIRenderMgr.pushRenderPass(layer)
 
 	sprites = require 'Sprites'
 	scenes.run('First')
@@ -23,4 +30,6 @@ end
 
 function flow.quit()
 	print 'Bye bye!'
-end	
+end
+
+flow.run(config)

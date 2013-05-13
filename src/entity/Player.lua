@@ -21,6 +21,7 @@ function Player:tick(dt)
 	local lx, ly = self.level:getBorder()
 	if mx > 0 and mx < lx then self.x = math.floor(mx) end
 	if my > 0 and my < ly then self.y = math.floor(my) end
+
 	reload.instance(self)
 	super.tick(self)
 end

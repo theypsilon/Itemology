@@ -9,13 +9,10 @@ local function validate(area, padding)
     end
 end
 
-local cameras = setmetatable({}, {__mode = "k"})
-
 function Camera:_init(target, area, padding)
     validate(area, padding)
 
     self:setTarget(target)
-    self._scale  = scale or 1
     self.area    = area or { 
         x = 0, y = 0, 
         w = graphics.getWidth () <  self._limit.x and
@@ -25,13 +22,6 @@ function Camera:_init(target, area, padding)
     }
 
     self.padding = padding or { x = 0, y = 0 }
-    self:_buildCanvas()
-
-    cameras[#cameras + 1] = self
-end
-
-function Camera:_buildCanvas()
-    --self._canvas  = graphics.newCanvas(self.area.w + 1, self.area.h + 1)
 end
 
 local function validateTarget(target)
@@ -51,41 +41,17 @@ end
 function Camera:draw()
     local map, entities = self._level.map, self._level.entities
     local area          = self.area
-    local c             = self._canvas
-    local avoidCanvas   = #cameras == 1 and 
-          graphics.getWidth() == area.w and graphics.getHeight() == area.h
 
     if not map then
         error('this is a scrolled camera, target needs a tiled map')
     end
 
-    if c:getWidth() ~= area.w or c:getHeight() ~= area.h then
-        self:_buildCanvas()
-    end
+    local x = self:_calcCorner('x', area.w) - area.x
+    local y = self:_calcCorner('y', area.h) - area.y
 
-    local x = self:_calcCorner('x', area.w)
-    local y = self:_calcCorner('y', area.h)
-
-    graphics.push()
-    if avoidCanvas then
-        graphics.scale(self._scale)
-    else
-        graphics.setCanvas(c)
-    end
-    graphics.translate(-x, -y)
-    map:setDrawRange(x, y, area.w, area.h)
-    map:draw()
+    map:setLoc(-x, -y)
     for entity,_ in pairs(entities) do
-        entity:draw()
-    end
-    graphics.pop()
-
-    if not avoidCanvas then
-        graphics.setCanvas()
-        graphics.push()
-        graphics.scale(self._scale)
-        graphics.draw(c, area.x, area.y)
-        graphics.pop()
+        entity:draw(entity.x - x, entity.y - y)
     end
 end
 
