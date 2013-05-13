@@ -20,7 +20,7 @@ end
 local function new_prop(self)
 	local layer = self.atlass.layer
 	local prop  = make_prop(self)
-	
+
 	prop.layer  = layer
 	prop.remove = remove_prop
 
@@ -44,8 +44,7 @@ function Atlass:_init(path, frames, layer)
 		region.i = total
 	end
 
-	local tex = MOAITexture.new ()
-    tex:load('res/img/' .. path)
+	local tex = resource.getImage(path, true)
 
     local width, height = tex:getSize()
 

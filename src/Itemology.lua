@@ -24,6 +24,8 @@ function flow.load()
     layer:setViewport(viewport)
     MOAIRenderMgr.pushRenderPass(layer)
 
+    resource.IMAGE_PATH = 'res/img/'
+
 	sprites = require 'Sprites'
 	scenes.run('First')
 end
