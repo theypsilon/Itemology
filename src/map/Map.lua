@@ -22,16 +22,16 @@ local function validate(path)
 	error('file format "'..format..'" is unknown as tiled map')
 end
 
-function Map(path)
+class.Map()
+function Map:_init(path)
 	path, format  = validate(path)
 
 	local loader  = require 'map.Loader'
 	local data    = loader[format](path)
-	local tileMap = tiled.TileMap()
-	
-	tileMap:loadMapData(data)
 
-	return tileMap
+	self:_setData(data)
 end
 
-flower.Resources.addResourceDirectory('res/maps/')
+function Map:_setData(data)
+	dump(data)
+end
