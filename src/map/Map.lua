@@ -1,3 +1,10 @@
+require 'map.LayerTile'
+require 'map.LayerObject'
+
+local loader  = require 'map.Loader'
+
+local Map = class('Map')
+
 local function validate(path)
 	local pathList = {
 		[path] = path:sub(-3),
@@ -22,11 +29,9 @@ local function validate(path)
 	error('file format "'..format..'" is unknown as tiled map')
 end
 
-class.Map()
 function Map:_init(path)
 	path, format  = validate(path)
 
-	local loader  = require 'map.Loader'
 	local data    = loader[format](path)
 
 	data.path = resource.getDirectoryPath(path)
@@ -58,14 +63,15 @@ function Map:_setTilesets(tilesets, dir)
 	self.tilesets = sets
 end
 
+local factoryLayer = {
+	tilelayer   = function() end,
+	objectlayer = function() end,
+}
+
 function Map:_setLayers(layers)
 	local tileLayers = {}
 	for _,layer in ipairs(layers) do
-		if layer.type == "tilelayer" then
-
-		else
-
-		end
+		tileLayers[layer.name] = factoryLayer[layer.type](self, layer)
 	end
 end
 
@@ -76,3 +82,5 @@ end
 function Map:setLoc(x, y)
 
 end
+
+return Map

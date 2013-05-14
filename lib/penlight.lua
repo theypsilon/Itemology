@@ -1,7 +1,7 @@
 import({
     libpath .. 'penlight/lua/',
     'pl.utils',
-    'pl.class',
+--    'pl.class',
     'pl.stringx',
 --    'pl.path'
 },_G)

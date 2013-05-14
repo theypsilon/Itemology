@@ -19,7 +19,8 @@ require 'flower'
 -- ad-hoc libs
 
 require 'lib.Extensions'
-require 'lib.Reload'
+class = require 'lib.Class'
+-- require 'lib.Reload'
 
 -- application
 
