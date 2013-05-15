@@ -64,8 +64,9 @@ function Map:_setTilesets(tilesets, dir)
 end
 
 function Map:_setLayers(layers)
-	local tileLayers = {}
+	local tileLayers, i = {}, 0
 	for _,layer in ipairs(layers) do
+		           layer.id, i = i, i + 1
 		tileLayers[layer.name] = Layer.factory(layer, self)
 	end
 	self.tilelayers = tileLayers
