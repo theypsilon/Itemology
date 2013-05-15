@@ -9,8 +9,8 @@ local dispatch = nil
 function Layer.factory(layer, ...)
     if not dispatch then
         dispatch = {
-            tilelayer   = require 'map.LayerObject',
-            objectlayer = require 'map.LayerTile',
+            tilelayer   = require 'map.LayerTile',
+            objectlayer = require 'map.LayerObject',
         }
     end
     return dispatch[layer.type](layer, ...)

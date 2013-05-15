@@ -58,7 +58,7 @@ end
 function Map:_setTilesets(tilesets, dir)
 	local sets = {}
 	for _,tileset in ipairs(tilesets) do
-		sets[tileset.name] = loadTileset(tileset, dir)
+		sets[#sets + 1] = loadTileset(tileset, dir)
 	end
 	self.tilesets = sets
 end
@@ -68,14 +68,20 @@ function Map:_setLayers(layers)
 	for _,layer in ipairs(layers) do
 		tileLayers[layer.name] = Layer.factory(layer, self)
 	end
+	self.tilelayers = tileLayers
 end
 
-function Map:setLayer(layer)
-	self.layer = layer
+function Map:setLayer(renderLayer)
+	self.layer = renderLayer
+	for _,layer in pairs(self.tilelayers) do
+		renderLayer:insertProp(layer.prop)
+	end
 end
 
 function Map:setLoc(x, y)
-
+	for _,layer in pairs(self.tilelayers) do
+		layer.prop:setLoc(x, y)
+	end
 end
 
 return Map
