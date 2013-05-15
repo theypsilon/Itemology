@@ -21,7 +21,3 @@ end
 
 function Entity:draw()	
 end
-
-function Entity:__gc()
-    print 'gc!!!!!'
-end

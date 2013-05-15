@@ -1,7 +1,11 @@
 local error, getmetatable, io, pairs, rawget, rawset, setmetatable, tostring, type =
     _G.error, _G.getmetatable, _G.io, _G.pairs, _G.rawget, _G.rawset, _G.setmetatable, _G.tostring, _G.type
 
+-- class library table
+
 local class = {}
+
+-- metatable for declaring classes
 
 local    metaclass = {}
 function metaclass.__call(f, ...)
@@ -20,13 +24,33 @@ end
 
 setmetatable(class, metaclass)
 
-local function inherit(class, base)
-    local init = class._init
-    for k,v in pairs(base) do
-        class[k] = v
+-- private functions
+
+local function call_or_index(t, f, key)
+    if type(f) == 'function' then return f(t, key) else return rawget(t, key) end
+end
+
+local function accumulate_index(klass, old_index)
+    local new_index = klass.__index
+    function klass.__index(t, key)
+        return call_or_index(t, new_index, key) or call_or_index(t, old_index, key)
     end
-    if init and base._init and init ~= base._init then
-        function class._init() 
+end
+
+local function inherit(klass, base)
+    local init  = klass._init
+    local index = klass.__index
+
+    for k,v in pairs(base) do klass[k] = v end
+
+    if base.__index and base.__index == base then 
+        klass.__index = index
+    elseif base.__index ~= base and index ~= base.__index then 
+        accumulate_index(klass, index) 
+    end
+
+    if init and base._init and init  ~= base._init   then
+        function klass._init() 
             error('this class needs to define the _init method,'
                 ..' cause his multiple bases define the same')
         end
@@ -37,21 +61,34 @@ local function is_a_helper(class1, class2)
     if not class1 then return false end
     if class1 == class2 then return true end
     local bases = rawget(class1,'_base')
-    if #bases > 0 then
-        for _,b in ipairs(bases) do
-            if is_a_helper(b, class2) then return true end
-        end
+    for _,b in ipairs(bases) do
+        if is_a_helper(b, class2) then return true end
     end
+
     return false
 end
 
---
+local function new_finalizable(klass)
+    if not class.is_class(klass) then error 'bad class' end
+
+    local udata = newproxy(true)
+    local umeta = getmetatable(udata)
+    setmetatable(umeta, klass)
+    umeta.__index    = umeta
+    umeta.__newindex = umeta
+    umeta.__gc       = function(self) klass.__gc(self) end
+    umeta.__userdata = udata
+    return udata
+end
+
+-- class public methods
 
 function class.new(base, name)
     local metaklass = {} 
     local     klass = setmetatable({}, metaklass)
     function metaklass.__call(t,...)
-        local obj = setmetatable({}, klass)
+        local dtor = rawget(klass, '__gc')
+        local obj = dtor and new_finalizable(klass) or setmetatable({}, klass)
 
         local ctor = rawget(klass, '_init')
         if ctor then 
@@ -61,8 +98,6 @@ function class.new(base, name)
                 if class.get_class(obj) ~= klass then setmetatable(obj, klass) end
             end
         end
-
-        if rawget(klass, '__gc') then class.make_finalizable(obj) end
 
         if not rawget(klass, '__tostring') then
             klass.__tostring = class.tostring
@@ -85,8 +120,16 @@ function class.new(base, name)
 
         klass._base = base
     end
-    
-    klass.__index = klass
+
+    local index = rawget(klass, '__index')
+    if index then
+        klass.__index = function(t, key) 
+            return rawget(t, key) or index(t, key) 
+        end
+    else
+        klass.__index = klass
+    end
+
     klass.is_a    = class.is_a
     klass._name   = name
 
@@ -126,26 +169,24 @@ function class.is_mixin(mixin)
 end
 
 function class.is_class(c)
-    return class.is_mixin(c) and c.__index == c
+    return class.is_mixin(c) and c.__index 
+        and (c.new or getmetatable(c).__call)
 end
 
-function class.make_finalizable(obj)
-    local udata = newproxy(true)
-    local umeta = getmetatable(udata)
-    local klass = getmetatable(obj)
-    if type(obj) ~= 'table'      then return false end
-    if not class.is_class(klass) then return false end
-    if not klass.__gc            then return false end
-    setmetatable(umeta, klass)
+function class.make_finalizable(obj, finfunc)
+    if type(obj) ~= 'table' then error 'this object cannot be finalizable' end
+    local klass = getmetatable   (obj)
+    local udata = new_finalizable(klass)
+    local umeta = getmetatable   (udata)
+
+    if finfunc then umeta.__gc = finfunc end
+
     for k, v in pairs(obj) do
         umeta[k] = v
         obj  [k] = nil
     end
-    setmetatable (obj, umeta)
-    umeta.__index    = umeta
-    umeta.__newindex = umeta
-    umeta.__gc       = function(self) klass.__gc(self) end
-    umeta.__userdata = udata
+
+    setmetatable(obj, umeta)
 end
 
 function class.split_params(param)
@@ -167,31 +208,25 @@ function class.split_params(param)
     return result
 end
 
-class.properties = class()
+-- property mixin
 
-function class.properties.__index(t,key)
-    -- normal class lookup!
-    local v = klass[key]
-    if v then return v end
-    -- is it a getter?
-    v = rawget(klass,'get_'..key)
-    if v then
-        return v(t)
-    end
-    -- is it a field?
-    return rawget(t,'_'..key)
-end
-
-function class.properties.__newindex(t,key,value)
-    -- if there's a setter, use that, otherwise directly set table
-    local p = 'set_'..key
-    local setter = klass[p]
-    if setter then
-        setter(t,value)
-    else
-        rawset(t,key,value)
+local prop_history = {}
+local function property_access(suffix, safefunc)
+    return function(self, key, value)
+        local f = class.get_class(self)[suffix..key]
+        if not prop_history[f] and f then 
+            prop_history[f] = true
+            local result = f(self, value)
+            prop_history[f] = nil
+            return result
+        else 
+            return safefunc(self, '__'..key, value)
+        end
     end
 end
 
+class.properties = {}
+class.properties.__index    = property_access('get_', rawget)
+class.properties.__newindex = property_access('set_', rawset)
 
 return class
