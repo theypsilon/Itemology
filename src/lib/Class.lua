@@ -92,7 +92,8 @@ function class.new(base, name)
 end
 
 function class.is_a(self, class)
-    return is_a_helper(getmetatable(self), class)
+    local meta = getmetatable(self)
+    return is_a_helper(meta.__class and meta.__class or meta, class)
 end
 
 function class.get_class(obj)
@@ -134,9 +135,16 @@ function class.make_finalizable(obj)
     if not class.is_class(klass) then return false end
     if not klass.__gc            then return false end
     setmetatable(umeta, klass)
-    umeta.__index    = obj
-    umeta.__newindex = obj
-    umeta.__gc = function(self) klass.__gc(self) end
+    for k, v in pairs(obj) do
+        umeta[k] = v
+        obj  [k] = nil
+    end
+    setmetatable (obj, umeta)
+    umeta.__index    = umeta
+    umeta.__newindex = umeta
+    umeta.__gc       = function(self) klass.__gc(self) end
+    umeta.__class    = klass
+    obj.__userdata   = udata
     return udata
 end
 
