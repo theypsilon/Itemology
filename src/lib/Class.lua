@@ -58,9 +58,11 @@ function class.new(base, name)
             local res = ctor(obj,...)
             if res then 
                 obj = res
-                if not getmetatable(obj) then setmetatable(obj,klass) end
+                if class.get_class(obj) ~= klass then setmetatable(obj, klass) end
             end
         end
+
+        if rawget(klass, '__gc') then class.make_finalizable(obj) end
 
         if not rawget(klass, '__tostring') then
             klass.__tostring = class.tostring
@@ -91,14 +93,14 @@ function class.new(base, name)
     return klass
 end
 
-function class.is_a(self, class)
-    local meta = getmetatable(self)
-    return is_a_helper(meta.__class and meta.__class or meta, class)
+function class.is_a(obj, klass)
+    return is_a_helper(class.get_class(obj), klass)
 end
 
 function class.get_class(obj)
-    local klass = getmetatable(obj)
-    if class.is_class(klass) then return klass end
+    local meta = getmetatable(obj)
+    if type(meta.__userdata) == 'userdata' then meta = getmetatable(meta) end
+    if class.is_class(meta) then return meta end
     return nil
 end
 
@@ -143,9 +145,7 @@ function class.make_finalizable(obj)
     umeta.__index    = umeta
     umeta.__newindex = umeta
     umeta.__gc       = function(self) klass.__gc(self) end
-    umeta.__class    = klass
-    obj.__userdata   = udata
-    return udata
+    umeta.__userdata = udata
 end
 
 function class.split_params(param)

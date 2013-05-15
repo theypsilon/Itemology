@@ -1,4 +1,5 @@
 local scene = {}
+
 function scene.load()
 	require 'entity.Player'
 

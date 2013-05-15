@@ -13,8 +13,6 @@ function Entity:_init(level, x, y)
     self.level  = level
 
     level:add(self)
-
-    return class.make_finalizable(self)
 end
 
 function Entity:tick() 
