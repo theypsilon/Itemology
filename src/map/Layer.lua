@@ -1,8 +1,7 @@
 local Layer = class('Layer')
 
 function Layer:_init(layer, map)
-    -- dump(layer)
-    -- os.exit()
+    error 'this class is abstract'
 end
 
 
