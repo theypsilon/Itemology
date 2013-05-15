@@ -1,3 +1,4 @@
+global('flow', 'love', 'viewport', 'layer')
 flow = love or {}
 
 local callbacks = {
@@ -91,7 +92,7 @@ function flow.run(config)
 		flow.tempLayer:clear()
 	end
 
-	mainThread = MOAIThread.new ()
+	local mainThread = MOAIThread.new ()
 
 	mainThread:run ( 
 		function ()

@@ -1,15 +1,20 @@
 local Layer = class('Layer')
 
-function Layer:_init(map, layer)
-
+function Layer:_init(layer, map)
+    -- dump(layer)
+    -- os.exit()
 end
 
-local LayerObject = require 'map.LayerObject'
-local LayerTile   = require 'map.LayerTile'
 
-Layer.factory = {
-    tilelayer   = LayerTile,
-    objectlayer = LayerObject,
-}
+local dispatch = nil
+function Layer.factory(layer, ...)
+    if not dispatch then
+        dispatch = {
+            tilelayer   = require 'map.LayerObject',
+            objectlayer = require 'map.LayerTile',
+        }
+    end
+    return dispatch[layer.type](layer, ...)
+end
 
-return Layer, LayerObject, LayerTile
+return Layer

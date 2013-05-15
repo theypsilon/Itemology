@@ -11,7 +11,10 @@ function Entity:_init(level, x, y)
 	self.y = y or 0
 	self._ticks = 0
     self.level  = level
+
     level:add(self)
+
+    return class.make_finalizable(self)
 end
 
 function Entity:tick() 
@@ -19,4 +22,8 @@ function Entity:tick()
 end
 
 function Entity:draw()	
+end
+
+function Entity:__gc()
+    print 'gc!!!!!'
 end

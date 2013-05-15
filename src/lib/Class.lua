@@ -58,7 +58,7 @@ function class.new(base, name)
             local res = ctor(obj,...)
             if res then 
                 obj = res
-                setmetatable(obj,klass)
+                if not getmetatable(obj) then setmetatable(obj,klass) end
             end
         end
 
@@ -102,7 +102,7 @@ function class.get_class(obj)
 end
 
 function class.tostring(obj)
-    local mt = obj._class
+    local mt = getmetatable(obj)
     local name = rawget(mt,'_name')
     setmetatable(obj,nil)
     local str = tostring(obj)
@@ -124,6 +124,20 @@ end
 
 function class.is_class(c)
     return class.is_mixin(c) and c.__index == c
+end
+
+function class.make_finalizable(obj)
+    if type(obj) ~= 'table'      then return false end
+    local udata = newproxy(true)
+    local umeta = getmetatable(udata)
+    local klass = getmetatable(obj)
+    if not class.is_class(klass) then return false end
+    if not klass.__gc            then return false end
+    setmetatable(umeta, klass)
+    umeta.__index    = obj
+    umeta.__newindex = obj
+    umeta.__gc = function(self) klass.__gc(self) end
+    return udata
 end
 
 function class.split_params(param)

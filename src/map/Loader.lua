@@ -8,7 +8,7 @@ end
 local xml, decompress, base64 = nil, nil, nil
 local function loadAuxLibs()
     if not xml or not decompress or not base64 then
-        TILED_LOADER_PATH = TILED_LOADER_PATH or 'lib.ATL/'
+        global{TILED_LOADER_PATH = 'lib.ATL/'}
         xml        = require 'lib.ATL.external.xml'
         decompress = require 'lib.ATL.external.deflatelua'
         base64     = require 'lib.ATL.Base64'

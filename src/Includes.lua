@@ -10,16 +10,17 @@ addPackagePath(libpath)
 require 'inspect'
 require 'penlight'
 
--- require 'lib.Strict'
+-- 
 -- require 'ATL'
 -- require 'rapanui'
-require 'flower'
+-- require 'flower'
 -- require 'hanappe'
 
 -- ad-hoc libs
 
+require 'lib.Strict'
 require 'lib.Extensions'
-class = require 'lib.Class'
+global{class = require 'lib.Class'}
 -- require 'lib.Reload'
 
 -- application

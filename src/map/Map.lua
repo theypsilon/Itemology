@@ -1,5 +1,7 @@
-local Layer, LayerObject, LayerTile = require 'map.Layer'
-local loader  = require 'map.Loader'
+local LayerObject = require 'map.LayerObject'
+local LayerTile   = require 'map.LayerTile'
+local Layer       = require 'map.Layer'
+local loader      = require 'map.Loader'
 
 local Map = class('Map')
 
@@ -11,7 +13,7 @@ local function validate(path)
 		[path .. '.lue'] = 'lua'
 	}
 
-	path, format = (function()
+	local path, format = (function()
 		for path, format in pairs(pathList) do
 			if MOAIFileSystem.checkFileExists(path) then
 				return path, format
@@ -28,7 +30,7 @@ local function validate(path)
 end
 
 function Map:_init(path)
-	path, format  = validate(path)
+	local path, format  = validate(path)
 
 	local data    = loader[format](path)
 
@@ -64,7 +66,7 @@ end
 function Map:_setLayers(layers)
 	local tileLayers = {}
 	for _,layer in ipairs(layers) do
-		tileLayers[layer.name] = Layer.factory[layer.type](self, layer)
+		tileLayers[layer.name] = Layer.factory(layer, self)
 	end
 end
 

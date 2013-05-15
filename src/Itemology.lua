@@ -26,7 +26,7 @@ function flow.load()
 
     resource.IMAGE_PATH = 'res/img/'
 
-	sprites = require 'Sprites'
+    global{sprites = require 'Sprites'}
 	scenes.run('First')
 end
 

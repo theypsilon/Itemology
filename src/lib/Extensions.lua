@@ -9,18 +9,19 @@ function table.flip ( tab )
 end
 
 if inspect and debug then
+    global('dump', 'dumpi')
     if dump then error 'dump already defined' end
     local function internal_dump(object, level)
-        if     type(v) == 'function' then
+        if     type(object) == 'function' then
             object = debug.func(object)
-        elseif type(v) ~= 'string'   then
+        elseif type(object) ~= 'string'   then
             object = inspect(object,level)
         end
         return object
     end
     
     function dump(...)
-        local args = pack(...)
+        local args = table.pack(...)
         for k,v in ipairs(args) do
             args[k] = internal_dump(v)
         end

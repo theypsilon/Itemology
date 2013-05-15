@@ -28,13 +28,19 @@ mt.__newindex = function (t, n, v)
   rawset(t, n, v)
 end
   
--- mt.__index = function (t, n)
---   if not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
---     alert("variable '"..n.."' is not declared", 2)
---   end
---   return rawget(t, n)
--- end
+mt.__index = function (t, n)
+  if not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
+    alert("variable '"..n.."' is not declared", 2)
+  end
+  return rawget(t, n)
+end
 
--- function global(...)
---    for _, v in ipairs{...} do mt.__declared[v] = true end
--- end
+function global(...)
+  local params = {...}
+  if params[1]  and  type(params[1]) == 'table' 
+  then for k, v in  pairs(params[1]) do mt.__declared[k] = true; _G[k] = v end
+  else for _, v in ipairs(params)    do mt.__declared[v] = true end 
+  end
+end
+
+function defined(var) return mt.__declared[var] end

@@ -13,8 +13,7 @@ function scene.load()
     -- cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2}, {x=10, y=10})] = true
     
     scene.cameras, scene.level, scene.player = cameras, level, player
-    lastTime = 0
-end
+end 
 
 function scene.draw()
     for camera,_ in pairs(scene.cameras) do
