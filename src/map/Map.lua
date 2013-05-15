@@ -1,6 +1,4 @@
-require 'map.LayerTile'
-require 'map.LayerObject'
-
+local Layer, LayerObject, LayerTile = require 'map.Layer'
 local loader  = require 'map.Loader'
 
 local Map = class('Map')
@@ -63,15 +61,10 @@ function Map:_setTilesets(tilesets, dir)
 	self.tilesets = sets
 end
 
-local factoryLayer = {
-	tilelayer   = function() end,
-	objectlayer = function() end,
-}
-
 function Map:_setLayers(layers)
 	local tileLayers = {}
 	for _,layer in ipairs(layers) do
-		tileLayers[layer.name] = factoryLayer[layer.type](self, layer)
+		tileLayers[layer.name] = Layer.factory[layer.type](self, layer)
 	end
 end
 

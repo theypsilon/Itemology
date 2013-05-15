@@ -60,11 +60,15 @@ end
 function loader.tmx(source)
     loadAuxLibs()
 
-    local content = xml.string_to_table(io.input(source):read("*all"))[2]
-
-    if content.label ~= 'map' then
+    local content = xml.string_to_table(io.input(source):read("*all"))
+    content = (function()
+        for _, node in ipairs(content) do
+            if node.label == 'map' then
+                return node
+            end
+        end
         error('contents of "'..source..'" not labeled as map')
-    end
+    end)()
 
     local map = content.xarg
     map.layers      = {}
