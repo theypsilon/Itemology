@@ -130,10 +130,10 @@ function class.is_class(c)
 end
 
 function class.make_finalizable(obj)
-    if type(obj) ~= 'table'      then return false end
     local udata = newproxy(true)
     local umeta = getmetatable(udata)
     local klass = getmetatable(obj)
+    if type(obj) ~= 'table'      then return false end
     if not class.is_class(klass) then return false end
     if not klass.__gc            then return false end
     setmetatable(umeta, klass)
