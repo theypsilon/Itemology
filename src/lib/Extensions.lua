@@ -8,6 +8,10 @@ function table.flip ( tab )
     return newTable
 end
 
+function table.pack(...)
+    return { n = select("#", ...), ... }
+end
+
 if inspect and debug then
     global('dump', 'dumpi')
     if dump then error 'dump already defined' end
@@ -20,17 +24,18 @@ if inspect and debug then
         if     object_t == 'function' then
             object   = debug.func(object)
         elseif object_t ~= 'string'   then
-            object   = inspect(object,level)
+            object   = inspect(object, level)
         end
         return object
     end
     
     function dump(...)
         local args = table.pack(...)
-        for k,v in ipairs(args) do
-            args[k] = internal_dump(v)
+        for i = 1, args.n do
+            args[i] = internal_dump(args[i])
         end
-        print(unpack(args))
+        if args.n == 0 then args = {'<no params>'} end
+        print('dump:', unpack(args))
     end
 
     function dumpi(object, level)
