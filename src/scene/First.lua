@@ -3,7 +3,7 @@ local scene = {}
 function scene.load()
 	require 'entity.Player'
 
-    local level    = Level("plattform.tmx")
+    local level    = Level ("plattform.tmx")
     local player   = Player(level, 100, 100)
     local cameras  = {}
     local w, h     = graphics.getWidth(), graphics.getHeight()
@@ -14,6 +14,7 @@ function scene.load()
     -- cameras[Camera(player, {x=w/2, y=h/2, w=w/2, h=h/2}, {x=10, y=10})] = true
     
     scene.cameras, scene.level, scene.player = cameras, level, player
+
 end 
 
 function scene.draw()

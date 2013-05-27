@@ -34,4 +34,8 @@ function LayerTile:_load(data, w, h, ts)
     return prop
 end
 
+function LayerTile:__call(x, y)
+    return self.prop:getGrid():getTile(x, y)
+end
+
 return LayerTile

@@ -73,16 +73,19 @@ function Map:_setLayers(layers)
 end
 
 function Map:setLayer(renderLayer)
-	self.layer = renderLayer
-	for _,layer in pairs(self.tilelayers) do
-		renderLayer:insertProp(layer.prop)
-	end
+	for _,layer in pairs(self.tilelayers) do layer:setLayer(renderLayer) end
 end
 
-function Map:setLoc(x, y)
-	for _,layer in pairs(self.tilelayers) do
-		layer.prop:setLoc(x, y)
-	end
+function Map:setLoc(x, y, z)
+	for _,layer in pairs(self.tilelayers) do layer:setLoc(x, y, z) end
+end
+
+function Map:draw(x, y, z)
+	for _,layer in pairs(self.tilelayers) do layer:draw(x, y, z) end
+end
+
+function Map:__call(name)
+	return self.tilelayers[name]
 end
 
 return Map

@@ -20,13 +20,14 @@ config.world.height      = 224
 function flow.load()
 	print 'Welcome to Itemology!'
 
-    layer = MOAILayer2D.new()
-    layer:setViewport(viewport)
-    MOAIRenderMgr.pushRenderPass(layer)
+    layer.main:setPartition(MOAIPartition.new())
+
+    --dump(layer.main:getPartition())
 
     resource.IMAGE_PATH = 'res/img/'
 
     global{sprites = require 'Sprites'}
+    physics.init()
 	scenes.run('First')
 end
 

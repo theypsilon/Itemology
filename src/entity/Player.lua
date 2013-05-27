@@ -22,6 +22,12 @@ function Player:tick(dt)
 	if mx > 0 and mx < lx then self.x = math.floor(mx) end
 	if my > 0 and my < ly then self.y = math.floor(my) end
 
+	if dx ~= 0 or dy ~= 0 then
+		self.body:applyLinearImpulse(dx*10, dy*10)
+	end
+
+	self.x, self.y = self.body:getPosition()
+
 	--reload.instance(self)
 	super.tick(self)
 end

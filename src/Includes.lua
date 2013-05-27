@@ -25,11 +25,14 @@ global{class = require 'lib.Class'}
 
 -- application
 
+require 'Alias'
 require 'Flow'
 require 'Resource'
 require 'Graphics'
 require 'Input'
+require 'Layer'
 require 'Atlass'
+require 'Physics'
 require 'Level'
 require 'Camera'
 require 'Scenes'

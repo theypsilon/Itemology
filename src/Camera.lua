@@ -12,6 +12,8 @@ end
 function Camera:_init(target, area, padding)
     validate(area, padding)
 
+    self.cam = MOAICamera.new()
+
     self:setTarget(target)
     self.area    = area or { 
         x = 0, y = 0, 
@@ -36,6 +38,7 @@ function Camera:setTarget(target)
     self._level                  = target.level
     self._limit                  = {}
     self._limit.x, self._limit.y = target.level:getBorder()
+    target.prop.layer:setCamera(self.cam)
 end
 
 function Camera:draw()
@@ -49,10 +52,7 @@ function Camera:draw()
     local x = self:_calcCorner('x', area.w) - area.x
     local y = self:_calcCorner('y', area.h) - area.y
 
-    map:setLoc(-x, -y)
-    for entity,_ in pairs(entities) do
-        entity:draw(entity.x - x, entity.y - y)
-    end
+    self.cam:setLoc(x, y, 640)
 end
 
 local abs = math.abs

@@ -72,26 +72,6 @@ function flow.run(config)
 
 	if flow.load then flow.load() end
 
-	local renderTable = MOAIRenderMgr.getRenderTable()
-	if not renderTable then
-		renderTable = {}
-		MOAIRenderMgr.setRenderTable(renderTable)
-	end
-
-	local tempLayerIndex = #renderTable + 1
-	local layers = {MOAILayer2D.new(), MOAILayer2D.new()}
-	for _,layer in ipairs(layers) do
-		layer:setViewport(viewport)
-	end
-
-	renderTable[tempLayerIndex] = layers[1]
-
-	local function swapTempLayers()
-		renderTable[tempLayerIndex] = flow.tempLayer
-		flow.tempLayer = flow.tempLayer == layers[1] and layers[2] or layers[1]
-		flow.tempLayer:clear()
-	end
-
 	local mainThread = MOAIThread.new ()
 
 	mainThread:run ( 
@@ -106,7 +86,7 @@ function flow.run(config)
 				lastTime = curTime;
 
 				flow.update( dt )
-				swapTempLayers()
+				for _,v in pairs(layer) do v:clearTemp() end
 				flow.draw()
 			end				
 		end 

@@ -9,6 +9,10 @@ function Entity:_init(level, x, y)
 
 	self.x = x or 0
 	self.y = y or 0
+    self.size = {x = 0, y = 0}
+    self.last = {x = 0, y = 0}
+    self.zindex = 0
+    self.currSp = nil
 	self._ticks = 0
     self.level  = level
 

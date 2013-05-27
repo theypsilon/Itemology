@@ -2,12 +2,9 @@ class.Level()
 
 local Map = require 'map.Map'
 
- -- Path to the tmx files. The file structure must be similar to how they are saved in Tiled
---tiled.path = "res/maps/"
-
 function Level:_init(mapfile)
     self.map = Map('res/maps/' .. mapfile)
-    self.map:setLayer(layer) 
+    self.map:setLayer(layer.main) 
 
     self.entitiesInMap = {}
     self.entities      = {}

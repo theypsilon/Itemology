@@ -30,8 +30,8 @@ end
 
 local function draw_prop(self, x, y)
 	local prop = make_prop(self)
-	if x and y then prop:setLoc(x, y) end
-	flow.tempLayer:insertProp(prop)
+	if x and y then prop:setLoc (x, y) end
+	self.atlass.layer:insertTemp(prop)
 	return prop
 end
 

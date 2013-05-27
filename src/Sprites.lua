@@ -9,4 +9,4 @@ local frames  = {
     fall  = {x = 112,  y = 0,   w = 15, h = 15},
 }
 
-return Atlass('grid.png', frames, layer)
+return Atlass('grid.png', frames, layer.main)
