@@ -64,12 +64,18 @@ function Map:_setTilesets(tilesets, dir)
 end
 
 function Map:_setLayers(layers)
-	local tileLayers, i = {}, 0
+	local tileLayers, objectLayers, i = {}, {}, 0
 	for _,layer in ipairs(layers) do
-		           layer.id, i = i, i + 1
-		tileLayers[layer.name] = Layer.factory(layer, self)
+		layer.id, i    = i, i + 1
+		local newLayer = Layer.factory(layer, self)
+		if layer.type == 'tilelayer' then
+			tileLayers  [layer.name] = newLayer
+		else
+			objectLayers[layer.name] = newLayer
+		end
 	end
-	self.tilelayers = tileLayers
+	self.  tilelayers =   tileLayers
+	self.objectlayers = objectLayers
 end
 
 function Map:setLayer(renderLayer)
@@ -85,7 +91,8 @@ function Map:draw(x, y, z)
 end
 
 function Map:__call(name)
-	return self.tilelayers[name]
+	local  layer = self.tilelayers[name]
+	return layer and layer or self.objectlayers[name]
 end
 
 return Map

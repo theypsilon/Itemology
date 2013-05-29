@@ -9,6 +9,9 @@ local callbacks = {
 local function runScene(self)
 	if scenes.current and scenes.current.quit then scenes.current.quit() end
 
+	scenes.current = self
+	scene          = self
+
 	if not self._init and self.load then
 		self.load()
 		self._init = true
@@ -18,8 +21,6 @@ local function runScene(self)
 		if self[v] then flow[v] = self[v] end
 	end
 
-	scenes.current = self
-	scene          = self
 end
 
 function scenes.load(path)

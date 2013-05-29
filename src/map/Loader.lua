@@ -103,6 +103,15 @@ function loader.tmx(source)
             layer.visible   = type(layer.visible) == 'boolean' and layer.visible or true
 
             map.layers[#map.layers + 1] = set_numbers(layer)
+        elseif node.label == 'objectgroup' then
+            local layer = node.xarg
+            layer.type  = 'objectlayer'
+            layer.objects = {}
+            for _,o in ipairs(node) do
+                table.insert(layer.objects, o)
+            end
+            
+            map.layers[#map.layers + 1] = set_numbers(layer)
         end
     end
 

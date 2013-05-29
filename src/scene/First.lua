@@ -4,6 +4,7 @@ function scene.load()
 	require 'entity.Player'
 
     local level    = Level ("plattform.tmx")
+    dump(level.map('Capa de Objetos 1')('spawn'))
     local player   = Player(level, 100, 100)
     local cameras  = {}
     local w, h     = graphics.getWidth(), graphics.getHeight()
@@ -34,6 +35,7 @@ function scene.update(dt)
     for camera,_ in pairs(scene.cameras) do
         camera._level:tick(dt)
     end
+    physics:update()
 end
 
 function scene.focus(inside)

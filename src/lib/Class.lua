@@ -213,14 +213,16 @@ end
 local prop_history = {}
 local function property_access(suffix, safefunc)
     return function(self, key, value)
-        local f = class.get_class(self)[suffix..key]
-        if not prop_history[f] and f then 
+        local klass = class.get_class(self)
+        local f     = klass[suffix..key]
+        if f and not prop_history[f] then
             prop_history[f] = true
             local result = f(self, value)
             prop_history[f] = nil
             return result
-        else 
-            return safefunc(self, '__'..key, value)
+        else
+            local  result = safefunc(self, '__'..key, value)
+            return result and result or klass[key]
         end
     end
 end

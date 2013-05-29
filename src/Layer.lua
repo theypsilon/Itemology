@@ -19,6 +19,7 @@ local function make_layer(t, index)
     newLayer. clearTemp = clear_temp
 
     newLayer:setViewport(viewport)
+    newLayer:setBox2DWorld (physics.world)
     MOAIRenderMgr.pushRenderPass(newLayer)
 
     rawset(t, index, newLayer)

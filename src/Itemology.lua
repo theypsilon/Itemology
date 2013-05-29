@@ -22,12 +22,9 @@ function flow.load()
 
     layer.main:setPartition(MOAIPartition.new())
 
-    --dump(layer.main:getPartition())
-
     resource.IMAGE_PATH = 'res/img/'
 
     global{sprites = require 'Sprites'}
-    physics.init()
 	scenes.run('First')
 end
 
