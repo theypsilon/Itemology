@@ -10,10 +10,6 @@ function Physics:_init()
     world:start()
 
     self.world = world
-
-    local floor = world:addBody(MOAIBox2DBody.STATIC)
-    floor:setTransform(300, 300)
-    floor:addRect(-200, 5, 200, -5)
 end
 
 function Physics:update()

@@ -51,7 +51,7 @@ function Map:_setData(data)
 end
 
 local function loadTileset(tileset, dir)
-	tileset.tex = resource.getImage(dir .. tileset.image, true)
+	tileset.tex = resource.getImage(dir .. tileset.image)
 	return tileset
 end
 
@@ -60,7 +60,8 @@ function Map:_setTilesets(tilesets, dir)
 	for _,tileset in ipairs(tilesets) do
 		sets[#sets + 1] = loadTileset(tileset, dir)
 	end
-	self.tilesets = sets
+	self.tilesets   = sets
+	self.tileatlass = setmetatable({}, {__mode = 'k'})
 end
 
 function Map:_setLayers(layers)
@@ -93,6 +94,31 @@ end
 function Map:__call(name)
 	local  layer = self.tilelayers[name]
 	return layer and layer or self.objectlayers[name]
+end
+
+function Map:getTilesetAsAtlass(index)
+	local atlass
+	if not self.tilesets  [index] then error('wrong tileset: ' .. index) end
+	if not self.tileatlass[index] then
+
+	    local ts = self.tilesets[index]
+	    local iw, ih, tw, th = ts.imagewidth, ts.imageheight, 
+	    				       ts.tilewidth,  ts.tileheight
+
+		local frame, n = {}, 0
+	    for j = 0, ih - th, th do for i = 0, iw - tw, tw  do
+	        frame[n] = {code = n, x = i, w = tw, y = j, h = th}
+	        n        = n + 1
+	    end end
+
+	    atlass = Atlass('../maps/' .. ts.image, 
+	    	            frame, layer.main, MOAIImage)
+
+	    self.tileatlass[index] = atlass
+	else
+		atlass = self.tileatlass[index]
+	end
+	return atlass
 end
 
 return Map

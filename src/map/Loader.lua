@@ -47,11 +47,13 @@ local function decodeData(package)
     return data
 end
 
-local function set_numbers(table)
+local function set_numbers(table, rec)
     for k,v in pairs(table) do
         local number = tonumber(v)
         if type(v) == 'string' and number then
             table[k] = number
+        elseif type(v) == 'table' and rec then
+            table[k] = set_numbers(v, true)
         end
     end
     return table
@@ -89,7 +91,7 @@ function loader.tmx(source)
             tileset.spacing     = tileset.spacing    or 0
             tileset.tiles       = tileset.tiles      or {}
 
-            map.tilesets[#map.tilesets + 1] = set_numbers(tileset)
+            map.tilesets[#map.tilesets + 1] = tileset
         elseif node.label == 'layer' then
             local layer = node.xarg
 
@@ -102,7 +104,7 @@ function loader.tmx(source)
             layer.type      = layer.type      or 'tilelayer'
             layer.visible   = type(layer.visible) == 'boolean' and layer.visible or true
 
-            map.layers[#map.layers + 1] = set_numbers(layer)
+            map.layers[#map.layers + 1] = layer
         elseif node.label == 'objectgroup' then
             local layer = node.xarg
             layer.type  = 'objectlayer'
@@ -111,11 +113,11 @@ function loader.tmx(source)
                 table.insert(layer.objects, o)
             end
             
-            map.layers[#map.layers + 1] = set_numbers(layer)
+            map.layers[#map.layers + 1] = layer
         end
     end
 
-    return set_numbers(map)
+    return set_numbers(map, true)
 end
 
 return loader

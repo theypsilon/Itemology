@@ -1,50 +1,34 @@
 local  Layer = require 'map.Layer'
 local  LayerObject = class('LayerObject', Layer)
 
-local function add(table, key, value)
-    if key == nil then key = #table + 1 end
-    local place = table[key]
-    if place then
-        if type(place) == 'table' then table.insert(place, value)
-                                  else place =     {place, value} end
-    else
-        table[key] = value
-    end
-end
+local copy = table.shallow_copy
 
-local function converseXarg(object)
-    local result = object.xarg
-    for _, v in ipairs(object) do
-        if v.xarg then
-            local sub, label = converseXarg(v)
-            result[label] = result[label] or {}
-            add(result[label], sub.name, sub)
+local function parseObjects(objects)
+    local parsed = {}
+
+    for _, element in ipairs(objects) do
+        local child, label = parseObjects(element), element.label
+
+        copy(element.xarg, child)
+
+        if label == 'properties'   then
+            parsed.  properties = child
+        elseif label == 'property' then
+            parsed[child.name]  = child.value
+        else
+            local  index  = child.name and child.name or (#parsed + 1)
+            parsed[index] = child
+            child.name    = nil
         end
     end
-    return result, object.label
-end
-
-function table.deep_copy(old)
-    local new = {}
-    for k, v in pairs(old) do 
-        new[k] = type(v) == 'table' and table.deep_copy(v) or v 
-    end
-    return new
+    return parsed
 end
 
 function LayerObject:_init(layer, map)
-    self = layer
-    self.map = map
-    local objects = self.objects
-    self.objects = {}
-    for _, v in ipairs(objects) do
-        dump(v)
-        local object = converseXarg(v)
-        dump(object)
-        os.exit()
-        add(self.objects, name, object)
-    end
-    dump(self.objects)
+    copy(layer, self)
+
+    self.objects = parseObjects(layer.objects)
+    self.map     = map
 end
 
 function LayerObject:__call(name, index)

@@ -8,8 +8,72 @@ function table.flip ( tab )
     return newTable
 end
 
+function table.keys ( tab )
+    local new = {}
+    for k in pairs(tab) do
+        new[#new + 1] = k
+    end
+    return new
+end
+
+function table.count( tab )
+    if type(tab) ~= 'table' then return 0 end
+    local i = 0
+    for _ in pairs(tab) do
+        i = i + 1
+    end
+    return i
+end
+
+function table.copy(from, to, deep)
+    return deep and table.deep_copy(from, to) or table.shallow_copy(from, to)
+end
+
+function table.deep_copy(from, to)
+    local ret = (to == nil) and {} or to
+    for k, v in pairs(from) do 
+        ret[k] = type(v) == 'table' and table.deep_copy(v) or v 
+    end
+    return ret
+end
+
+function table.shallow_copy(from, to)
+    local ret = (to == nil) and {} or to
+    for k, v in pairs(from) do 
+        ret[k] = v 
+    end
+    return ret
+end
+
 function table.pack(...)
     return { n = select("#", ...), ... }
+end
+
+function table.make_const( mutable )
+    for k,v in pairs(mutable) do
+        if type(k) == 'table' then
+            mutable[k] = nil
+            k = table.make_const(k)
+            mutable[k] = v
+        end
+        if type(v) == 'table' then 
+            mutable[k] = table.make_const(v) 
+        end
+    end
+    return setmetatable({}, {
+        __index     = mutable,
+        __newindex  = function() error("const-violation on table") end,
+        __metatable = false
+    });
+end
+
+function table.map( tab , fn )
+    local ret = {}
+    for ik, iv in pairs(tab) do
+        local fv, fk = fn(iv)
+        ret[fk and fk or ik] = fv
+    end
+    return ret
 end
 
 if inspect and debug then

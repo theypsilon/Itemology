@@ -15,12 +15,13 @@ end
 
 local images = setmetatable({}, {__mode = 'k'})
 
-function resource.getImage(path, gpu)
+function resource.getImage(path, cpu)
     path = validate(path, resource.IMAGE_PATH, 'Image')
 
     if images[path] then return images[path] end
 
-    local image = gpu and MOAITexture.new() or MOAIImage.new()
+    local image = 'table' == type(cpu) and cpu.new() or 
+                                  cpu and MOAIImage.new() or MOAITexture.new()
     image:load(path)
     images[path] = image
     return image

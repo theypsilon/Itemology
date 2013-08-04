@@ -35,7 +35,7 @@ local function draw_prop(self, x, y)
 	return prop
 end
 
-function Atlass:_init(path, frames, layer)
+function Atlass:_init(path, frames, layer, cpu)
 	validate(path)
 
 	local total = 0
@@ -44,7 +44,7 @@ function Atlass:_init(path, frames, layer)
 		region.i = total
 	end
 
-	local tex = resource.getImage(path, true)
+	local tex = resource.getImage(path, cpu)
 
     local width, height = tex:getSize()
 
@@ -66,6 +66,7 @@ function Atlass:_init(path, frames, layer)
     	region.draw    = draw_prop
     end
 
+    self.tex      = tex
     self.layer    = layer
     self.deck     = deck
 	self.graphics = frames
