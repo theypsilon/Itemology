@@ -153,7 +153,7 @@ function scene.load()
                     elseif notWalked[pack] then
                         if not notWalked[args] then args = pack
                         elseif d == pd then args = pack end
-                    end
+                    end     
                 elseif notWalked[pack] and not sameHoles[args] then
                     if not notWalked[args] then args = pack
                     elseif d == pd then args = pack end
@@ -178,7 +178,7 @@ function scene.load()
     local function drawMap()
         for v,_ in pairs(sol.poly) do 
             if wall[v.y] then
-                wall[v.y][v.x-1] = '_' 
+                --wall[v.y][v.x-1] = '_' 
             end
         end
 
