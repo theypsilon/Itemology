@@ -76,6 +76,34 @@ function table.map( tab , fn )
     return ret
 end
 
+function table.at( tab, ... )
+    local dim  = {...}
+    local last = nil
+    for _, d in ipairs(dim) do
+        last = tab[d]
+        if last then
+            tab = last
+        else
+            return nil
+        end
+    end
+    return last
+end
+
+function table.set( tab, val, ... )
+    local dim    = {...}
+    local lt, li = nil
+    local ld = nil
+    for _, d in ipairs(dim) do ld = d end
+    for _, d in ipairs(dim) do
+        if d == ld then
+            tab[d] = val
+            return
+        end
+        tab    = tab[d]
+    end
+end
+
 if inspect and debug then
     global('dump', 'dumpi', 'dumpfunctions')
     if dump then error 'dump already defined' end

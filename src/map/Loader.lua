@@ -93,6 +93,7 @@ function loader.tmx(source)
 
             map.tilesets[#map.tilesets + 1] = tileset
         elseif node.label == 'layer' then
+
             local layer = node.xarg
 
             layer.data      = decodeData(node[1])

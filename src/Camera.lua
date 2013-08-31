@@ -38,6 +38,7 @@ function Camera:setTarget(target)
     self._level                  = target.level
     self._limit                  = {}
     self._limit.x, self._limit.y = target.level:getBorder()
+    self._limit.x, self._limit.y = self._limit.x + 16 + 16, self._limit.y + 16
     target.prop.layer:setCamera(self.cam)
 end
 

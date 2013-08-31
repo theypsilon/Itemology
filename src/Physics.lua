@@ -3,7 +3,7 @@ class.Physics()
 function Physics:_init()
     local world = MOAIBox2DWorld.new()
 
-    world:setGravity( 0, 10 )
+    --world:setGravity( 0, 10 )
     world:setUnitsToMeters( .10 )
     world:setIterations( 10, 10 )
     world:setAutoClearForces(true)
