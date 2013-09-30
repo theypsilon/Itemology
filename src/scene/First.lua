@@ -15,7 +15,7 @@ function scene.load()
     dump(drawMap())
     local e = {}
     for k,v in pairs(pol) do
-        e[k] = math.floor(v / 16)
+        e[k] = v
     end
     dump(e)
     dump(table.count(pol))

@@ -58,7 +58,7 @@ function Collision.getCollisionFixtures(wallMatrix, tw, th)
 end
 
 function Collision.getEmptySolution()
-    return {walked = {}, poly = {{x=1,y=1,d=d_down}}, lastborder = {
+    return {walked = {}, poly = {{x=1,y=1,i=1,j=1,d=d_down}}, lastborder = {
         x = d_right,
         y = d_up
     }}
@@ -69,7 +69,7 @@ function Collision.makeInitialSolution(x, y, walked)
 
     if walked then sol.walked = walked end
 
-    local v   = {x = x, y = y, d = d_right, pd = d_up}
+    local v   = {x = x, y = y, i = x, j = y, d = d_right, pd = d_up}
 
     sol.poly[2] = v
 
@@ -169,35 +169,33 @@ function Collision.go(map)
         end
     end
 
-    local function insertVertex(sol, pv, nd, nx, ny)
-        if isOpposite(pv.d, nd) then
-            error 'is opposite!'
-        else
+    local function incVertex(v, d)
+        v.x = v.x + d.x * tw
+        v.y = v.y + d.y * th
+        v.i = v.i + d.x
+        v.j = v.j + d.y
+        return v
+    end
 
-            --changeBorder(pv, sol.lastborder)
+    local function newVertex(sol, pv, nd, nx, ny)
+        --changeBorder(pv, sol.lastborder)
 
-            local testx = pv.x + (pv.d.x * (tw - 1)) -1
-            dump(testx, pv.x, pv.d.x, math.floor(testx / tw), nx, math.floor(testx / tw) == math.floor((pv.x-1) / tw))
-            if pv.d.x ~= 0 and math.floor(testx / tw) == math.floor((pv.x-1) / tw) then
-                dump(pv.x)
-                pv.x = pv.x + pv.d.x * tw
-            end
-
-            local testy = pv.y + (pv.d.y * (th - 1)) -1
-            if pv.d.y ~= 0 and math.floor(testy / th) == math.floor((pv.y-1) / th) then                
-                pv.y = pv.y + pv.d.y * th
-            end 
-
-            local vertex   = table.copy(pv)
-
-            --vertex.x, vertex.y = vertex.x + nd.x * tw, vertex.y + nd.y * th
-            -- if nd == d_left and vertex.d == d_down then
-            --     vertex.y = vertex.y + th
-            -- end
-
-            sol.poly[#sol.poly + 1] = vertex
-            return vertex
+        local testx = pv.x + (pv.d.x * (tw - 1)) -1
+        dump(testx, pv.x, pv.d.x, math.floor(testx / tw), nx, math.floor(testx / tw) == math.floor((pv.x-1) / tw))
+        if pv.d.x ~= 0 and math.floor(testx / tw) == math.floor((pv.x-1) / tw) then
+            dump(pv.x)
+            pv.x = pv.x + pv.d.x * tw
         end
+
+        local testy = pv.y + (pv.d.y * (th - 1)) -1
+        if pv.d.y ~= 0 and math.floor(testy / th) == math.floor((pv.y-1) / th) then                
+            pv.y = pv.y + pv.d.y * th
+        end 
+
+        local vertex   = table.copy(pv)
+
+        sol.poly[#sol.poly + 1] = vertex
+        return vertex
     end
 
     local function resolve(sol, x, y, pv, pd)
@@ -211,8 +209,6 @@ function Collision.go(map)
         sol.walked[y][x][pd] = true
 
         pv.d                 = pd
-        pv.x                 = pv.x + pd.x *tw
-        pv.y                 = pv.y + pd.y *th
 
         local sameHoles, notWalked = {}, {}
         
@@ -248,7 +244,8 @@ function Collision.go(map)
 
         if args then 
             local nx, ny, d = unpack(args)
-            local vertex = d == pd and pv or insertVertex(sol, pv, d, nx, ny)
+            local vertex    = d == pd and 
+                incVertex(pv, d) or newVertex(sol, pv, d, nx, ny)
             return resolve(sol, nx, ny, vertex, d) 
         end
 
@@ -257,7 +254,7 @@ function Collision.go(map)
     local function drawMap(poly)
         if poly then
             for _,v in pairs(poly) do 
-                local x, y = math.floor(v.x / 16), math.floor(v.y / 16)+1
+                local x, y = v.i, v.j--math.floor(v.x / 16), math.floor(v.y / 16)+1
                 if wall[y] then
                     if wall[y][x] then wall[y][x] = '_' end
                 end
@@ -280,7 +277,7 @@ function Collision.go(map)
     local function adaptPolygon(input)
         local output = {}
         for i,v in ipairs(input) do
-            local x, y = v.x, v.y
+            local x, y = v.i, v.j
 
             -- if     v.d == d_right then
             --     x, y = v.x * tw      , (v.y - 1) * th
