@@ -76,6 +76,52 @@ function Collision.makeInitialSolution(x, y, walked)
     return sol
 end
 
+function Collision.adaptPolygon(input)
+    local output = {}
+    for i,v in ipairs(input) do
+        local x, y = v.i - 1, v.j - 1
+
+        -- if     v.d == d_right then
+        --     x, y = v.x * tw      , (v.y - 1) * th
+        -- elseif v.d == d_left  then
+        --     x, y = (v.x - 1) * tw, v.y * th
+        -- elseif v.d == d_up    then
+        --     x, y = (v.x - 1) * tw, (v.y - 1) * th
+        -- else
+        --     x, y = v.x * tw      , v.y * th
+        -- end
+
+        output[i*2 - 1] = x * 16
+        output[i*2    ] = y * 16
+
+        -- output[i] = {x,y}
+    end
+    return output
+end
+
+function Collision.drawMap(poly, wall)
+    if poly then
+        for _,v in pairs(poly) do 
+            local x, y = v.i, v.j--math.floor(v.x / 16), math.floor(v.y / 16)+1
+            if wall[y] then
+                if wall[y][x] then wall[y][x] = '_' end
+            end
+        end
+    end
+
+    local s = "\n"
+    for y,v in pairs(wall) do
+        s = s .. y .. "\t"
+        for x,w in pairs(v) do
+            if x % 5 == 1 then s = s .. '.' end
+            w = type(w) ~= 'boolean' and w or w and 'x' or ' '
+            s = s .. w
+        end
+        s = s .. "\n"
+    end
+    return s
+end
+
 function Collision.go(map)
     local tw, th     = map.tileWidth, map.tileHeight
 
@@ -180,19 +226,21 @@ function Collision.go(map)
     local function newVertex(sol, pv, nd, nx, ny)
         --changeBorder(pv, sol.lastborder)
 
-        local testx = pv.x + (pv.d.x * (tw - 1)) -1
-        dump(testx, pv.x, pv.d.x, math.floor(testx / tw), nx, math.floor(testx / tw) == math.floor((pv.x-1) / tw))
-        if pv.d.x ~= 0 and math.floor(testx / tw) == math.floor((pv.x-1) / tw) then
-            dump(pv.x)
-            pv.x = pv.x + pv.d.x * tw
-        end
+        -- local testx = pv.x + (pv.d.x * (tw - 1)) -1
+        -- dump(testx, pv.x, pv.d.x, math.floor(testx / tw), nx, math.floor(testx / tw) == math.floor((pv.x-1) / tw))
+        -- if pv.d.x ~= 0 and math.floor(testx / tw) == math.floor((pv.x-1) / tw) then
+        --     dump(pv.x)
+        --     pv.x = pv.x + pv.d.x * tw
+        -- end
 
-        local testy = pv.y + (pv.d.y * (th - 1)) -1
-        if pv.d.y ~= 0 and math.floor(testy / th) == math.floor((pv.y-1) / th) then                
-            pv.y = pv.y + pv.d.y * th
-        end 
+        -- local testy = pv.y + (pv.d.y * (th - 1)) -1
+        -- if pv.d.y ~= 0 and math.floor(testy / th) == math.floor((pv.y-1) / th) then                
+        --     pv.y = pv.y + pv.d.y * th
+        -- end
 
-        local vertex   = table.copy(pv)
+        pv.d = nd 
+
+        local vertex   = {x=pv.x, y=pv.y, i=pv.i, j=pv.j}
 
         sol.poly[#sol.poly + 1] = vertex
         return vertex
@@ -200,15 +248,13 @@ function Collision.go(map)
 
     local function resolve(sol, x, y, pv, pd)
 
-        if table.count(sol.poly) == 10 then return end
-
         local args
 
         sol.walked[y]        = sol.walked[y]    or {}
         sol.walked[y][x]     = sol.walked[y][x] or {}
         sol.walked[y][x][pd] = true
 
-        pv.d                 = pd
+        --pv.d                 = pd
 
         local sameHoles, notWalked = {}, {}
         
@@ -220,6 +266,8 @@ function Collision.go(map)
 
             if isWall(nx, ny) and not sol.walked[ny][nx][d] then
                 local pack = {nx, ny, d}
+
+                print(' ',nx,ny)
 
                 if hasSameHoles(nx, ny, x, y) 
                     then sameHoles[pack] = true end
@@ -241,9 +289,11 @@ function Collision.go(map)
                 end
             end
         end
+        print ''
 
         if args then 
             local nx, ny, d = unpack(args)
+            print('-',nx,ny)
             local vertex    = d == pd and 
                 incVertex(pv, d) or newVertex(sol, pv, d, nx, ny)
             return resolve(sol, nx, ny, vertex, d) 
@@ -251,64 +301,23 @@ function Collision.go(map)
 
     end
 
-    local function drawMap(poly)
-        if poly then
-            for _,v in pairs(poly) do 
-                local x, y = v.i, v.j--math.floor(v.x / 16), math.floor(v.y / 16)+1
-                if wall[y] then
-                    if wall[y][x] then wall[y][x] = '_' end
-                end
-            end
-        end
-
-        local s = "\n"
-        for y,v in pairs(wall) do
-            s = s .. y .. "\t"
-            for x,w in pairs(v) do
-                if x % 5 == 1 then s = s .. '.' end
-                w = type(w) ~= 'boolean' and w or w and 'x' or ' '
-                s = s .. w
-            end
-            s = s .. "\n"
-        end
-        return s
-    end
-
-    local function adaptPolygon(input)
-        local output = {}
-        for i,v in ipairs(input) do
-            local x, y = v.i, v.j
-
-            -- if     v.d == d_right then
-            --     x, y = v.x * tw      , (v.y - 1) * th
-            -- elseif v.d == d_left  then
-            --     x, y = (v.x - 1) * tw, v.y * th
-            -- elseif v.d == d_up    then
-            --     x, y = (v.x - 1) * tw, (v.y - 1) * th
-            -- else
-            --     x, y = v.x * tw      , v.y * th
-            -- end
-
-            output[i*2 - 1] = x
-            output[i*2    ] = y
-
-            -- output[i] = {x,y}
-        end
-        return output
-    end
-
     local walked = {}
-    for y, row in pairs(wall) do
-        for x, isWall in pairs(row) do
-            if isWall and notWalkedBefore(walked, x, y) then
-                local sol = Collision.makeInitialSolution(x, y, walked)
-                local v   = sol.poly[2]
-                resolve(sol, v.x, v.y, v, v.d)
-                local pol = adaptPolygon(sol.poly)
-                return sol, pol, function() return drawMap(sol.poly) end
-            end
-        end
-    end
+    -- for y, row in pairs(wall) do
+    --     for x, isWall in pairs(row) do
+    --         if isWall and notWalkedBefore(walked, x, y) then
+    --             local sol = Collision.makeInitialSolution(x, y, walked)
+    --             local v   = sol.poly[2]
+    --             resolve(sol, v.x, v.y, v, v.d)
+    --             local pol = adaptPolygon(sol.poly)
+    --             return sol, pol, function() return drawMap(sol.poly) end
+    --         end
+    --     end
+    -- end
+    local sol = Collision.makeInitialSolution(1, 1, walked)
+    local v   = sol.poly[2]
+    resolve(sol, v.x, v.y, v, v.d)
+    local pol = Collision.adaptPolygon(sol.poly)
+    return sol, pol, function() return Collision.drawMap(sol.poly, wall) end
 end
 
 return Collision

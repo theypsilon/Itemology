@@ -9,28 +9,24 @@ function scene.load()
     local player    = Player(level, spawn.x, spawn.y)
     local cameras   = {}
 
-    local col = require 'map.Collision'
-    local sol, pol, drawMap = col.go(level.map)
+    local trace = require 'map.MarchingSquares'
+    local poly  = trace.makeFixtures(level.map)
 
-    dump(drawMap())
-    local e = {}
-    for k,v in pairs(pol) do
-        e[k] = v
-    end
-    dump(e)
-    dump(table.count(pol))
+    -- if poly ~= nil then
+    --     local scriptDeck = MOAIScriptDeck.new ()
+    --     scriptDeck:setRect (0, 0, 2000, 2000)
+    --     scriptDeck:setDrawCallback ( function()
+    --         MOAIDraw.drawLine(unpack(poly))
+    --     end )
 
-    local scriptDeck = MOAIScriptDeck.new ()
-    scriptDeck:setRect (0, 0, 2000, 2000)
-    scriptDeck:setDrawCallback ( function()
-        MOAIDraw.drawLine(unpack(pol))
-    end )
+    --     local prop = MOAIProp2D.new ()
+    --     prop:setDeck ( scriptDeck )
+    --     prop:setLoc (0, 0)
+    --     prop:setPriority(1)
+    --     layer.main:insertProp ( prop )
+    -- end
 
-    local prop = MOAIProp2D.new ()
-    prop:setDeck ( scriptDeck )
-    prop:setLoc (0, 0)
-    prop:setPriority(1)
-    layer.main:insertProp ( prop )
+--    os.exit()
 
     
 
