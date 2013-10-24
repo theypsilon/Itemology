@@ -10,7 +10,7 @@ function scene.load()
     local cameras   = {}
 
     local trace = require 'map.MarchingSquares'
-    local poly  = trace.makeFixtures(level.map)
+    local poly  = trace.makeFixturesPol(level.map)
 
     -- if poly ~= nil then
     --     local scriptDeck = MOAIScriptDeck.new ()

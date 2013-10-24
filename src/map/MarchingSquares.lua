@@ -96,18 +96,33 @@ function March.getWall(map)
             map:getTilesetAsAtlass(1)))
 end
 
-function March.makeFixtures(map)
+function March.makeFixturesPol(map)
 
     local wall = March.getWall(map)
 
-    local fixtures = {}
+    local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
+    floor:setTransform(0, 0)
 
-    for x,row in pairs(wall) do for y,solid in pairs(row) do
-        local fix = {}
-        fixtures[#fixtures + 1] = fix
+    for j,row in pairs(wall) do for i,solid in pairs(row) do
+        if solid then
+            local x, y = (i-1)*16, (j-1)*16
+            local fix = {x, y, x + 16, y, x + 16, y + 16, x, y + 16}
+            floor:addEdges(fix)
+        end
     end end
+end
 
-    return fixtures
+function March.makeFixturesEdge(map)
+
+    local poly = March.go(map)
+
+    local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
+    floor:setTransform(0, 0)
+
+    for i = 1, #poly, 4 do
+        local x1, y1, x2, y2 = poly[i], poly[i+1], poly[i+2], poly[i+3]
+        floor:addEdges(x1,y1,x2,y2)
+    end
 end
 
 return March
