@@ -2,16 +2,17 @@ return {
     id = 'Mob',
     option = 'dynamic',
     fixtures = {
-        {  
-            option = 'rect',
-            args = {-8, 8, 8, -8},
-            density = 0.01,
-            restitution = 0,
-            friction = 2
-        },{
-            option = 'rect',
-            args = {-8, 8, 8, -8},
-            sensor = true
+        ['area']={
+                option = 'rect',
+                args = {-6, 8, 6, -6},
+                density = 0.01,
+                restitution = 0,
+                friction = 2
+        },
+        ['sensor']={
+                option = 'circle',
+                args = {0, 8, 2},
+                sensor = true
         }
     },
     x = 100,

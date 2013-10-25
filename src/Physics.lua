@@ -3,7 +3,7 @@ class.Physics()
 function Physics:_init()
     local world = MOAIBox2DWorld.new()
 
-    --world:setGravity( 0, 10 )
+    world:setGravity( 0, 30 )
     world:setUnitsToMeters( .10 )
     world:setIterations( 10, 10 )
     world:setAutoClearForces(true)
@@ -15,14 +15,16 @@ end
 function Physics:update()
 end
 
-local dict = {}
+local dict, bodyTable = {}, MOAIBox2DBody.getInterfaceTable()
+
 dict['static'   ] = MOAIBox2DBody.STATIC
 dict['dynamic'  ] = MOAIBox2DBody.DYNAMIC
 dict['kinematic'] = MOAIBox2DBody.KINETIC
 
-local   bodyTable = MOAIBox2DBody.getInterfaceTable()
-     dict['rect'] = bodyTable.addRect
-        bodyTable = nil
+dict['rect'     ] = bodyTable.addRect
+dict['circle'   ] = bodyTable.addCircle
+
+bodyTable = nil
 
 function Physics:addBody(def)
 
@@ -43,16 +45,15 @@ function Physics:addBody(def)
     if def.parent        then body.parent = def.parent                        end
 
     local outFixtures = {}
-    dict['rect'] = body.addRect
 
-    for _, value in ipairs(def.fixtures) do
+    for k, value in pairs(def.fixtures) do
         local fix = dict[value.option](body,  unpack(value.args))
         if value.density     then fix:setDensity    (value.density    ) end
         if value.restitution then fix:setRestitution(value.restitution) end
         if value.friction    then fix:setFriction   (value.friction   ) end
         if value.sensor      then fix:setSensor     (value.sensor     ) end
 
-        outFixtures[#outFixtures + 1] = fix
+        outFixtures[k] = fix
     end
 
     return body, outFixtures

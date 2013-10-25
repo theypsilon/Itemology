@@ -40,8 +40,6 @@ function March.trace(startX, startY, isWall)
         elseif state == 13 then nextStep = up
         elseif state == 14 then nextStep = left end
 
-        dump(state)
-
         return nextStep
     end
 
@@ -51,6 +49,7 @@ function March.trace(startX, startY, isWall)
 
     repeat
         local nextStep = step(x, y, prevStep)
+
         --if x > 0 and x <= mapw and y > 0 and y <= maph then
         if nextStep ~= prevStep then
             sol[#sol + 1] = {i=x, j=y}
@@ -70,7 +69,30 @@ function March.trace(startX, startY, isWall)
     return sol
 end
 
-function March.go(map)
+local function check(x,y,isWall,checked)
+    checked = checked or {}
+
+    local function checkOne(x,y)
+        checked[x] = checked[x] or {}
+        checked[x][y] = true
+    end
+
+    local function checkRecursive(x,y)
+        if isWall(x,y) and not (checked[x] and checked[x][y]) then
+            checkOne(x,y)
+            checkRecursive(x-1,y  )
+            checkRecursive(x  ,y-1)
+            checkRecursive(x+1,y  )
+            checkRecursive(x  ,y+1)
+        end
+    end
+
+    checkRecursive(x,y)
+
+    return checked
+end
+
+function March.traceMap(map)
     local wall = March.getWall(map)
     local mapw, maph = table.count(wall[1]), table.count(wall)
 
@@ -78,13 +100,17 @@ function March.go(map)
         return x > 0 and y > 0 and x <= mapw and y <= maph and wall[y][x]
     end
 
-    for x,row in pairs(wall) do for y,_ in pairs(row) do
-        if isWall(x, y) then
-            return Collision.adaptPolygon(March.trace(x, y, isWall))
+    local checked = {}
+    local structure = {}
+    for y,row in pairs(wall) do for x,_ in pairs(row) do
+        if not (checked[x] and checked[x][y]) and isWall(x,y) then
+            check(x,y,isWall,checked)
+            local poly = Collision.adaptPolygon(March.trace(x, y, isWall))
+            structure[#structure + 1] = poly
         end
     end end
 
-    return nil
+    return structure
 end
 
 function March.getWall(map)
@@ -106,23 +132,21 @@ function March.makeFixturesPol(map)
     for j,row in pairs(wall) do for i,solid in pairs(row) do
         if solid then
             local x, y = (i-1)*16, (j-1)*16
-            local fix = {x, y, x + 16, y, x + 16, y + 16, x, y + 16}
-            floor:addEdges(fix)
+            local fix = floor:addEdges{x, y, x + 16, y, x + 16, y + 16, x, y + 16}
         end
     end end
 end
 
-function March.makeFixturesEdge(map)
-
-    local poly = March.go(map)
-
-    local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
-    floor:setTransform(0, 0)
-
-    for i = 1, #poly, 4 do
-        local x1, y1, x2, y2 = poly[i], poly[i+1], poly[i+2], poly[i+3]
-        floor:addEdges(x1,y1,x2,y2)
+function March.makeChainFixtures(structure)
+    local fixtures = {}
+    for _,poly in pairs(structure) do
+        local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
+        floor:setTransform(0, 0)
+        floor:addChain(poly, true)
+        fixtures[#fixtures + 1] = floor
     end
+
+    return fixtures
 end
 
 return March

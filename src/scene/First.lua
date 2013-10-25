@@ -9,8 +9,8 @@ function scene.load()
     local player    = Player(level, spawn.x, spawn.y)
     local cameras   = {}
 
-    local trace = require 'map.MarchingSquares'
-    local poly  = trace.makeFixturesPol(level.map)
+    local march = require 'map.MarchingSquares'
+    local fixtures = march.makeChainFixtures(march.traceMap(level.map, true))
 
     -- if poly ~= nil then
     --     local scriptDeck = MOAIScriptDeck.new ()
