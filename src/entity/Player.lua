@@ -91,16 +91,20 @@ end
 
 function Player:move(dt)
 
-    local dx = -1*self.dir.left + self.dir.right
+    local dx     = -1*self.dir.left + self.dir.right
     local vx, vy = self.body:getLinearVelocity()
+
     local def = self.moveDef
+    local force, maxVel, slowdown = def.ogHorForce, def.maxVxWalk, def.slowWalk
 
     dt = dt * def.timeFactor
-    local force  = def.ogHorForce
-    local maxVel = def.maxVxWalk
+    local absVx = math.abs(vx)
+
+    -- if fast, slowdown is weaker
+    if absVx > maxVel then slowdown = def.slowRun end
 
     -- if running, maxspeed is different
-    if self.keyRun then maxVel = def.maxVxRun end
+    if self.keyRun or def.alwaysRun then maxVel = def.maxVxRun end
 
     -- which forces apply on character
     if self:onGround() and self:canJump() then
@@ -120,12 +124,12 @@ function Player:move(dt)
 
     -- horizontal walk/run
     if dx ~= 0 then
-        self.body:applyForce( dt*dx*force*(maxVel-math.abs(vx)), 0)
+        self.body:applyForce( dt*dx*force*(maxVel-absVx), 0)
     end
 
     -- fake friction in horizontal axis
     if vx ~= 0 and ((dx == 0 and self:onGround()) or dx*vx < 0) then
-        self.body:applyForce(-dt*vx*force*def.slowdown, 0)
+        self.body:applyForce(-dt*vx*force*slowdown, 0)
     end
 
     -- falling down
