@@ -9,8 +9,8 @@ function scene.load()
     local player    = Player(level, spawn.x, spawn.y)
     local cameras   = {}
 
-    local march = require 'map.MarchingSquares'
-    local fixtures = march.makeChainFixtures(march.traceMap(level.map, true))
+    local util = require 'map.Util'
+    local fixtures = util.makeChainFixtures(util.getSolidStructure(level.map, true))
 
     -- if poly ~= nil then
     --     local scriptDeck = MOAIScriptDeck.new ()
@@ -58,6 +58,7 @@ function scene.update(dt)
     for camera,_ in pairs(scene.cameras) do
         camera._level:tick(dt)
     end
+    data._update()
     physics:update()
 end
 

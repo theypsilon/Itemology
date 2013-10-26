@@ -2,14 +2,11 @@ class.Physics()
 
 function Physics:_init()
     local world = MOAIBox2DWorld.new()
-
-    world:setGravity( 0, 30 )
-    world:setUnitsToMeters( .10 )
-    world:setIterations( 10, 10 )
-    world:setAutoClearForces(true)
-    world:start()
-
     self.world = world
+end
+
+function Physics:start()
+    self.world:start(data.world.First)
 end
 
 function Physics:update()
@@ -60,3 +57,5 @@ function Physics:addBody(def)
 end
 
 global{ physics = Physics() }
+
+physics:start()

@@ -21,15 +21,14 @@ local function reloadFile(file, alwaysload)
 
 	if loaded then
 		local ospath    = srcpath .. file:gsub('%.' , '/') .. '.lua'
-		local time      = path and   path. getmtime(ospath) or nil
+		local time      = lfs.attributes(ospath, 'modification') or nil
 		local last_time = time and ospath_last_time[ospath] or nil
 
-		if alwaysload or not last_time or last_time < time then
+		if alwaysload or (last_time and last_time < time) then
 			ospath_last_time[ospath] = time
 			package.loaded  [file]   = nil
-			require(file)
-			return true
-		end
+			return require(file)
+		elseif not last_time then ospath_last_time[ospath] = time end
 	end
 	return false
 end
@@ -59,7 +58,7 @@ local function reloadTasks()
 	end
 end
 
-reload = reload or {}
+local reload = {}
 reload.instance = updateInstance
 reload.file     = reloadFile
 reload.tasks    = reload.tasks or {}

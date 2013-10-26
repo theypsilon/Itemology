@@ -32,11 +32,13 @@ end
 function Map:_init(path)
 	local path, format  = validate(path)
 
-	local data    = loader[format](path)
+	resource.getCallable(path, function()
+		local data    = loader[format](path)
 
-	data.path = resource.getDirectoryPath(path)
+		data.path = resource.getDirectoryPath(path)
 
-	self:_setData(data)
+		self:_setData(data)
+	end)
 end
 
 function Map:_setData(data)

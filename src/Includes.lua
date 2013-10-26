@@ -20,14 +20,15 @@ require 'penlight'
 
 require 'lib.Strict'
 require 'lib.Extensions'
-global{class = require 'lib.Class'}
--- require 'lib.Reload'
+global{class  = require 'lib.Class' }
+global{reload = require 'lib.Reload'}
 
 -- application
 
+require 'Data'
 require 'Alias'
 require 'Flow'
-require 'Resource'
+require 'resource.Resource'
 require 'Graphics'
 require 'Input'
 require 'Layer'

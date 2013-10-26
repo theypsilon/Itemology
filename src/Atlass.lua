@@ -76,3 +76,18 @@ end
 function Atlass:get(name)
 	return self.graphics[name]
 end
+
+function Atlass:getOpaqueGraphics()
+    local tiles = {}
+    for k,v in pairs(self.graphics) do
+        v.wall = false
+        for x = v.x, v.x + v.w - 1 do for y = v.y, v.y + v.h - 1 do
+            local r, g, b, alpha  = self.tex:getRGBA(x, y)
+            if alpha == 1 then
+                tiles[k] = true
+                break
+            end
+        end end
+    end
+    return tiles
+end
