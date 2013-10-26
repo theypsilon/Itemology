@@ -4,14 +4,19 @@ function input.init()
 	input.status = {}
 	input.status.keyboardBinding   = {}
 	input.status.keyboardCallbacks = {[true] = {}, [false] = {}}
+	input.status.toBind = {}
 
-	input.bindActionToKeyCode('ESC'  , 27)
 	input.bindAction('ESC', function() flow.exit() end)
 end
 
 function input.bindAction( action, callback1, callback2 )
 	local keyCode   = input.status.keyboardBinding[action]
 	local callbacks = input.status.keyboardCallbacks
+
+	if keyCode == nil then 
+		input.status.toBind[action] = {callback1, callback2}
+		return
+	end
 
 	assert(keyCode   ~= nil, 'keyCode   ~= nil')
 	assert(callback2 == nil or utils.is_callable(callback2),
@@ -36,6 +41,8 @@ function input.bindActionToKeyCode( action, keyCode )
 		callbacks[false][oldKeyCode] = nil
 	end
 	input.status.keyboardBinding[action] = keyCode
+	local toBind =    input.status.toBind[action]
+	if    toBind then input.bindAction(action, unpack(toBind)) end
 end
 
 local function onKeyboardEvent ( keyCode, down )
@@ -61,10 +68,6 @@ MOAIInputMgr.device.mouseRight :setCallback ( function() end )
 
 input.init()
 
-input.bindActionToKeyCode('left' , 97 )
-input.bindActionToKeyCode('right', 100)
-input.bindActionToKeyCode('up'   , 119)
-input.bindActionToKeyCode('down' , 115)
-
-input.bindActionToKeyCode('b1'   , 13 )
-input.bindActionToKeyCode('b2'   , 32 )
+for k,v in pairs(data.Keys) do
+	input.bindActionToKeyCode(k, v)
+end
