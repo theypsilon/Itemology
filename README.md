@@ -1,4 +1,4 @@
 Itemology
 =========
 
-Plattform/Puzzle 2D Game created with MOAI and Rapanui
+Plattform/Puzzle 2D Game created with Lua and Moai SDK.
