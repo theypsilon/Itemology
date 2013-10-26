@@ -22,6 +22,8 @@ function Player:_init(level, x, y)
     self.pos = Position(self.body)
     self.pos:set(x, y)
 
+    self.jumping = 0
+
     local _
     _, self.limit_map_y = self.level:getBorder()
 
@@ -39,7 +41,7 @@ function Player:_setInput()
     -- jump
     input.bindAction('b2', 
         function() self.keyJump = true end, 
-        function() self.keyJump = false; self.jumping = false end)
+        function() self.keyJump = false; self.jumping = 0 end)
 
     -- run
     input.bindAction('b1', function() self.keyRun = true end, function() self.keyRun = false end)
@@ -101,10 +103,18 @@ function Player:move(dt)
     if self.keyRun then maxVel = def.maxVxRun end
 
     -- which forces apply on character
-    if self:onGround() and self:canJump() then 
+    if self:onGround() and self:canJump() then
+        self.jumping = 1
         self:doJump(dt)
     else
-        if self.keyJump then self.jumping = true    end
+        if self.keyJump then
+            local jump = def.jumpImp
+            if self.jumping == 0 then self.jumping = #jump
+            elseif self.jumping > 0 and self.jumping < #jump then
+                self.jumping = self.jumping + 1
+                self:doJump(dt)
+            end
+        end
         if dx ~= 0      then force = def.oaHorForce end
     end
 
@@ -130,12 +140,11 @@ function Player:onGround()
 end
 
 function Player:canJump()
-    return self.keyJump and not self.jumping
+    return self.keyJump and self.jumping == 0
 end
 
 function Player:doJump(dt)
-    self.jumping = true
-    self.body:applyLinearImpulse(0, -self.moveDef.jumpImp)
+    self.body:applyLinearImpulse(0, -self.moveDef.jumpImp[self.jumping])
 end
 
 function Player:draw(...)
