@@ -24,7 +24,7 @@ function flow.load()
 
     resource.IMAGE_PATH = 'res/img/'
 
-    global{sprites = require 'Sprites'}
+    global{sprites = Atlass(data.atlass.Sprites)}
 	scenes.run('First')
 end
 

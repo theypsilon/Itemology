@@ -8,7 +8,8 @@ class.Player(super)
 function Player:_init(level, x, y)
 	super._init(self, level, x, y)
 
-    self.prop = sprites:get('stand'):newProp()
+    self.animation = Animation(data.animation.Player)
+    self.prop      = self.animation.prop
 
     local definition = data.fixtures.Player
     definition['prop'  ] = self.prop
@@ -73,9 +74,13 @@ function Player:_setListeners()
     self.fixtures['sensor2']:setCollisionHandler(floorSensor, MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END)
 end
 
+local abs = math.abs
+
 function Player:tick(dt)
 
-    self:move(dt)
+    local vx, vy  = self.body:getLinearVelocity()
+
+    self:move(dt, vx, vy)
 
 	self.x, self.y = self.body:getPosition()
 
@@ -85,70 +90,87 @@ function Player:tick(dt)
         self.body:setLinearVelocity(0, 0)
     end
 
-	--reload.instance(self)
+    self:animate(vx, vy)
+
 	super.tick(self)
 end
 
-function Player:move(dt)
+function Player:move(dt, vx, vy)
+    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
 
     local dx     = -1*self.dir.left + self.dir.right
-    local vx, vy = self.body:getLinearVelocity()
 
     local def = self.moveDef
     local force, maxVel, slowdown = def.ogHorForce, def.maxVxWalk, def.slowWalk
 
     dt = dt * def.timeFactor
-    local absVx = math.abs(vx)
 
     -- if fast, slowdown is weaker
-    if absVx > maxVel then slowdown = def.slowRun end
+    if abs(vx) > maxVel then slowdown = def.slowRun end
 
     -- if running, maxspeed is different
     if self.keyRun or def.alwaysRun then maxVel = def.maxVxRun end
 
+    self:moveJump(dx, def, dt)
+
     -- which forces apply on character
-    if self:onGround() and self:canJump() then
-        self.jumping = 1
-        self:doJump(dt)
-    else
-        if self.keyJump then
-            local jump = def.jumpImp
-            if self.jumping == 0 then self.jumping = #jump
-            elseif self.jumping > 0 and self.jumping < #jump then
-                self.jumping = self.jumping + 1
-                self:doJump(dt)
-            end
-        end
-        if dx ~= 0      then force = def.oaHorForce end
-    end
+    if not self:onGround() and dx ~= 0 then force = def.oaHorForce end
 
     -- horizontal walk/run
     if dx ~= 0 then
-        self.body:applyForce( dt*dx*force*(maxVel-absVx), 0)
+        self.body:applyForce( dt*dx*force*(maxVel-abs(vx)), 0)
     end
 
     -- fake friction in horizontal axis
-    if vx ~= 0 and ((dx == 0 and self:onGround()) or dx*vx < 0) then
+    if vx ~= 0 and (dx*vx < 0 or (dx == 0 and self:onGround())) then
         self.body:applyForce(-dt*vx*force*slowdown, 0)
     end
 
     -- falling down
     if def.addGravity + vy > def.maxVyFall 
-    then self.body:applyLinearImpulse(0,def.maxVyFall - vy - def.addGravity)
-    else self.body:applyLinearImpulse(0,def.addGravity) end
+    then self.body:applyLinearImpulse(0, def.maxVyFall - vy - def.addGravity)
+    else self.body:applyLinearImpulse(0, def.addGravity) end
     
+end
+
+function Player:moveJump(dx, def, dt)
+    if self:onGround() and self.keyJump and self.jumping == 0 then
+        self.jumping = 1
+        self:doJump(dt)
+    elseif self.keyJump then
+        local jump = def.jumpImp
+        if     self.jumping == 0 then self.jumping = #jump
+        elseif self.jumping  > 0 and  self.jumping < #jump then
+            self.jumping = self.jumping + 1
+            self:doJump(dt)
+        end
+    end
 end
 
 function Player:onGround()
     return self.groundCount ~= 0
 end
 
-function Player:canJump()
-    return self.keyJump and self.jumping == 0
-end
-
 function Player:doJump(dt)
     self.body:applyLinearImpulse(0, -self.moveDef.jumpImp[self.jumping])
+end
+
+function Player:animate(vx, vy)
+    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
+    local def = self.moveDef
+
+    if abs(vx) > 5 and abs(vy) < 1  then self.animation:setAnimation(abs(vx)*0.9 <= def.maxVxWalk and 'walk' or 'run')
+                                    else self.animation:setAnimation('stand') end
+
+    local dx = -1*self.dir.left + self.dir.right
+    if abs(vy) > 1 then
+        self.animation:setAnimation(abs(vx)*0.9 <= def.maxVxWalk and 'jump' or (vy < 0) and 'fly' or 'fall')
+    elseif dx*vx < 0 then
+        self.animation:setAnimation('skid')
+    end
+
+    self.animation:setMirror(vx < 0)
+    self.animation:next()
 end
 
 function Player:draw(...)

@@ -35,42 +35,48 @@ local function draw_prop(self, x, y)
 	return prop
 end
 
-function Atlass:_init(path, frames, layer, cpu)
-	validate(path)
+function Atlass:_init(definition, layer, cpu)
+    return resource.getCallable(definition, function()
 
-	local total = 0
-	for name,region in pairs(frames) do
-		total    = total + 1
-		region.i = total
-	end
+        local path, frames = definition.image, definition.frames
+        validate(path)
 
-	local tex = resource.getImage(path, cpu)
+        local total = 0
+        for name,region in pairs(frames) do
+            total    = total + 1
+            region.i = total
+        end
 
-    local width, height = tex:getSize()
+        local tex = resource.getImage(path, cpu or definition.cpu)
 
-    local deck = MOAIGfxQuadDeck2D.new ()
-    deck:setTexture(tex)
-    deck:reserve(total)
+        local width, height = tex:getSize()
 
-    for _,region in pairs(frames) do
-    	local uv = {}
-    	uv.u0 = region.x / width
-    	uv.v0 = region.y / height
-    	uv.u1 = (region.x + region.w) / width
-    	uv.v1 = (region.y + region.h) / height
-    	deck:setUVRect(region.i, uv.u0, uv.v0,    uv.u1,    uv.v1)
-    	deck:setRect  (region.i,     0,     0, region.w, region.h)
+        local deck = MOAIGfxQuadDeck2D.new ()
+        deck:setTexture(tex)
+        deck:reserve(total)
 
-    	region.atlass  = self
-    	region.newProp =  new_prop
-    	region.draw    = draw_prop
-    end
+        for _,region in pairs(frames) do
+            local uv = {}
+            uv.u0 = region.x / width
+            uv.v0 = region.y / height
+            uv.u1 = (region.x + region.w) / width
+            uv.v1 = (region.y + region.h) / height
+            deck:setUVRect(region.i, uv.u0, uv.v0,    uv.u1,    uv.v1)
+            deck:setRect  (region.i,     0,     0, region.w, region.h)
 
-    self.tex      = tex
-    self.layer    = layer
-    self.deck     = deck
-	self.graphics = frames
-	self.total    = total
+            region.atlass  = self
+            region.newProp =  new_prop
+            region.draw    = draw_prop
+        end
+
+        self.tex      = tex
+        self.layer    = layer or _G.layer.main
+        self.deck     = deck
+        self.graphics = frames
+        self.total    = total
+
+        return self
+    end)
 end
 
 function Atlass:get(name)

@@ -30,14 +30,16 @@ local function validate(path)
 end
 
 function Map:_init(path)
-	local path, format  = validate(path)
+	return resource.getCallable(path, function()
+		local path, format  = validate(path)
 
-	resource.getCallable(path, function()
 		local data    = loader[format](path)
 
 		data.path = resource.getDirectoryPath(path)
 
 		self:_setData(data)
+
+		return self
 	end)
 end
 
@@ -113,8 +115,8 @@ function Map:getTilesetAsAtlass(index)
 	        n        = n + 1
 	    end end
 
-	    atlass = Atlass('../maps/' .. ts.image, 
-	    	            frame, layer.main, MOAIImage)
+	    atlass = Atlass({image='../maps/' .. ts.image, frames=frame}
+	    	            , layer.main, MOAIImage)
 
 	    self.tileatlass[index] = atlass
 	else

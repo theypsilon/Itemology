@@ -25,6 +25,7 @@ global{reload = require 'lib.Reload'}
 
 -- application
 
+require 'Engine'
 require 'Data'
 require 'Alias'
 require 'Flow'
@@ -37,3 +38,4 @@ require 'Physics'
 require 'Level'
 require 'Camera'
 require 'Scenes'
+require 'Animation'

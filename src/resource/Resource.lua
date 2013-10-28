@@ -3,22 +3,14 @@ resource = {}
 resource.IMAGE_PATH = nil
 resource.DIRECTORY_SEPARATOR = '/'
 
-local function validate(path, type)
-    if MOAIFileSystem.checkFileExists(path) then return end
-    if not type then type = 'Unknown resource' end
-    error(type .. ' not found in following path: ' .. path)
-end
-
 local loader = require 'resource.Loader'
 local store  = setmetatable({}, {__mode = 'k'})
-function resource.getResource(path, type, ...)
-    validate(path, type)
-
-    if not store[path] then 
-        store[path] = loader[type](path, ...) 
+function resource.getResource(key, type, ...)
+    if not store[key] then 
+        store[key] = loader[type](key, ...) 
     end
     
-    return store[path]
+    return store[key]
 end
 
 function resource.getImage(path, cpu)
@@ -29,8 +21,12 @@ function resource.getImage(path, cpu)
     return resource.getResource(path, 'Image', cpu)
 end
 
-function resource.getCallable(path, func)
-    return resource.getResource(path, 'Callable', func)
+function resource.getAtlass(definition, cpu)
+    return resource.getResource(definition, 'Callable', Atlass, definition, layer.main, cpu)
+end
+
+function resource.getCallable(key, func, ...)
+    return resource.getResource(key, 'Callable', func, ...)
 end
 
 function resource.getDirectoryPath(path)
