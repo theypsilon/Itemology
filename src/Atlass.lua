@@ -38,7 +38,7 @@ end
 function Atlass:_init(definition, layer, cpu)
     return resource.getCallable(definition, function()
 
-        local path, frames = definition.image, definition.frames
+        local path, frames = definition.image, table.deep_copy(definition.frames)
         validate(path)
 
         local total = 0

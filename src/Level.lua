@@ -67,7 +67,7 @@ function Level:removeEntity (entity, xo, yo)
     self:getEntities(xo, yo)[entity] = nil
 end
 
-function Level:tick(dt)
+function Level:tick(dt, xo, yo, x1, y1)
     for e,_ in pairs(self.entities) do
         local ixo, iyo = self:toXYO(e.x, e.y)
         e:tick(dt)

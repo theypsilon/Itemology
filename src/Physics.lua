@@ -5,8 +5,12 @@ function Physics:_init()
     self.world = world
 end
 
-function Physics:start()
-    self.world:start(data.world.First)
+function Physics:start(def)
+    physics.world:setGravity  (unpack(def.gravity))
+    physics.world:setUnitsToMeters   (def.unitsToMeters)
+    physics.world:setIterations      (def.iterations)
+    physics.world:setAutoClearForces (def.autoClearForces)
+    self.world:start()
 end
 
 function Physics:update()
@@ -23,7 +27,7 @@ dict['circle'   ] = bodyTable.addCircle
 
 bodyTable = nil
 
-function Physics:addBody(def)
+function Physics:addBody(def, prop, parent)
 
     local body = self.world:addBody (
         dict[def.option],
@@ -31,7 +35,7 @@ function Physics:addBody(def)
         def.y or nil
     )
 
-    if def.prop          then def.prop:setAttrLink ( 
+    if prop then prop:setAttrLink ( 
         MOAIProp2D.INHERIT_TRANSFORM, 
         body, 
         MOAIProp2D.TRANSFORM_TRAIT 
@@ -39,7 +43,7 @@ function Physics:addBody(def)
 
     if def.mass          then body:setMassData(def.mass) body:resetMassData() end
     if def.fixedRotation then body:setFixedRotation(def.fixedRotation)        end
-    if def.parent        then body.parent = def.parent                        end
+    if parent            then body.parent = parent                            end
 
     local outFixtures = {}
 
@@ -58,4 +62,6 @@ end
 
 global{ physics = Physics() }
 
-physics:start()
+physics:start(data.world.First)
+
+callbacks['physics'] = physics.update

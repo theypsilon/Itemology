@@ -45,6 +45,18 @@ function table.shallow_copy(from, to)
     return ret
 end
 
+function table.compare(t1, t2)
+    if type(t1) == type(t2) then
+        if type(t1) == 'table' then
+            local bool = true
+            for k,v in pairs(t1) do bool = bool and table.compare(v,t2[k]) end
+            return bool
+        end
+        return t1 == t2
+    end
+    return false
+end
+
 function table.pack(...)
     return { n = select("#", ...), ... }
 end
@@ -63,7 +75,7 @@ function table.make_const( mutable )
     return setmetatable({}, {
         __index     = mutable,
         __newindex  = function() error("const-violation on table") end,
-        __metatable = false
+        __metatable = false,
     });
 end
 

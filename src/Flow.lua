@@ -57,6 +57,8 @@ function flow.run(config)
 		world  = {width = 800, height = 600},
 	}
 
+	if config.sanitychecks then print '*sanity checks enabled*' end
+
 	flow.config = config
 
 	MOAISim.openWindow ( config.title, config.screen.width, config.screen.height )

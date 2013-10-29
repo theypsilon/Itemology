@@ -25,7 +25,7 @@ global{reload = require 'lib.Reload'}
 
 -- application
 
-require 'Engine'
+global{callbacks = {}, timeStart = os.time()}
 require 'Data'
 require 'Alias'
 require 'Flow'

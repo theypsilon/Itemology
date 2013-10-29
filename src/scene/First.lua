@@ -58,8 +58,7 @@ function scene.update(dt)
     for camera,_ in pairs(scene.cameras) do
         camera._level:tick(dt)
     end
-    data._update()
-    physics:update()
+    for _,f in pairs(callbacks) do f() end
 end
 
 function scene.focus(inside)
