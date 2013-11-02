@@ -1,4 +1,6 @@
-input = {}
+local input = {}
+
+local flow, data = require 'Flow', require 'Data'
 
 function input.init()
 	input.status = {}
@@ -19,13 +21,13 @@ function input.bindAction( action, callback1, callback2 )
 	end
 
 	assert(keyCode   ~= nil, 'keyCode   ~= nil')
-	assert(callback2 == nil or utils.is_callable(callback2),
-		  'callback2 == nil or utils.is_callable(callback2)')
+	--assert(callback2 == nil or utils.is_callable(callback2),
+	--	  'callback2 == nil or utils.is_callable(callback2)')
 
 	if type(callback1) == 'boolean' then
 		callbacks[callback1][keyCode] = callback2
 	else
-		assert(utils.is_callable(callback1), 'is_callable(callback1)')
+	--	assert(utils.is_callable(callback1), 'is_callable(callback1)')
 		callbacks[true ][keyCode] = callback1
 		callbacks[false][keyCode] = callback2
 	end
@@ -71,3 +73,5 @@ input.init()
 for k,v in pairs(data.Keys) do
 	input.bindActionToKeyCode(k, v)
 end
+
+return input

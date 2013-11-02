@@ -3,6 +3,8 @@ local LayerTile   = require 'map.LayerTile'
 local Layer       = require 'map.Layer'
 local loader      = require 'map.Loader'
 
+local Atlass, layer = require 'Atlass', require 'Layer'
+
 local Map = class('Map')
 
 local function validate(path)
@@ -89,6 +91,21 @@ end
 
 function Map:setLoc(x, y, z)
 	for _,layer in pairs(self.tilelayers) do layer:setLoc(x, y, z) end
+end
+
+function Map:toXYO(x, y)
+    return  math.floor(x / self.tileWidth),
+            math.floor(y / self.tileHeight)
+end
+
+function Map:getCenter()
+    return  self.tileWidth  * self.mapWidth  / 2,
+            self.tileHeight * self.mapHeight / 2
+end
+
+function Map:getBorder()
+    return  self.tileWidth  * self.mapWidth,
+            self.tileHeight * self.mapHeight
 end
 
 function Map:draw(x, y, z)

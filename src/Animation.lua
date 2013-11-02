@@ -1,4 +1,5 @@
-class.Animation()
+local Animation = class.Animation()
+local Atlass = require 'Atlass'
 
 local function table_next(self)
     assert(self.sequences[self.animation], 'no animation sequence named "' .. self.animation .. '"')
@@ -16,14 +17,14 @@ function Animation:_init(definition, prop, skip, ...)
     
     local atlass   = Atlass(definition.atlass)
 
-    self.prop      = atlass.graphics[definition.default]:newProp()
     self.skip      = definition.skip or 1
     self.frame     = 1
     self.mirror    = definition.mirror == true
+    self.extra     = definition.extra
 
     if definition.default then self:setAnimation(definition.default) end
 
-    if utils.is_callable(definition.sequences) then
+    if false then --utils.is_callable(definition.sequences) then
         local co = coroutine.create(definition.sequences)
         self.sequences = co
         if definition.constructCall then coroutine.resume(co, self, ...) end
@@ -38,6 +39,8 @@ function Animation:_init(definition, prop, skip, ...)
         self.sequences      = newSequences
         Animation._nextStep = table_next
     end
+
+    self.prop = atlass:get(definition.sequences[self.animation][1]):newProp()
 end
 
 function Animation:setAnimation(animation)
@@ -59,3 +62,5 @@ end
 function Animation:setMirror(boolean)
     if boolean ~= self.mirror then self.prop:setScl(-1, 1) else self.prop:setScl(1, 1) end
 end
+
+return Animation

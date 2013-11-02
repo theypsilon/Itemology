@@ -1,32 +1,37 @@
-require 'entity.Mob'
-local super   = Mob
+local super = require 'entity.Mob'
 
-local Position = require 'entity.Position'
+local Position, Animation, physics, input = require 'entity.Position', require 'Animation', require 'Physics', require 'Input'
+local task, flow, scenes = require 'TaskQueue', require 'Flow', require 'Scenes'
+local collisions = {}
 
-class.Player(super)
+local Player = class.Player(super)
 
-function Player:_init(level, x, y)
-	super._init(self, level, x, y)
+function Player:_init(level, def, prop)
+	super._init(self, level, prop.x, prop.y)
 
     local def = data.entity.Player
 
     self.animation = Animation(def.animation)
     self.prop      = self.animation.prop
 
-    self.body, self.fixtures = physics:addBody(def.fixture, self.prop, self)
+    self.body = physics:registerBody(def.fixture, self.prop, self)
 
     self:_setListeners()
     self:_setInput()
 
     self.pos = Position(self.body)
-    self.pos:set(x, y)
+    self.pos:set(prop.x, prop.y)
 
     self.jumping = 0
+    self.hp = 10
+    self.damage = {}
 
     local _
-    _, self.limit_map_y = self.level:getBorder()
+    _, self.limit_map_y = level.map:getBorder()
 
     self.moveDef = def.move
+
+    level.player = self
 end
 
 function Player:_setInput()
@@ -47,29 +52,17 @@ function Player:_setInput()
 end
 
 function Player:_setListeners()
-    self.fixtures['area']:setCollisionHandler( 
-        function() end, 
-        MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END 
-    )
+    local begend = MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END 
+
+    local fix = self.body.fixtures
+
+    fix['area']:setCollisionHandler(collisions.area, begend)
 
     self.groundCount = 0
 
-    local function floorSensor(phase, fix_a, fix_b, arbiter)
-        if phase == MOAIBox2DArbiter.BEGIN then
-            self.groundCount = self.groundCount + 1
-            if fix_b:getBody().tag == 'platform' then
-                self.platform = fix_b:getBody()
-            end
-        elseif phase == MOAIBox2DArbiter.END then
-            self.groundCount = self.groundCount - 1
-            if fix_b:getBody().tag == 'platform' then
-                self.platform = nil
-            end
-        end
+    for _,sensor in pairs{fix['sensor1'], fix['sensor2']} do
+        sensor:setCollisionHandler(collisions.floorSensor, begend)
     end
-
-    self.fixtures['sensor1']:setCollisionHandler(floorSensor, MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END)
-    self.fixtures['sensor2']:setCollisionHandler(floorSensor, MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END)
 end
 
 local abs = math.abs
@@ -88,6 +81,8 @@ function Player:tick(dt)
         self.body:setLinearVelocity(0, 0)
     end
 
+    self:applyDamage()
+
     self:animate(vx, vy)
 
 	super.tick(self)
@@ -98,16 +93,21 @@ function Player:move(dt, vx, vy)
 
     local dx     = -1*self.dir.left + self.dir.right
 
+    self:moveDoor()
+
     local def = self.moveDef
     local force, maxVel, slowdown = def.ogHorForce, def.maxVxWalk, def.slowWalk
 
-    dt = dt * def.timeFactor
+    dt = 1 / (dt * def.timeFactor)
 
     -- if fast, slowdown is weaker
     if abs(vx) > maxVel then slowdown = def.slowRun end
 
     -- if running, maxspeed is different
-    if self.keyRun or def.alwaysRun then maxVel = def.maxVxRun end
+    if (self:onGround()                 and self.keyRun) 
+        or (0.9*abs(vx) > def.maxVxWalk and self.keyRun)
+        or def.alwaysRun 
+       then maxVel = def.maxVxRun end
 
     self:moveJump(dt)
 
@@ -115,7 +115,7 @@ function Player:move(dt, vx, vy)
     if not self:onGround() and dx ~= 0 then force = def.oaHorForce end
 
     -- horizontal walk/run
-    if dx ~= 0 then
+    if dx ~= 0 and abs(vx) < maxVel then
         self.body:applyForce( dt*dx*force*(maxVel-abs(vx)), 0)
     end
 
@@ -154,22 +154,37 @@ function Player:doJump(dt)
     self.body:applyLinearImpulse(0, -jump[self.jumping])
 end
 
-function Player:animate(vx, vy)
-    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
-    local def = self.moveDef
+function Player:moveDoor()
+    if self.dir.up == 1 and self.door then
+        if self.door.level and self.door.level ~= self.level.name then
+            task.setOnce('changeMap', function() scenes.run('First') end)
+        else
+            local link = self.door.layer.objects[self.door.link]
+            self.pos:set(link.x, link.y)
+        end
+        self.dir.up = 0
+    end
+end
 
-    if abs(vx) > 5 then 
+function Player:animate(vx, vy)
+    local def, maxVxWalk = self.animation.extra, self.moveDef.maxVxWalk
+
+    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
+
+    if abs(vx) > def.toleranceX then 
         self.lookLeft = vx < 0
-        if abs(vy) < 1  then 
-            self.animation:setAnimation(abs(vx)*0.9 <= def.maxVxWalk and 'walk' or 'run') 
+        if abs(vy) < def.toleranceY  then 
+            self.animation:setAnimation(abs(vx)*def.walkRunUmbral <= maxVxWalk and 'walk' or 'run') 
         end
     else 
         self.animation:setAnimation('stand')
     end
 
     local dx = -1*self.dir.left + self.dir.right
-    if abs(vy) > 1 then
-        self.animation:setAnimation(abs(vx)*0.9 <= def.maxVxWalk and 'jump' or (vy < 0) and 'fly' or 'fall')
+    if abs(vy) > def.toleranceY then
+        self.animation:setAnimation(abs(vx)*def.walkRunUmbral <= maxVxWalk and
+            'jump' or (vy < 0) and
+            'fly'  or 'fall')
     elseif dx*vx < 0 then
         self.animation:setAnimation('skid')
     end
@@ -178,6 +193,66 @@ function Player:animate(vx, vy)
     self.animation:next()
 end
 
+function Player:hurt(enemy)
+    self.damage[enemy] = 1
+end
+
+function Player:applyDamage()
+    for enemy,hp in pairs(self.damage) do
+        if not enemy.removed then self.hp = self.hp - hp end
+        self:reaction(enemy)
+    end
+
+    if self.hp == 0 then self.removed = true
+    else self.damage = {} end
+end
+
+function Player:reaction(enemy)
+    local ex, ey = enemy.x, enemy.y
+    local mx, my = self.pos:get()
+
+    local dx, dy = ex - mx, ey - my
+    local max = math.sqrt(dx*dx + dy*dy)
+    local rx, ry = dx / max, dy / max
+    local ix, iy = -rx*250, -ry*200 * (self.keyJump and 1.5 or 1)
+
+    if enemy.removed then
+        local vx, vy = self.body:getLinearVelocity()
+        if ix*vx < 0 then ix = -ix end
+    end
+
+    self.body:setLinearVelocity(ix, iy)
+
+end
+
 function Player:draw(...)
 	super.draw(self, ...)
 end
+
+function collisions.floorSensor(p, fa, fb, a)
+    local self  = fa:getBody().parent
+    local enemy = fb:getBody().parent
+    if p == MOAIBox2DArbiter.BEGIN then             
+        if not enemy then self.groundCount = self.groundCount + 1 end
+        if not self:onGround() and fb.name == 'head' 
+        and enemy and enemy.hurt then
+            enemy:hurt(self)
+        end
+    elseif p == MOAIBox2DArbiter.END and not enemy then
+        self.groundCount = self.groundCount - 1
+    end
+end
+
+function collisions.area(p, fa, fb, a) 
+    local object = fb:getBody().object
+    if object then collisions.object[object.class](fa:getBody().parent, object, p, a) end
+end
+
+collisions.object = {}
+
+function collisions.object.Door(self, object, p, a)
+    if p == MOAIBox2DArbiter.BEGIN then self.door = object
+    elseif self.door == object     then self.door = nil end
+end
+
+return Player

@@ -57,6 +57,29 @@ function table.compare(t1, t2)
     return false
 end
 
+function table.each_recursive(t, f, index, notKeys, each_dict, path)
+
+    if type(t) == 'table' then 
+        each_dict = each_dict or {}
+        if each_dict[t] then return else each_dict[t] = true end
+
+        path = path or ''
+
+        f(index, t, path)
+
+        for k,v in pairs(t) do 
+            if not notKeys then 
+                table.each_recursive(k, f, nil, notKeys, each_dict, path .. '#') 
+            end
+            table.each_recursive(v, f,   k, notKeys, each_dict, 
+                path .. ((type(k) == 'string' or type(k) == 'number') 
+                    and k or inspect(k)) .. '.')
+        end
+    else
+        f(index, t, path)
+    end
+end
+
 function table.pack(...)
     return { n = select("#", ...), ... }
 end

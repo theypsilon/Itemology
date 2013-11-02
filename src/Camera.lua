@@ -1,4 +1,6 @@
-class.Camera()
+local Camera = class.Camera()
+
+local Entity, layer = require 'entity.Entity', require 'Layer'
 
 local function validate(area, padding)
     if area and (not area.x or not area.y or not area.w or not area.h) then
@@ -14,14 +16,16 @@ function Camera:_init(target, area, padding)
 
     self.cam = MOAICamera.new()
 
-    self:setTarget(target)
-    self.area    = area or { 
-        x = 0, y = 0, 
-        w = graphics.getWidth () <  self._limit.x and
-            graphics.getWidth () or self._limit.x, 
-        h = graphics.getHeight() <  self._limit.y and
-            graphics.getHeight() or self._limit.y,
-    }
+    if target then 
+        self:setTarget(target)
+        self.area    = area or { 
+            x = 0, y = 0, 
+            w = graphics.getWidth () <  self._limit.x and
+                graphics.getWidth () or self._limit.x, 
+            h = graphics.getHeight() <  self._limit.y and
+                graphics.getHeight() or self._limit.y,
+        }
+    end
 
     self.padding = padding or { x = 0, y = 0 }
 end
@@ -35,15 +39,16 @@ end
 function Camera:setTarget(target)
     validateTarget(target)
     self._target                 = target
-    self._level                  = target.level
+    self._map                    = target.map
     self._limit                  = {}
-    self._limit.x, self._limit.y = target.level:getBorder()
+    self._limit.x, self._limit.y = target.map:getBorder()
     self._limit.x, self._limit.y = self._limit.x + 16 + 16, self._limit.y + 16
-    target.prop.layer:setCamera(self.cam)
+    (target.prop.layer or layer.main):setCamera(self.cam)
 end
 
 function Camera:draw()
-    local map, entities = self._level.map, self._level.entities
+    if not self._target then return end
+    local map = self._map
     local area          = self.area
 
     if not map then
@@ -78,3 +83,5 @@ function Camera:_calcCorner(index, length)
 
     return corner
 end
+
+return Camera

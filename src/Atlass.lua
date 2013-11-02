@@ -1,4 +1,6 @@
-class.Atlass()
+local Atlass = class.Atlass()
+
+local global_layer = require 'Layer'
 
 local function validate(path)
 
@@ -13,16 +15,11 @@ local function make_prop(self)
 	return prop
 end
 
-local function remove_prop(self) 
-	self.layer:removeProp(self) 
-end
-
 local function new_prop(self)
 	local layer = self.atlass.layer
 	local prop  = make_prop(self)
 
-	prop.layer  = layer
-	prop.remove = remove_prop
+	prop.clear  = layer.clearProp -- ALLOCATE
 
 	layer:insertProp(prop)
 	return prop
@@ -70,7 +67,7 @@ function Atlass:_init(definition, layer, cpu)
         end
 
         self.tex      = tex
-        self.layer    = layer or _G.layer.main
+        self.layer    = layer or global_layer.main
         self.deck     = deck
         self.graphics = frames
         self.total    = total
@@ -97,3 +94,5 @@ function Atlass:getOpaqueGraphics()
     end
     return tiles
 end
+
+return Atlass

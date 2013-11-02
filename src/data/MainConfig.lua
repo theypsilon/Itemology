@@ -21,4 +21,6 @@ if not config.sanitychecks then
     config.reloaddata     = true
 end
 
+config.debugPhysics = true
+
 return config

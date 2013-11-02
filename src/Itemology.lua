@@ -1,4 +1,5 @@
 require 'Includes'
+local flow, scenes, layer, data, Atlass = require 'Flow', require 'Scenes', require 'Layer', require 'Data', require 'Atlass'
 
 function flow.load()
 	print 'Welcome to Itemology!'

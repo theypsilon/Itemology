@@ -5,17 +5,17 @@
  </tileset>
  <layer name="background" width="100" height="31">
   <data encoding="base64" compression="zlib">
-   eJztmUlqxTAMQH2t9vsCHbZdtRfI/S9QDBUYfVuJbA12qgciEIKI9Sw7Q0r/h68Nwmosx8m5o3ONRvwIhaUP73mi5eCdGDOXN4X7bOFdO248Ouc1HGA+Tu4tN+4zE9djvGvLqTcVmg5qznxwo2Y0B+Vby0+ujnUvaPcDZmTNouYX4N0DM/PAsv4tuE6wj3o+A1a1k+iL+py3C6A4kXgOA6xqeqe+uArVP7hXAM/6UhxE7MTVfR9Y1cdd8PQRPBM+1iJ8rAXXR6BL+FgLze8qAR/sI6f597lX0xHci5YPiT4JJ2PUPmZctL5FhhMeL0m2J3Ce4iic0BQH339B1TH6RB/oB4/Y3QnMY8l8Xi5Kz3wKjsUaXLsskLP3nmH1r2JXH615LO2j5WBmz7irD2pN0cprFbv5wDXr/Z+bzQv9od0Pu/qAfftsPKO5r9bLYh9Z/RmLU68RvNco3O/F+apOei6k1qnUyb9CrOjE4r+DZA1/ARjXt9s=
+   eJztmkuOwzAIQHOtmeQC89l2NXOBnGekOW9lqUgWxcTYQOyGJ7FpIxLzjPNdlutwmyC8xrIf/LYXtrGIX6Xw9OFRl78svBx8MmOW8mFwnBQeLjR9rIXfLRxgvg6ObSOOc2O2x3i5kPgo1ZsLSwc5Rz56+qM1B+fboj/Wxz7XbN/5uu7lItGyZnHzC/Dsi14feB541p9C6gT7yOczYF17qoekPlYiz9kugORE4zoMaK3pGf0xSl/UwvUP7hXAuj9q5gTFzsRM1J73Aeq//0J4+ngVzvQRPBM+xkLDR6w/ekh9BLaEj7GwfK4SyME+tqX/fu7ddQSvBeVDo0/CSRu5jx4X1LPIcCLjbdHtCZwnOQonPMnBzyO4OtbUn7r/iz6pB/pBI6T347M7gXmsmU/LhdRH6plvxbF4g2u3KeQs3We0njuk/TGrD2oea/ugHEi/BbiCD25NscrrFbP5wDUrvZ/rzQv90fJtzBV8wHn7aDytuWvrpf3Om4rRr7Ek9Wrh7DUK93tyPqqTkgutdWop5B8hRnTi8d5Bs4Z3Na7Hmw==
   </data>
  </layer>
  <layer name="platforms" width="100" height="31">
   <data encoding="base64" compression="zlib">
-   eJztWdtOwzAMtQDxMGBI3CQu2p7gkb/YfyD4/3+gkWZx8OzWTdImvRzJ2touXesTH8fOgYgOR7uF78F24lhet871PS/PbY2x3jHWfz9WZF3v9+nwyf2E7YHqwh2dzh1tHiEPNb/PHMCcSAu6JLlZ/T8OtDiRmrRyMS6sOFl5KAfkJMTKVdnHWdFgQ3+c/BR+ltpw1ti5wy7EuKfG3hq7jPhP5KNEfHjeWb7vWAj6EXIp5lr+5Nogd65lPkrpFWom1j+41rimU46+HOc0Hrv418YwL7H1TJ94ya1X3hhHu6H//mde8Bz7QJujclybvyzf1lJj5dYrnu9cU1o9jdi6unZ/puKb8ucP5Fib61P3WS5oOoa+03Q6xqT+rFz4wXyEeRz8JnuIPL+34tPqQc5ZS1LgzekYH9jL0ny/o9P+O/5myf7OhcCHJ6d29ebnzEXfGimlHvx2/q5tXTNnLgL43eUcHGI+bjLdZwkIvmJO9jRMX2NsPrTY51h/buxd2AeMTb0eU6vKdaOMC86fr5H+kPDqVS5oujeW3mE/Slur4LG1N2Rdy1m7LQ3Ii8aH5IqP92RzMwU+pD6U6tNa0HhpiwutHuNzOfh4Od53KMjeba3rMG2vlHnZkY+n1F4sc3FIvE8XeA7WygXD2r/W9EvTrtT4wLockboGqU2T+gA5kfldyx3IVQofHBscg9YzaXW4fE7PnsNUEPzSpkmWT1L4QJ1iXZTwrD+G2q8sBY0L9JOch5p+xdQgWv/Qwtz3fhjeuJDaJfNK3xjB2MB7LR3a/pk3r0vzxghyIdduSwfukcZa37yu6RTbL3ZRjGw=
+   eJztWdlOAzEMjADxUKBI5ZA41D7BI3/R/0DlY/htNlItplNn1zm2zR4jWe1mz3jicZxsnXPbvd3Df29rOubzobbYdm5bBu613hN691NF1tW/L4NPHgZsj64urNzx2NHGEfJQc3/GAOGEzesSc2Px/0Vjl41d9fGxE4EWJ6xJ1lhYRV7/u7cZhwjFSSlN+gXDGML2GYdATnys3BR8NvodY2jmox0L98/JT+azunLJ0HiQ/nQZ9/e5sffGrhPeiXzkxkdXLtG4sPT5XHMF6Q/mWvmV2qD0vFP4KK1XVqBmYv2Dc41bd8zRt6FN47GLf+0e4SW1nomJl1y94nxgjXG0O3fof+EF28QH2hjl+9r8FfJtLTVWrl4xHzLepaYMrWmk1tW1+zMXO1cufwiQY22sD91npaDpGPpO0+kUY/2ZubBD+PDj2PuN1xBlfC/pN7QGOWYtyYE1p2N84FqW5vu1O15/x2um7O9S8HxYcmrX2vyYuYitkXLqwZ3xurZ5zZi58JC+8xjsYzwuCj1nCvC+Ek42rvy8VN5xSmixL7H+0tgH2Sfcm3s+pVbleSPHheTPt0R/MKx6VQqa7p1K73A9Spur4HFobyh0rmTtNjUgLxofzJUcb1yYmyHwwfpQ256uxktbXGj1mLSV4ON1/9y+wGu3tc7DtL1S4WXtbDzl7h0JF9vM53Qhdn/9XAjtX2v6pWlXbnxgXY7InYPUpkkxQE44v2u5A7nK4UNiQ2Iw9E1aHc7fadlzGAq8X9o0KeSTHD5Qp0QXGZb5R1/7leeCxgX6icehpl8pNYi2fhjC2Pd+BNa4YO3ivBIbIxgb+KypQ9s/s+Z1NmuMIBc8d5s6cI801WLzuqZTYn/Sd5lT
   </data>
  </layer>
  <layer name="Items" width="100" height="31">
   <data encoding="base64" compression="zlib">
-   eJzt2EsKwjAUheEuwQ0I2YAjwY7EJ86K+EBX4Mz9jz3WUsRJw6X1xvh/cKDJINzSNIRbFAAAAMD3jCLncpXau4bIuVyFHtbY9bBGrj73e2r7/5fM3zI2rhE6xojz/AYLZanclIlrNaiUffN8b8YA8nVRrt5FoDZVVspamTnXgpeDcvQuAq2NsvUuArVSOSln70Lwd7i3pKXrXKa/Z2fpWXEuD8Pas+LeMgxrz4r/AwAAAKl6ANntDxU=
+   eJzt2EsKwjAUheEuwQ0I2YAjQUfFJ85EqqIrcOb+xx5rERFM0tiQ0vwfHGjSUm5pcykpCgAAAOA/5UfGjmtHnnNDFftZn+9goSyVmzJxXG8854bKdHCPneXcXjk0x/dmnJPv7z2ntd61Nn32F+MYw0/bPou4cu+zQG4uyjV1EahNlZWyVmaJa8FLpRxTF4G3jbJNXQRqc+WknFMXguzw39Ivrr5s29+DXcieFX05jtA9K/5b4gjds2J9AAAAoK8eqYMSjA==
   </data>
  </layer>
  <layer name="walls" width="100" height="31">
@@ -27,11 +27,41 @@
   <properties>
    <property name="un" value="ds"/>
   </properties>
-  <object name="spawn" x="319" y="147" width="14" height="13">
+  <object name="spawn" type="Player" x="960" y="128" width="14" height="13">
    <properties>
     <property name="example" value="1"/>
     <property name="second" value="3"/>
    </properties>
   </object>
+  <object name="goomba" type="Goomba" x="784" y="128" width="13" height="15"/>
+  <object name="goomba2" type="Spawn" x="400" y="64" width="13" height="15">
+   <properties>
+    <property name="class" value="Goomba"/>
+    <property name="offset" value="120"/>
+    <property name="rate" value="60"/>
+    <property name="total" value="5"/>
+   </properties>
+  </object>
+  <object name="door1" type="Object" x="128" y="192" width="17" height="17">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="link" value="door2"/>
+   </properties>
+  </object>
+  <object name="door2" type="Object" x="79" y="383" width="17" height="17">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="link" value="door1"/>
+   </properties>
+  </object>
+  <object x="197" y="247" width="2"/>
+  <object name="level2" type="Object" x="992" y="128" width="17" height="16">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="level" value="test.tmx"/>
+    <property name="link" value="door1"/>
+   </properties>
+  </object>
+  <object name="goomba" type="Goomba" x="752" y="128" width="13" height="15"/>
  </objectgroup>
 </map>

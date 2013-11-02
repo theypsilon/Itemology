@@ -1,4 +1,4 @@
-resource = {}
+local resource = {}
 
 resource.IMAGE_PATH = nil
 resource.DIRECTORY_SEPARATOR = '/'
@@ -55,3 +55,5 @@ end
 function resource.getDirectoryPath(path)
     return path:match("(.*"..resource.DIRECTORY_SEPARATOR..")")
 end
+
+return resource

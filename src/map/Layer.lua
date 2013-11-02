@@ -23,6 +23,8 @@ function Layer:setLayer(renderLayer)
 
     self.layer = renderLayer
     renderLayer:insertProp(self.prop)
+
+    self.prop.clear = renderLayer.clearProp -- ALLOCATE (possible memory-leak)
 end
 
 function Layer:setLoc(x, y)

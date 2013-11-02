@@ -1,8 +1,9 @@
-require 'entity.Entity'
-local super   = Entity
+local super = require 'entity.Entity'
 
-class.Mob(super)
+local Mob = class.Mob(super)
 
 function Mob:_init   (level, x, y)
     super._init(self, level, x, y)
 end
+
+return Mob

@@ -6,15 +6,7 @@ require 'lib.Import'
 
 addPackagePath(libpath)
 
---require 'middleclass'
 require 'inspect'
-require 'penlight'
-
--- 
--- require 'ATL'
--- require 'rapanui'
--- require 'flower'
--- require 'hanappe'
 
 -- ad-hoc libs
 
@@ -25,9 +17,10 @@ global{reload = require 'lib.Reload'}
 
 -- application
 
-global{callbacks = {}, timeStart = os.time()}
+global{timeStart = os.time()}
+require 'Test'
+require 'TaskQueue'
 require 'Data'
-require 'Alias'
 require 'Flow'
 require 'resource.Resource'
 require 'Graphics'

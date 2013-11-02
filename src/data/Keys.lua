@@ -8,4 +8,6 @@ return {
     b2    = 32, -- ESPACE
 
     ESC   = 27, -- ESCAPE
+
+    reset = 48, -- 0
 }

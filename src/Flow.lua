@@ -1,5 +1,6 @@
-global('flow', 'love', 'viewport', 'layer')
-flow = love or {}
+local flow = {}
+
+local layer = require 'Layer'
 
 local callbacks = {
 	'load', 'update', 'draw', 'mousepressed', 'mousereleased',
@@ -67,10 +68,11 @@ function flow.run(config)
 	MOAISim.setLoopFlags ( MOAISim.SIM_LOOP_ALLOW_BOOST )
 	MOAISim.setBoostThreshold ( 0 )
 
-    viewport = MOAIViewport.new()
+    global{viewport = MOAIViewport.new()}
     viewport:setSize (config.screen.width, config.screen.height)
     viewport:setScale(config.world .width,-config.world .height)
     viewport:setOffset(-1,1)
+    flow.viewport = viewport
 
 	if flow.load then flow.load() end
 
@@ -87,12 +89,38 @@ function flow.run(config)
 				dt       = curTime - lastTime;
 				lastTime = curTime;
 
-				flow.update( dt )
-				for _,v in pairs(layer) do v:clearTemp() end
-				flow.draw()
+				if scene then
+					scene.update( dt )
+					--for _,v in pairs(layer) do v:clearTemp() end
+					scene.draw()
+				end
 			end				
 		end 
 	)
+end
+
+function flow.clear()
+	local i = 0
+	local physics = require 'Physics'
+	
+	physics:clear()
+	layer.main:clear()
+	-- table.each_recursive(item, function(k, v)
+	-- 	local t = type(v)
+
+	-- 	if t ~= 'table' and t ~= 'userdata' then return end
+
+	-- 	-- if t == 'userdata' then
+	-- 	-- if v.destroy then v:destroy(); v.destroy = nil end
+	-- 	-- if v.remove then v:remove(); v.remove = nil end
+	-- 	-- end
+		
+	-- 	if v.clear then 
+	-- 		v:clear()
+	-- 		v.clear = nil
+	-- 	end
+	-- end)
+
 end
 
 return flow

@@ -1,5 +1,7 @@
 local meta = {}
 
+local task = require 'TaskQueue'
+
 function meta.__index(table, key)
     local letter = key:sub(0,1)
     local path   = rawget(table,'_path') or ''
@@ -17,7 +19,7 @@ function meta.__newindex(table, key, value)
     rawset(table, key, value)
 end
 
-data = setmetatable({},meta)
+local data = setmetatable({},meta)
 
 local function reload_data(path, node, alwaysload)
     node = node  or require(path)
@@ -51,15 +53,19 @@ end
 
 function data._update()
     reload_data('data.move.Mario')
-    reload_data('data.animation.TinyMario')
+    reload_data('data.move.Goomba')
 end
 
 if data.MainConfig.sanitychecks   then
-    callbacks['dataAssertImmutable'] = function() data._autoUpdate(true) end
+    task.set('dataAssertImmutable', function() data._autoUpdate(true) end)
 end
 if data.MainConfig.autoreloaddata then
-    callbacks['dataAutoUpdate']      = data._autoUpdate
+    task.set('dataAutoUpdate'     , data._autoUpdate                     )
 end
 if data.MainConfig.reloaddata     then
-    callbacks['dataUpdate']          = data._update
+    task.set('dataUpdate'         , data._update                         )
 end
+
+global{data = data}
+
+return data

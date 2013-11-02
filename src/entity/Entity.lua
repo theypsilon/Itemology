@@ -1,4 +1,4 @@
-class.Entity()
+local Entity = class.Entity()
 
 local function validate(level, x, y)
     
@@ -15,8 +15,7 @@ function Entity:_init(level, x, y)
     self.currSp = nil
 	self._ticks = 0
     self.level  = level
-
-    level:add(self)
+    self.map    = level.map
 end
 
 function Entity:tick() 
@@ -25,3 +24,5 @@ end
 
 function Entity:draw()	
 end
+
+return Entity

@@ -3,6 +3,12 @@ local  LayerObject = class('LayerObject', Layer)
 
 local copy = table.shallow_copy
 
+local function avoid_index_collapse(index, parsed)
+    local i = 1
+    while parsed[index .. i] do i = i + 1 end
+    return index .. i
+end
+
 local function parseObjects(objects)
     local parsed = {}
 
@@ -17,6 +23,7 @@ local function parseObjects(objects)
             parsed[child.name]  = child.value
         else
             local  index  = child.name and child.name or (#parsed + 1)
+            if parsed[index] then index = avoid_index_collapse(index, parsed) end
             parsed[index] = child
             child.name    = nil
         end

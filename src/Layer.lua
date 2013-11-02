@@ -17,19 +17,20 @@ local function make_layer(t, index)
     newLayer.temp       = {}
     newLayer.insertTemp = temp_add_prop
     newLayer. clearTemp = clear_temp
+    newLayer. clearProp = function(prop)
+        newLayer:removeProp(prop) 
+    end
 
     newLayer:setViewport(viewport)
-    newLayer:setBox2DWorld (physics.world)
-    MOAIRenderMgr.pushRenderPass(newLayer)
+    
+    MOAIRenderMgr.setRenderTable{newLayer}
 
     rawset(t, index, newLayer)
     
     return newLayer
 end
 
-global('layer')
-
-layer = setmetatable({}, { 
+return setmetatable({}, { 
     __index    = make_layer, 
     __newindex = function() error 'impossible' end 
 })

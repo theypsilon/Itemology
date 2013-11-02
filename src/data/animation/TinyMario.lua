@@ -12,6 +12,11 @@ return {
         fly   = {'fly'},
         fall  = {'fall'},
         skid  = {'skid'},
+    },
+    extra = {
+        toleranceX    = 5,
+        toleranceY    = 1,
+        walkRunUmbral = 0.9,
     }
 }
 

@@ -1,19 +1,21 @@
-class.Physics()
+local Physics = {}
 
-function Physics:_init()
-    local world = MOAIBox2DWorld.new()
-    self.world = world
-end
+local data = require 'Data'
 
-function Physics:start(def)
-    physics.world:setGravity  (unpack(def.gravity))
-    physics.world:setUnitsToMeters   (def.unitsToMeters)
-    physics.world:setIterations      (def.iterations)
-    physics.world:setAutoClearForces (def.autoClearForces)
-    self.world:start()
-end
+function Physics:init(def)
+    if not self.started then
+        local world = MOAIBox2DWorld.new()
+        world:setGravity  (unpack(def.gravity))
+        world:setUnitsToMeters   (def.unitsToMeters)
+        world:setIterations      (def.iterations)
+        world:setAutoClearForces (def.autoClearForces)
+        world:start()
 
-function Physics:update()
+        self.world  = world
+        self.bodies = {}--setmetatable({}, {__mode = 'kv'})
+
+        self.started = true
+    end
 end
 
 local dict, bodyTable = {}, MOAIBox2DBody.getInterfaceTable()
@@ -24,10 +26,11 @@ dict['kinematic'] = MOAIBox2DBody.KINETIC
 
 dict['rect'     ] = bodyTable.addRect
 dict['circle'   ] = bodyTable.addCircle
+dict['chain'    ] = bodyTable.addChain
 
 bodyTable = nil
 
-function Physics:addBody(def, prop, parent)
+function Physics:registerBody(def, prop, parent)
 
     local body = self.world:addBody (
         dict[def.option],
@@ -54,14 +57,28 @@ function Physics:addBody(def, prop, parent)
         if value.friction    then fix:setFriction   (value.friction   ) end
         if value.sensor      then fix:setSensor     (value.sensor     ) end
 
+        fix.name = k
+
         outFixtures[k] = fix
     end
+
+    body.fixtures = outFixtures
+    body.clear = function(self) 
+        for k,v in pairs(self.fixtures) do v:destroy() end
+        self:destroy() 
+    end -- ALLOCATE (memory-leak)
+
+    local GC = require 'Test'
+    body.gc = GC()
+
+    self.bodies[#self.bodies + 1] = body
 
     return body, outFixtures
 end
 
-global{ physics = Physics() }
+function Physics:clear()
+    for _,v in pairs(self.bodies) do if v.clear then v:clear(); v.clear = nil end end
+    self.bodies = {}--self.bodies = setmetatable({}, {__mode = 'kv'})
+end
 
-physics:start(data.world.First)
-
-callbacks['physics'] = physics.update
+return Physics

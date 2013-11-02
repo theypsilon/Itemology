@@ -2,6 +2,8 @@ local MarchingSquares = require 'algorithm.MarchingSquares'
 
 local Util     = {}
 
+local physics = require 'Physics'
+
 local function check(x,y,isWall,checked)
     checked = checked or {}
 
@@ -25,8 +27,8 @@ local function check(x,y,isWall,checked)
     return checked
 end
 
-function Util.getSolidStructure(map)
-    local wall = Util.getWall(map)
+function Util.getSolidStructure(layer)
+    local wall = Util.getWall(layer)
     local mapw, maph = table.count(wall[1]), table.count(wall)
 
     local function isWall(x, y)
@@ -55,12 +57,10 @@ local function getWallMatrix(layer, opaques)
     return matrix
 end
 
-function Util.getWall(map)
-    local collision  = map('platforms')
-
+function Util.getWall(layer)
     return getWallMatrix(
-        collision, 
-        map:getTilesetAsAtlass(1):getOpaqueGraphics()
+        layer, 
+        layer.map:getTilesetAsAtlass(1):getOpaqueGraphics()
     )
 end
 
@@ -79,29 +79,40 @@ local function adaptPolygon(input, factorx, factory)
 end
 
 function Util.makeChainFixtures(structure)
-    local fixtures = {}
+    local chains = {}
     for _,poly in pairs(structure) do
-        local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
-        floor:setTransform(0, 0)
-        floor:addChain(adaptPolygon(poly, 16, 16), true)
-        fixtures[#fixtures + 1] = floor
+        local floor = physics:registerBody{
+            option = 'static',
+            x = 0, y = 0,
+            fixtures = {{
+                option = 'chain', 
+                args   = {adaptPolygon(poly, 16, 16)}, 
+                closed = true
+            }}
+        }
+        chains[#chains + 1] = floor
     end
 
-    return fixtures
+    return chains
 end
 
 function Util.makeSquareFixtures(wall, width, height)
     if not width or not height then width, height = 16, 16 end
 
-    local floor = physics.world:addBody(MOAIBox2DBody.STATIC) 
-    floor:setTransform(0, 0)
-
+    local edges = {}
     for j,row in pairs(wall) do for i,solid in pairs(row) do
         if solid then
             local x, y = (i-1)*width, (j-1)*height
-            local fix = floor:addEdges{x, y, x + width, y, x + width, y + height, x, y + height}
+            local fix = {x, y, x + width, y, x + width, y + height, x, y + height}
+            edges[#edges + 1] = fix
         end
     end end
+
+    return physics:registerBody{
+        option = 'static',
+        x = 0, y = 0,
+        fixtures = edges
+    }
 end
 
 function Util.drawMap(poly, wall)

@@ -4,6 +4,7 @@ local LayerTile = class('LayerTile', Layer)
 function LayerTile:_init(tiled, map)
     self.prop = self:_load(tiled.data, tiled.width, tiled.height, map.tilesets[1])
     self.prop:setPriority(tiled.id)
+    self.map  = map
 end
 
 function LayerTile:_load(data, w, h, ts)

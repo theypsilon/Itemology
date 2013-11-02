@@ -17,7 +17,7 @@ function metaclass.__index(t, name)
     local env = _G
     return function(base)
         local  klass = class.new(base, name)
-        rawset(env, name, klass)
+        --rawset(env, name, klass)
         return klass
     end
 end
@@ -169,7 +169,7 @@ function class.is_mixin(mixin)
 end
 
 function class.is_class(c)
-    return class.is_mixin(c) and c.__index 
+    return class.is_mixin(c) and c.__index and getmetatable(c)
         and (c.new or getmetatable(c).__call)
 end
 
