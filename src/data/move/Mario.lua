@@ -1,6 +1,6 @@
 return {
     ogHorForce = 10,  -- on ground horizontal force
-    oaHorForce = 30,   -- on air horizontal force
+    oaHorForce = 3,   -- on air horizontal force
     maxVxWalk  = 150, -- maximum speed by walking
     maxVxRun   = 250, -- maximum speed by running
     alwaysRun  = false,
