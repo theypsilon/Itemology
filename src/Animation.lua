@@ -10,7 +10,8 @@ local function table_next(self)
 end
 
 local function coroutine_next(self, ...)
-    return coroutine.resume(self.sequences, ...)
+    local img = coroutine.resume(self.sequences, ...)
+    self.prop:setIndex(self.atlass:get(v).i)
 end
 
 function Animation:_init(definition, prop, skip, ...)
@@ -24,9 +25,10 @@ function Animation:_init(definition, prop, skip, ...)
 
     if definition.default then self:setAnimation(definition.default) end
 
-    if false then --utils.is_callable(definition.sequences) then
+    if type(definition.sequences) == 'function' then
         local co = coroutine.create(definition.sequences)
         self.sequences = co
+        self.atlass    = atlass
         if definition.constructCall then coroutine.resume(co, self, ...) end
         Animation._nextStep = coroutine_next
     else

@@ -7,13 +7,13 @@ local callbacks = {
 	'keypressed', 'keyreleased', 'focus' 
 }
 
-local function runScene(self)
+local function runScene(self, ...)
 	if scenes.current and scenes.current.quit then scenes.current.quit() end
 
 	scenes.current = self
 
 	if not self._init and self.load then
-		self.load()
+		self:load(...)
 		self._init = true
 	end
 
@@ -28,9 +28,9 @@ function scenes.load(path)
 	return s
 end
 
-function scenes.run(path)
+function scenes.run(path, ...)
 	if defined('scene') and scene.clear then scene.clear() end
-	scenes.load(path):run()
+	scenes.load(path):run(...)
 end
 
 return scenes

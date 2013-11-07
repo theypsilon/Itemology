@@ -5,13 +5,28 @@ local Map, layer, data, util = require 'map.Map', require 'Layer', require 'Data
 function Level:_init(mapfile)
     self.name = mapfile 
     self.map  = Map('res/maps/' .. mapfile)
-    self.map:setLayer(layer.main) 
+    self.map:setLayer(layer.main)
 
     self.entitiesInMap = {}
     self.entities      = {}
 end
 
+local function clear_entity(self)
+    if self.body and self.body.clear then
+        self.body:clear()
+        self.body.clear = nil
+        self.body = nil
+    end
+    if self.prop then 
+        self.prop:clear()
+        self.prop.clear = nil
+        self.prop = nil
+    end
+end
+
 function Level:add(entity)
+    if entity.clear then error 'what are you doing bro' end
+    if not entity.clear then entity.clear = clear_entity end
     self.entities[entity] = true
     self:insertEntity(entity, self.map:toXYO(entity.x, entity.y))
 end
@@ -57,6 +72,8 @@ function Level:tick(dt, xo, yo, x1, y1)
     for e,_ in pairs(self.entities) do
         local ixo, iyo = self.map:toXYO(e.x, e.y)
         e:tick(dt)
+        assert(type(ixo) == 'number')
+        assert(type(iyo) == 'number')
         if e.removed then
             if e.prop then e.prop:clear(); e.prop = nil end
             if e.body then e.body:clear(); e.body = nil end
@@ -64,12 +81,15 @@ function Level:tick(dt, xo, yo, x1, y1)
             self:removeEntity(e, ixo, iyo)
         else
             local fxo, fyo = self.map:toXYO(e.x, e.y)
+            assert(type(fxo) == 'number')
+            assert(type(fyo) == 'number')
             if fxo ~= ixo or fyo ~= iyo then
                 self:removeEntity(e, ixo, iyo)
                 self:insertEntity(e, fxo, fyo)
             end
         end
     end
+    if self.script then self.script() end
 end
 
 function Level:clear()
@@ -91,19 +111,6 @@ function Level:clearStructure()
     end
 end
 
-local function clear_entity(self)
-    if self.body and self.body.clear then
-        self.body:clear()
-        self.body.clear = nil
-        self.body = nil
-    end
-    if self.prop then 
-        self.prop:clear()
-        self.prop.clear = nil
-        self.prop = nil
-    end
-end
-
 function Level:initEntities(layer)
     layer = layer._name == 'LayerObject' and layer or self.map(layer)
     for k,v in pairs(layer.objects) do
@@ -112,8 +119,6 @@ function Level:initEntities(layer)
             local e   = require(def.class)(self, def, v, layer)
             if e then 
                 self:add(e) 
-                if e.clear then error 'what are you doing bro' end
-                if not e.clear then e.clear = clear_entity end
             end
         end
     end
@@ -122,6 +127,13 @@ end
 function Level:initStructure(layer)
     layer = layer._name == 'LayerObject' and layer or self.map(layer)
     self.structure = util.makeChainFixtures(util.getSolidStructure(layer, true))
+end
+
+function Level:initProperties(camera)
+    local p = self.map.properties
+    if p and p.script then
+        self.script = require('data.level.' .. p.script)(self, camera)
+    end
 end
 
 return Level

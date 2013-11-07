@@ -1,6 +1,6 @@
 local resource = {}
 
-resource.IMAGE_PATH = nil
+resource.IMAGE_PATH = ''
 resource.DIRECTORY_SEPARATOR = '/'
 
 local function validate(path, type)

@@ -27,14 +27,14 @@
   <properties>
    <property name="un" value="ds"/>
   </properties>
-  <object name="spawn" type="Player" x="960" y="128" width="14" height="13">
+  <object name="start" type="Player" x="512" y="112" width="14" height="13">
    <properties>
     <property name="example" value="1"/>
     <property name="second" value="3"/>
    </properties>
   </object>
   <object name="goomba" type="Goomba" x="784" y="128" width="13" height="15"/>
-  <object name="goomba2" type="Spawn" x="400" y="64" width="13" height="15">
+  <object name="goomba2" type="Spawn" x="512" y="80" width="13" height="15">
    <properties>
     <property name="class" value="Goomba"/>
     <property name="offset" value="120"/>
@@ -58,8 +58,10 @@
   <object name="level2" type="Object" x="992" y="128" width="17" height="16">
    <properties>
     <property name="class" value="Door"/>
-    <property name="level" value="test.tmx"/>
-    <property name="link" value="door1"/>
+    <property name="level" value="stage1"/>
+    <property name="link" value="start"/>
+    <property name="x" value="32"/>
+    <property name="y" value="32"/>
    </properties>
   </object>
   <object name="goomba" type="Goomba" x="752" y="128" width="13" height="15"/>

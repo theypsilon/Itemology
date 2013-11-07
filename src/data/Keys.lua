@@ -10,4 +10,6 @@ return {
     ESC   = 27, -- ESCAPE
 
     reset = 48, -- 0
+
+    r     = 114, -- r
 }

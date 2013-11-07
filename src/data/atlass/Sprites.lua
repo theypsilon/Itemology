@@ -13,5 +13,9 @@ return {
         goomba1    = {x = 0,  y = 16, w = 16, h = 16},
         goomba2    = {x = 16, y = 16, w = 16, h = 16},
         deadgoomba = {x = 32, y = 16, w = 16, h = 16},
+
+        doublejump = {x = 0,  y = 32, w = 16, h = 16},
+        power2     = {x = 16, y = 32, w = 16, h = 16},
+        power3     = {x = 32, y = 32, w = 16, h = 16},
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="24" height="51" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="plattform" tilewidth="16" tileheight="16">
+  <image source="plattform.png" width="256" height="256"/>
+ </tileset>
+ <layer name="platforms" width="24" height="51">
+  <data encoding="base64" compression="zlib">
+   eJzt1sEJwDAIBVAhXcARSpbKQtm79BAiVm3TXEL7PwiJyjtL1MM0FuxfexzM4MOHD/9Pfh70y4RfjLnureTvk761Dx/+an4mO/Dhw++pQUVzL55/Z+l35CdRbHhnb1PV0v4pKBnvfpCuvk8qPb+D3t4/8OHD/6Z/AO6gNtY=
+  </data>
+ </layer>
+ <objectgroup name="objects" width="24" height="51">
+  <object name="start" type="Player" x="224" y="480" width="16" height="16"/>
+  <object x="352" y="592" height="16"/>
+ </objectgroup>
+</map>

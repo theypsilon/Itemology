@@ -6,15 +6,23 @@ function task._prepareIndex(index)
     return index
 end
 
-function task.set(index, f)
+function task.set(index, f, timer)
     callbacks[task._prepareIndex(index)] = f
 end
 
-function task.setOnce(index, f)
+function task.setOnce(index, f, timer)
     index = task._prepareIndex(index)
-    callbacks[index] = function()
+    local once = function()
         f()
         callbacks[index] = nil
+    end
+    if timer and timer > 0 then
+        callbacks[index] = function() 
+            timer = timer - 1 
+            if timer == 0 then callbacks[index] = once end
+        end
+    else
+        callbacks[index] = once
     end
 end
 

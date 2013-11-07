@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="38" height="52" tilewidth="16" tileheight="16">
+ <properties>
+  <property name="script" value="stage1"/>
+  <property name="time" value="200"/>
+ </properties>
+ <tileset firstgid="1" name="maybemario" tilewidth="16" tileheight="16">
+  <image source="maybemario.png" width="640" height="640"/>
+ </tileset>
+ <layer name="background2" width="38" height="52">
+  <data encoding="base64" compression="zlib">
+   eJzt0EEKwjAURdHfoLiNthSRovtoHRWhuEndo0/oQEomvwT5lHvgTTJILjEDAAAAAADA3tSVWZNZW5W5/5XM3mk/XYPeHzO7b+iqtaZQ11enhnOB/xm0cXUWoSuHLh+6fLxdB3Ucl0XquqrjtixMlxqSdgrWdVFDrz21OVDXpIbHT0eUrjW6fOjyidr1bz1z7QO1IzJO
+  </data>
+ </layer>
+ <layer name="background1" width="38" height="52">
+  <data encoding="base64" compression="zlib">
+   eJzt1EsOgjAYReHWdOBS0JHr4JEIe1JXA+wGh7gU7sDEiYH8TcQSzpfeMKNnVOcAAAAAAACwd3lwrtBKrQr/rvmgy4YuG7psorq8jnbwaXVl6jlp58S6ruqptSaxrjXQZUOXzRa7Xj+89649IruOM+/Tbeafg/Zc6Oq0PrLr8qVrfH/bhXuxPRP11CBX
+  </data>
+ </layer>
+ <layer name="platforms" width="38" height="52">
+  <data encoding="base64" compression="zlib">
+   eJztlDsOwjAQBdeWgWsQvh2cg38HDceB28ANuE7uAAghXgokiALSIicx1htpmi28U1grQgghhBBCCCGExM8N3nMzZ0QasGnqKBI5w0uBV9hC06imrjb2JgV24DjXlTjMYRf2YB8O4NB9fn9nRfbWb9cGrl+6Jtg/hTM4hwu4hKsvXQc0HXNdW1utmr2hwS4dMXSdjF99dVUJu3T8c1eV/13TVQfs0hFDF+/9b11pOSlvaLtSCbPrSdltWVOWFaJExwNMNF0H
+  </data>
+ </layer>
+ <objectgroup name="objects" width="38" height="52">
+  <object name="start" type="Player" x="368" y="768" width="16" height="16"/>
+  <object name="goomba" type="Goomba" x="288" y="688" width="16" height="16">
+   <properties>
+    <property name="dir" value="-1"/>
+   </properties>
+  </object>
+  <object name="goomba" type="Goomba" x="368" y="608" width="16" height="16">
+   <properties>
+    <property name="dir" value="1"/>
+   </properties>
+  </object>
+  <object name="goomba" type="Goomba" x="240" y="608" width="16" height="16">
+   <properties>
+    <property name="dir" value="1"/>
+   </properties>
+  </object>
+  <object name="end" type="Object" x="456" y="521" width="16" height="16">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="level" value="plattform"/>
+   </properties>
+  </object>
+  <object name="jump" type="Object" x="112" y="720" width="16" height="16">
+   <properties>
+    <property name="add" value="true"/>
+    <property name="charges" value="3"/>
+    <property name="class" value="power.DoubleJump"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

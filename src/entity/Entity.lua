@@ -22,6 +22,10 @@ function Entity:tick()
 	self._ticks = self._ticks + 1
 end
 
+function Entity:remove()
+    self.removed = true
+end
+
 function Entity:draw()	
 end
 

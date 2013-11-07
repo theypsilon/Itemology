@@ -51,20 +51,18 @@ function Map:_setData(data)
 	self.mapWidth    = data.width
 	self.mapHeight   = data.height
 	self.orientation = data.orientation
+	self.properties  = data.properties
 
 	self:_setTilesets(data.tilesets, data.path)
 	self:_setLayers  (data.layers)
 end
 
-local function loadTileset(tileset, dir)
-	tileset.tex = resource.getImage(dir .. tileset.image)
-	return tileset
-end
+local TileSet = require 'map.TileSet'
 
 function Map:_setTilesets(tilesets, dir)
 	local sets = {}
 	for _,tileset in ipairs(tilesets) do
-		sets[#sets + 1] = loadTileset(tileset, dir)
+		sets[#sets + 1] = TileSet(tileset, dir)
 	end
 	self.tilesets   = sets
 	self.tileatlass = setmetatable({}, {__mode = 'k'})

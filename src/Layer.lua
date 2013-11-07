@@ -22,8 +22,11 @@ local function make_layer(t, index)
     end
 
     newLayer:setViewport(viewport)
+
+    local renderTable = MOAIRenderMgr.getRenderTable() or {}
+    table.insert(renderTable, newLayer)
     
-    MOAIRenderMgr.setRenderTable{newLayer}
+    MOAIRenderMgr.setRenderTable(renderTable)
 
     rawset(t, index, newLayer)
     

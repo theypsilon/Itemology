@@ -22,8 +22,9 @@ function WalkingEnemy:_init(level, definition, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
+    p = p.properties
     self.moveDef = definition.move
-    self.dir     = 1
+    self.dir     = p and tonumber(p.dir) or 1
 end
 
 function WalkingEnemy:_setListeners()
@@ -116,9 +117,12 @@ function WalkingEnemy:draw(...)
     super.draw(self, ...)
 end
 
+local Broken = require 'entity.particle.Broken'
+
 function WalkingEnemy:hurt(rival)
     if rival._name == 'Player' then
-        self.removed = true
+        self:remove()
+
         rival:hurt(self)
     end
 end

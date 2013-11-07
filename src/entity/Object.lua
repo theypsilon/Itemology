@@ -7,6 +7,7 @@ local function Object(level, definition, p, layer)
     if o.body then 
         o.body.object = p.properties
         o.body.object.layer = layer
+        o.body.object.parent = o
     end
 
     return o

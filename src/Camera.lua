@@ -11,21 +11,26 @@ local function validate(area, padding)
     end
 end
 
+local z = 527
+
 function Camera:_init(target, area, padding)
     validate(area, padding)
 
     self.cam = MOAICamera.new()
+    local f = data.MainConfig.screen.width / data.MainConfig.world.width
 
     if target then 
         self:setTarget(target)
         self.area    = area or { 
             x = 0, y = 0, 
-            w = graphics.getWidth () <  self._limit.x and
-                graphics.getWidth () or self._limit.x, 
-            h = graphics.getHeight() <  self._limit.y and
-                graphics.getHeight() or self._limit.y,
+            w = graphics.getWidth () <  self._end.x and
+                graphics.getWidth () or self._end.x, 
+            h = graphics.getHeight() <  self._end.y and
+                graphics.getHeight() or self._end.y,
         }
     end
+
+    self.z = f * z
 
     self.padding = padding or { x = 0, y = 0 }
 end
@@ -40,9 +45,10 @@ function Camera:setTarget(target)
     validateTarget(target)
     self._target                 = target
     self._map                    = target.map
-    self._limit                  = {}
-    self._limit.x, self._limit.y = target.map:getBorder()
-    self._limit.x, self._limit.y = self._limit.x + 16 + 16, self._limit.y + 16
+    self._end                  = {}
+    self._end.x, self._end.y = target.map:getBorder()
+    self._end.x, self._end.y = self._end.x - 48, self._end.y - 16;
+    self._begin = {x=0, y=0}
     (target.prop.layer or layer.main):setCamera(self.cam)
 end
 
@@ -58,7 +64,7 @@ function Camera:draw()
     local x = self:_calcCorner('x', area.w) - area.x
     local y = self:_calcCorner('y', area.h) - area.y
 
-    self.cam:setLoc(x, y, 640)
+    self.cam:setLoc(x, y, self.z)
 end
 
 local abs = math.abs
@@ -76,10 +82,11 @@ function Camera:_calcCorner(index, length)
     self[index] = loc
 
     local corner = loc - length/2
-    local limit  = self._limit[index]
+    local ending = self._end  [index]
+    local begin  = self._begin[index]
 
-    if corner + length > limit then corner = limit - length end 
-    if corner < 0              then corner = 0              end
+    if corner + length > ending then corner = ending - length end 
+    if corner < begin           then corner = begin           end
 
     return corner
 end

@@ -4,10 +4,17 @@ return {
     fixtures = {
         ['area']={
                 option = 'rect',
-                args = {-6, 8, 6, -4},
+                args = {-6, 0, 6, 8},
                 density = 0.01,
                 restitution = 0,
                 friction = 0
+        },
+        body = {
+                option = 'rect',
+                args = {-6, -6, 6, 0},
+                density = 0.01,
+                restitution = 0,
+                friction = 0     
         },
         ['sensorL']={
                 option = 'circle',

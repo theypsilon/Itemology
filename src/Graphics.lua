@@ -9,3 +9,10 @@ end
 function graphics.getHeight()
     return flow.config.world.height
 end
+
+function graphics.getScreenW()
+    return  MOAIEnvironment.screenWidth
+end
+function graphics.getScreenH()
+    return  MOAIEnvironment.screenHeight
+end

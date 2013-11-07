@@ -63,14 +63,45 @@ function flow.run(config)
 	flow.config = config
 
 	MOAISim.openWindow ( config.title, config.screen.width, config.screen.height )
-	MOAISim.setStep ( 1 / 60 )
+	MOAISim.setStep ( 1 / 100 )
 	MOAISim.clearLoopFlags()
 	MOAISim.setLoopFlags ( MOAISim.SIM_LOOP_ALLOW_BOOST )
 	MOAISim.setBoostThreshold ( 0 )
 
+	local SCREEN_UNITS_X = config.world.width
+	local SCREEN_UNITS_Y = config.world.height
+	local SCREEN_X_OFFSET = 0
+	local SCREEN_Y_OFFSET = 0
+
+	local DEVICE_WIDTH, DEVICE_HEIGHT = config.screen.width, config.screen.height
+
+	local gameAspect = SCREEN_UNITS_Y / SCREEN_UNITS_X
+	local realAspect = DEVICE_HEIGHT / DEVICE_WIDTH
+
+	local SCREEN_WIDTH, SCREEN_HEIGHT
+	if realAspect > gameAspect then
+		SCREEN_WIDTH = DEVICE_WIDTH
+		SCREEN_HEIGHT = DEVICE_WIDTH * gameAspect
+	else
+		SCREEN_WIDTH = DEVICE_HEIGHT / gameAspect
+		SCREEN_HEIGHT = DEVICE_HEIGHT
+	end
+
+	if SCREEN_WIDTH < DEVICE_WIDTH then
+		SCREEN_X_OFFSET = ( DEVICE_WIDTH - SCREEN_WIDTH ) * 0.5
+	end
+
+	if SCREEN_HEIGHT < DEVICE_HEIGHT then
+		SCREEN_Y_OFFSET = ( DEVICE_HEIGHT - SCREEN_HEIGHT ) * 0.5
+	end
+
+	dump(SCREEN_X_OFFSET, SCREEN_Y_OFFSET, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_UNITS_X, SCREEN_UNITS_Y)
+
     global{viewport = MOAIViewport.new()}
-    viewport:setSize (config.screen.width, config.screen.height)
-    viewport:setScale(config.world .width,-config.world .height)
+	viewport:setSize ( SCREEN_X_OFFSET, SCREEN_Y_OFFSET, SCREEN_X_OFFSET + SCREEN_WIDTH, SCREEN_Y_OFFSET + SCREEN_HEIGHT )
+	viewport:setScale ( SCREEN_UNITS_X, -SCREEN_UNITS_Y )
+    -- viewport:setSize (config.screen.width, config.screen.height)
+    -- viewport:setScale(config.world .width,-config.world .height)
     viewport:setOffset(-1,1)
     flow.viewport = viewport
 
@@ -90,9 +121,9 @@ function flow.run(config)
 				lastTime = curTime;
 
 				if scene then
-					scene.update( dt )
+					scene:update( dt )
 					--for _,v in pairs(layer) do v:clearTemp() end
-					scene.draw()
+					scene:draw()
 				end
 			end				
 		end 

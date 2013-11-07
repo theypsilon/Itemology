@@ -29,7 +29,8 @@ local function decodeData(package)
             decomp({input = base64.decode("string", package[1]), output = function(b) bytes[#bytes+1] = b end})
             -- Glue the bytes into ints
             for i=1,#bytes,4 do
-                data[#data+1] = base64.glueInt(bytes[i],bytes[i+1],bytes[i+2],bytes[i+3])
+                local int = base64.glueInt(bytes[i],bytes[i+1],bytes[i+2],bytes[i+3])
+                data[#data+1] = int == 0 and -1 or int
             end
         -- If there is no compression then just convert to ints
         else
@@ -115,6 +116,12 @@ function loader.tmx(source)
             end
             
             map.layers[#map.layers + 1] = layer
+        elseif node.label == 'properties' then
+            local properties = {}
+            for _,p in ipairs(node) do
+                properties[p.xarg.name] = p.xarg.value
+            end
+            map.properties = properties
         end
     end
 

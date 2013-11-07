@@ -14,6 +14,13 @@
   </data>
  </layer>
  <objectgroup name="objects" width="5" height="5">
-  <object name="spawn" type="Player" x="17" y="18" width="13" height="13"/>
+  <object name="start" type="Player" x="17" y="18" width="13" height="13"/>
+  <object name="level1" type="Object" x="48" y="0" width="16" height="16">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="level" value="plattform.tmx"/>
+    <property name="link" value="level2"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
