@@ -48,6 +48,16 @@ local function decodeData(package)
     return data
 end
 
+local function get_properties(table)
+    if not table then return {} end
+    assert(table.label == 'properties')
+    local properties = {}
+    for _,p in ipairs(table) do
+        properties[p.xarg.name] = p.xarg.value
+    end
+    return properties
+end
+
 local function set_numbers(table, rec)
     for k,v in pairs(table) do
         local number = tonumber(v)
@@ -97,14 +107,17 @@ function loader.tmx(source)
 
             local layer = node.xarg
 
-            layer.data      = decodeData(node[1])
-            layer.encoding  = layer.encoding  or 'lua'
-            layer.opacity   = layer.opacity   or 1
-            layer.poperties = layer.poperties or {}
-            layer.x         = layer.x         or 0
-            layer.y         = layer.y         or 0
-            layer.type      = layer.type      or 'tilelayer'
-            layer.visible   = type(layer.visible) == 'boolean' and layer.visible or true
+            local details = {}
+            for _,v in ipairs(node) do details[v.label] = v end
+
+            layer.data       = decodeData(details.data)
+            layer.encoding   = layer.encoding     or 'lua'
+            layer.opacity    = layer.opacity      or 1
+            layer.properties = get_properties(details.properties)
+            layer.x          = layer.x            or 0
+            layer.y          = layer.y            or 0
+            layer.type       = layer.type         or 'tilelayer'
+            layer.visible    = type(layer.visible) == 'boolean' and layer.visible or true
 
             map.layers[#map.layers + 1] = layer
         elseif node.label == 'objectgroup' then
@@ -117,11 +130,7 @@ function loader.tmx(source)
             
             map.layers[#map.layers + 1] = layer
         elseif node.label == 'properties' then
-            local properties = {}
-            for _,p in ipairs(node) do
-                properties[p.xarg.name] = p.xarg.value
-            end
-            map.properties = properties
+            map.properties = get_properties(node)
         end
     end
 

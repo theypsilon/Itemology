@@ -17,6 +17,10 @@ local function clear_entity(self)
         self.body.clear = nil
         self.body = nil
     end
+    if self.animation and not self.prop then
+        self.prop = self.animation.prop
+        self.animation = nil
+    end
     if self.prop then 
         self.prop:clear()
         self.prop.clear = nil

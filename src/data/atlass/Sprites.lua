@@ -9,6 +9,7 @@ return {
         run2  = {x = 80,   y = 0,   w = 16, h = 16},
         fly   = {x = 96,   y = 0,   w = 16, h = 16},
         fall  = {x = 112,  y = 0,   w = 16, h = 16},
+        dead  = {x = 128,  y = 0,   w = 16, h = 16},
 
         goomba1    = {x = 0,  y = 16, w = 16, h = 16},
         goomba2    = {x = 16, y = 16, w = 16, h = 16},

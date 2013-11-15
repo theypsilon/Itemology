@@ -22,6 +22,7 @@ function Player:_init(level, def, p)
     self.pos:set(p.x, p.y)
 
     self.hp = 3
+    self.wounded = 0
     self.damage = {}
     Text:debug(self, 'hp')
 
@@ -29,6 +30,8 @@ function Player:_init(level, def, p)
     _, self.limit_map_y = level.map:getBorder()
 
     self.moveDef = def.move
+
+    self.prop:setPriority(5000)
 
     level.player = self
 end
@@ -109,6 +112,15 @@ function Player:animate()
 
     self.animation:setMirror(self.lookLeft == true)
     self.animation:next()
+
+    if self.wounded > 0 then
+        local layer = self.level.map('platforms').layer
+        if self.wounded % 10 == 0 then
+            layer:removeProp(self.prop)
+        elseif self.wounded % 10 == 5 then
+            layer:insertProp(self.prop)
+        end
+    end
 end
 
 function Player:hurt(enemy)
@@ -122,11 +134,22 @@ function Player:applyDamage()
         self:reaction(enemy)
     end
 
+    if self.wounded > 0 then
+        self.wounded = self.wounded - 1
+        self.damage  = {}
+        return
+    end
+
     if dmg > 0 then
+        self.wounded = 100
         self.hp = self.hp - dmg
-        local Particle = require 'entity.particle.JumpingText'
-        if self.hp <= 0 then self:remove() end
-        self.level:add(Particle(self.level, tostring(-dmg), self.x, self.y))
+        local PText = require 'entity.particle.JumpingText'
+        local PAnim = require 'entity.particle.Animation'
+        if self.hp <= 0 then 
+            self.level:add(PAnim(self.level, data.animation.TinyMario, 'die', self))
+            self:remove() 
+        end
+        self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
     end
 
     self.damage = {}
@@ -143,7 +166,9 @@ function Player:reaction(enemy)
 
     if enemy.removed then
         local _
-        ix, _ = self.body:getLinearVelocity()
+        ix, _  = self.body:getLinearVelocity()
+    else
+        ix, iy = ix * 1.5, iy * .5
     end
 
     self.body:setLinearVelocity(ix, iy)

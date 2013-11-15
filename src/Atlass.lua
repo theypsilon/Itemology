@@ -6,8 +6,8 @@ local function validate(path)
 
 end
 
-local function make_prop(self)
-	local prop = MOAIProp2D.new()
+local function make_prop(self, prop)
+	prop = prop or MOAIProp2D.new()
 	prop:setDeck (self.atlass.deck)
 	prop:setIndex(self.i)
 	prop:setPiv(self.w / 2, self.h / 2)
@@ -15,9 +15,9 @@ local function make_prop(self)
 	return prop
 end
 
-local function new_prop(self)
+local function new_prop(self, prop)
 	local layer = self.atlass.layer
-	local prop  = make_prop(self)
+	local prop  = make_prop(self, prop)
 
 	prop.clear  = layer.clearProp -- ALLOCATE
 
@@ -93,6 +93,10 @@ function Atlass:getOpaqueGraphics()
         end end
     end
     return tiles
+end
+
+function Atlass:prop()
+    return MOAIProp2D.new()
 end
 
 return Atlass

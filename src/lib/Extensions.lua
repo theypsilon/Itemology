@@ -51,7 +51,7 @@ function table.compare(t1, t2)
             local bool = true
             for k,v in pairs(t1) do bool = bool and table.compare(v,t2[k]) end
             return bool
-        end
+        elseif type(t1) == 'function' then return true end
         return t1 == t2
     end
     return false

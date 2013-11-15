@@ -3,7 +3,7 @@ local LayerTile = class('LayerTile', Layer)
 
 function LayerTile:_init(tiled, map)
     self.prop = self:_load(tiled.data, tiled.width, tiled.height, map.tilesets[1])
-    self.prop:setPriority(tiled.id)
+    self.prop:setPriority(tiled.properties.z or tiled.id)
     self.map  = map
 end
 
@@ -22,7 +22,7 @@ function LayerTile:_load(data, w, h, ts)
         grid:initRectGrid(w, h, ts.tilewidth, ts.tileheight)
 
         for y = 0, h - 1 do  for x = 1, w do
-            grid:setTile     (x, y + 1, data[y * w + x] == 0 and -1 or data[y * w + x])
+            grid:setTile     (x, y + 1, data[y * w + x] == 0 and -1 or data[y * w + x] or -1)
             grid:setTileFlags(x, y + 1, MOAIGridSpace.TILE_Y_FLIP) --const int FlippedHorizontallyFlag = http://getmoai.com/forums/moaigrid-confusion-t240/
         end end
         return grid

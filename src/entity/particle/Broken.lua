@@ -16,14 +16,19 @@ end
 function Broken:tick()
     super.tick(self)
 
+    local current
+
     if self._ticks > self.limit then
         self.step  = self.step + 1
         if self.step > #self.sequence then
             self:remove()
-        else
-            self.limit = self.sequence[self.step].limit
-            self.animation:setAnimation(self.sequence[self.step].animation)
+            return
         end
+        current = self.sequence[self.step]
+        self.limit = current.limit
+        self.animation:setAnimation(current.animation)
+    else
+        current = self.sequence[self.step]
     end
 
     self.animation:next()

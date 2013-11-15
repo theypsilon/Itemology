@@ -7,6 +7,14 @@
  <tileset firstgid="1" name="maybemario" tilewidth="16" tileheight="16">
   <image source="maybemario.png" width="640" height="640"/>
  </tileset>
+ <layer name="overlap" width="38" height="52">
+  <properties>
+   <property name="z" value="10000"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztzsERQEAQRcHZrBENGw2i8q8CUObQXfXurwoAAAAAgA6WUbWmbfx98rbn50iz2deZnyvdzb4AgO88bfcFsw==
+  </data>
+ </layer>
  <layer name="background2" width="38" height="52">
   <data encoding="base64" compression="zlib">
    eJzt0EEKwjAURdHfoLiNthSRovtoHRWhuEndo0/oQEomvwT5lHvgTTJILjEDAAAAAADA3tSVWZNZW5W5/5XM3mk/XYPeHzO7b+iqtaZQ11enhnOB/xm0cXUWoSuHLh+6fLxdB3Ucl0XquqrjtixMlxqSdgrWdVFDrz21OVDXpIbHT0eUrjW6fOjyidr1bz1z7QO1IzJO
@@ -19,7 +27,7 @@
  </layer>
  <layer name="platforms" width="38" height="52">
   <data encoding="base64" compression="zlib">
-   eJztlDsOwjAQBdeWgWsQvh2cg38HDceB28ANuE7uAAghXgokiALSIicx1htpmi28U1grQgghhBBCCCGExM8N3nMzZ0QasGnqKBI5w0uBV9hC06imrjb2JgV24DjXlTjMYRf2YB8O4NB9fn9nRfbWb9cGrl+6Jtg/hTM4hwu4hKsvXQc0HXNdW1utmr2hwS4dMXSdjF99dVUJu3T8c1eV/13TVQfs0hFDF+/9b11pOSlvaLtSCbPrSdltWVOWFaJExwNMNF0H
+   eJztlDsOwjAQBTeRgWsQvh2cg38HDceB28ANcp3cgAIQQrwUSCgKEQsmMeaNNM1a8k5hWYQQQgghhBBCCPGfC7xmZiYQqcF6UEWRyBGecjzDBpoGFXU1sTfKsQWHma7IYA7bsAO7sAf75vn9m1BkG9rtWsHlQ9cI+8dwAqdwBudwUdC1Q9M+07UOy1Wz1zXYpcOHrjiwq62uMmGXjl/uKvO9a7qqgF06fOj6l//+UHD2TlfyUc1raLsScbPrzrfb0qY0y0WJjhvQIV37
   </data>
  </layer>
  <objectgroup name="objects" width="38" height="52">
@@ -52,5 +60,9 @@
     <property name="class" value="power.DoubleJump"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup name="regions" width="38" height="52">
+  <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>
+  <object name="upfloor" type="Shape" x="448" y="464" width="32" height="16"/>
  </objectgroup>
 </map>

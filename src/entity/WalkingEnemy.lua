@@ -121,6 +121,8 @@ local Broken = require 'entity.particle.Broken'
 
 function WalkingEnemy:hurt(rival)
     if rival._name == 'Player' then
+        local Particle = require 'entity.particle.Animation'
+        self.level:add(Particle(self.level, data.animation.Goomba, 'die', self))
         self:remove()
 
         rival:hurt(self)

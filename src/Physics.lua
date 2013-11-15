@@ -49,6 +49,7 @@ function Physics:registerBody(def, prop, parent)
     if parent            then body.parent = parent                            end
 
     local outFixtures = {}
+    def.fixtures = def.fixtures or {}
 
     for k, value in pairs(def.fixtures) do
         local fix = dict[value.option](body,  unpack(value.args))
@@ -67,9 +68,6 @@ function Physics:registerBody(def, prop, parent)
         for k,v in pairs(self.fixtures) do v:destroy() end
         self:destroy() 
     end -- ALLOCATE (memory-leak)
-
-    local GC = require 'Test'
-    body.gc = GC()
 
     self.bodies[#self.bodies + 1] = body
 

@@ -12,6 +12,21 @@ return {
         fly   = {'fly'},
         fall  = {'fall'},
         skid  = {'skid'},
+        die   = function(animation, entity)
+            local  body = require('Physics'):registerBody({option = 'dynamic'}, animation.prop)
+            local    ey = entity.y
+            local _, ly = entity.level.map:getBorder()
+            local _,  y = body:getPosition()
+            y = y + ey
+
+            coroutine.yield()
+            body:applyLinearImpulse(0, -250)
+            while y < ly do
+                _, y = body:getPosition()
+                y = y + ey
+                coroutine.yield('dead')
+            end
+        end
     },
     extra = {
         toleranceX    = 5,
@@ -19,21 +34,3 @@ return {
         walkRunUmbral = 0.9,
     }
 }
-
-    -- sequences = function(self)
-    --     coroutine.yield()
-
-    --     local seq = {
-    --         walk  = {8, 5}, 
-    --         stand = {5}
-    --     }
-
-    --     while true do
-    --         local animation = seq[self.animation]
-    --         self.prop:setIndex(animation[self.step])
-    --         if self.step >= #animation then self.step = 1
-    --                                    else self.step = self.step + 1 end
-    --         coroutine.yield()
-    --     end
-
-    -- end

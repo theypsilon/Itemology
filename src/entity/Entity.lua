@@ -23,6 +23,7 @@ function Entity:tick()
 end
 
 function Entity:remove()
+    if self.hurt then self.hurt = function() end end
     self.removed = true
 end
 

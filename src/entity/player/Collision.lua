@@ -26,7 +26,7 @@ function Player.footSensor(p, fa, fb, a)
     local enemy = fb:getBody().parent
     if p == MOAIBox2DArbiter.BEGIN then             
         if not enemy then self.groundCount = self.groundCount + 1 end
-        if not self:onGround() and fb.name == 'head' 
+        if not self:onGround() and fb.name == 'head' and self.vy >= 0
         and enemy and enemy.hurt then
             enemy:hurt(self)
         end

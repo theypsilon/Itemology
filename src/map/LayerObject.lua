@@ -42,4 +42,10 @@ function LayerObject:__call(name, index)
     return index and self.objects[name][index] or self.objects[name]
 end
 
+function LayerObject:getRegion(name, index)
+    local Rectangle = require 'Rectangle'
+    local r = index and self.objects[name][index] or self.objects[name]
+    return Rectangle(r.x, r.y, r.x + r.width, r.y + r.height)
+end
+
 return LayerObject

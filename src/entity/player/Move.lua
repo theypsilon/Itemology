@@ -97,10 +97,6 @@ function Player:moveDoubleJump()
         self.jumping = 1
         self:doJump()
     elseif 
-        self:onGround() 
-    then 
-        self.djumping = 0 
-    elseif 
         self.keyJump 
     then
         local jump = self.moveDef.jumpImp
@@ -129,6 +125,10 @@ function Player:moveDoubleJump()
             self.jumping = self.jumping + 1
             self:doJump()
         end
+    elseif 
+        self:onGround() 
+    then 
+        self.djumping = 0 
     end
 end
 
@@ -145,7 +145,7 @@ function Player:moveWallJump()
     if touch ~= 0 then
 
         if  touch == dx and
-               vx == 0  and
+        --     vx == 0  and
             self.lastwalljump ~= touch
         then
             self.walltouch = true
