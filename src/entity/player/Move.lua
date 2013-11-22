@@ -1,9 +1,8 @@
 local Player = {}
 
-local task, scenes, Text = require 'TaskQueue', require 'Scenes', require 'Text'
+local task, scenes, Text = require 'Tasks', require 'Scenes', require 'Text'
 
 local abs     = math.abs
-local nothing = function() end 
 
 function Player:_setInitialMove(p)
     self. jumping = 0
@@ -205,7 +204,7 @@ end
 function Player:moveDoor()
     if self.dir.up == 1 and self.door then
         if self.door.level and self.door.level ~= self.level.name then
-            task.setOnce('changeMap', function() scenes.run('First', self.door, self.hp) end)
+            task:once('changeMap', function() scenes.run('First', self.door, self.hp) end)
         else
             local link = self.door.layer.objects[self.door.link]
             self.pos:set(link.x, link.y)

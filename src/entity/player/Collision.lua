@@ -52,15 +52,23 @@ end
 
 Player.object = {}
 
-function Player.object.Door(self, object, p, a)
-    if p == MOAIBox2DArbiter.BEGIN then self.door = object
-    elseif self.door == object     then self.door = nil end
+function Player.object.Door(self, o, p, a)
+    if p == MOAIBox2DArbiter.BEGIN then self.door = o
+    elseif self.door == o          then self.door = nil end
 end
 
-Player.object['power.DoubleJump'] = function(self, object, p, a)
+function Player.object.Power(self, o, p, a)
     if p == MOAIBox2DArbiter.BEGIN then 
-        self.power.djump = object.charges + (object.add and self.power.djump or 0)
-        object.parent.removed = true
+        self.tasks:once(o.power, function()
+            self.power[o.power] = o.charges + 
+                                 (o.add and self.power[o.power] or 0)
+
+            local remove = tonumber(o.remove) or 1
+
+            if remove <= 1 
+            then o.parent:remove()
+            else o.remove = remove - 1 end
+        end)
     end
 end
 

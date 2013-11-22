@@ -1,8 +1,8 @@
 scene = {}
 
-local Scenes, Layer, Camera, Level, Data, Physics, Test, TaskQueue, Input, Flow, Text, Job =  
+local Scenes, Layer, Camera, Level, Data, Physics, Test, Tasks, Input, Flow, Text, Job =  
 require 'Scenes', require 'Layer',   require 'Camera', require 'Level', 
-require 'Data',   require 'Physics', require 'Test',   require 'TaskQueue',
+require 'Data',   require 'Physics', require 'Test',   require 'Tasks',
 require 'Input',  require 'Flow',    require 'Text',   require 'Job'
 
 function scene:load(start, hp)
@@ -39,16 +39,16 @@ function scene:load(start, hp)
     self.cameras, self.level, self.player = cameras, level, player
 
     Input.bindAction('reset', function() 
-        TaskQueue.setOnce('reset', function()
+        Tasks:once('reset', function()
             for i = 1, 1, 1 do Scenes.run('First') end
         end)
     end)
 
     local fps    = Text:print('FPS: 60.1', 10, 8)
 
-    TaskQueue.set('updateFPS'   , Job.cron(100, function() 
+    Tasks:set('updateFPS'   , function() 
         fps:setString('FPS: ' .. tostring(MOAISim.getPerformance()):sub(0, 4))
-    end))
+    end, 100)
 end 
 
 function scene:draw()
@@ -73,7 +73,8 @@ function scene:update(dt)
         end)
         self.player.removed = nil
     end
-    for _,f in TaskQueue.iterator() do f() end
+
+    Tasks()
 end
 
 function scene:focus(inside)

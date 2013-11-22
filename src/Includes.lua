@@ -17,9 +17,10 @@ global{reload = require 'lib.Reload'}
 
 -- application
 
-global{timeStart = os.time()}
+global{timeStart = os.time ()    }
+global{nothing   = function() end}
 require 'Test'
-require 'TaskQueue'
+require 'Tasks'
 require 'Data'
 require 'Flow'
 require 'resource.Resource'

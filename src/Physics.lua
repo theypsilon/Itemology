@@ -66,8 +66,10 @@ function Physics:registerBody(def, prop, parent)
     body.fixtures = outFixtures
     body.clear = function(self) 
         for k,v in pairs(self.fixtures) do v:destroy() end
-        self:destroy() 
-    end -- ALLOCATE (memory-leak)
+        self:destroy()
+        self.fixtures = nil
+        self.clear    = nil
+    end
 
     self.bodies[#self.bodies + 1] = body
 

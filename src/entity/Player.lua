@@ -1,7 +1,7 @@
 local super = require 'entity.Mob'
 
 local Position, Animation, physics, input = require 'entity.Position', require 'Animation', require 'Physics', require 'Input'
-local task, flow, Text = require 'TaskQueue', require 'Flow', require 'Text'
+local flow, Text = require 'Flow', require 'Text'
 
 local Player = class('Player', super, require 'entity.player.Move')
 
@@ -13,10 +13,13 @@ function Player:_init(level, def, p)
 
     self.body = physics:registerBody(def.fixture, self.prop, self)
 
-    require('entity.player.Collision')._setListeners(self)
+    local coll = require('entity.player.Collision')
+    coll._setListeners(self)
     self:_setInput(p)
     self:_setPower(p)
     self:_setInitialMove(p)
+
+    self.tasks = require('Tasks').new()
 
     self.pos = Position(self.body)
     self.pos:set(p.x, p.y)
@@ -67,6 +70,8 @@ end
 local abs = math.abs
 
 function Player:tick(dt)
+
+    self.tasks()
 
     self. x, self. y  = self.pos.x, self.pos.y
     self.vx, self.vy  = self.body:getLinearVelocity()

@@ -2,7 +2,7 @@ local resource, layer = require 'Resource', require 'Layer'
 
 return function(ts, dir)
     local spa = ts.spacing
-    if spa and spa > 0 then
+    if false and spa and spa > 0 then
         local src = resource.getImage(dir .. ts.image, true)
         local img = MOAIImage.new()
         img:init(ts.imagewidth, ts.imageheight)

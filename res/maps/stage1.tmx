@@ -57,7 +57,8 @@
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="3"/>
-    <property name="class" value="power.DoubleJump"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="djump"/>
    </properties>
   </object>
  </objectgroup>

@@ -10,6 +10,8 @@ local function Object(level, definition, p, layer)
         o.body.object.parent = o
     end
 
+    if not o.tick then o.tick = nothing end
+
     return o
 end
 

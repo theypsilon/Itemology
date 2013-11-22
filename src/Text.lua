@@ -60,7 +60,7 @@ function Text:debug(object, index, string, deactivate)
         return
     end
 
-    local Task, Job = require 'TaskQueue', require 'Job'
+    local Tasks, Job = require 'Tasks', require 'Job'
 
     string = string or index .. ' = '
 
@@ -69,7 +69,7 @@ function Text:debug(object, index, string, deactivate)
     if debugList[string] then Layer.Debug:removeProp(debugList[string].t) end
     debugList[string] = {t=text, k=index, o=object}
 
-    Task.set('textDebug', function()
+    Tasks:set('textDebug', function()
         local i = 0
         for s,v in pairs(debugList) do 
             v.t:setString(s .. v.o[v.k])

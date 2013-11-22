@@ -15,7 +15,7 @@ config.screen.fsaa       = 0     -- The number of FSAA-buffers (number)
 config.world.width       = 568
 config.world.height      = 320
 
-config.sanitychecks   = true--timeStart % 10 == 0
+config.sanitychecks   = timeStart % 10 == 0
 if not config.sanitychecks then
     config.autoreloaddata = false
     config.reloaddata     = true

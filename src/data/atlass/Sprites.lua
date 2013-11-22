@@ -15,8 +15,22 @@ return {
         goomba2    = {x = 16, y = 16, w = 16, h = 16},
         deadgoomba = {x = 32, y = 16, w = 16, h = 16},
 
-        doublejump = {x = 0,  y = 32, w = 16, h = 16},
+        djump      = {x = 0,  y = 32, w = 16, h = 16},
         power2     = {x = 16, y = 32, w = 16, h = 16},
         power3     = {x = 32, y = 32, w = 16, h = 16},
+
+        diamond1   = {x = 0,  y = 48, w = 16, h = 16},
+        diamond2   = {x = 16, y = 48, w = 16, h = 16},
+        diamond3   = {x = 32, y = 48, w = 16, h = 16},
+        diamond4   = {x = 48, y = 48, w = 16, h = 16},
+
+        coin1   = {x = 0,   y = 64, w = 16, h = 16},
+        coin2   = {x = 16,  y = 64, w = 16, h = 16},
+        coin3   = {x = 32,  y = 64, w = 16, h = 16},
+        coin4   = {x = 48,  y = 64, w = 16, h = 16},
+        coin5   = {x = 64,  y = 64, w = 16, h = 16},
+        coin6   = {x = 80,  y = 64, w = 16, h = 16},
+        coin7   = {x = 96,  y = 64, w = 16, h = 16},
+        coin8   = {x = 112, y = 64, w = 16, h = 16},
     }
 }

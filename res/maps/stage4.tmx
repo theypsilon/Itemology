@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="9" height="8" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="match3_sheet_0" tilewidth="16" tileheight="16">
+  <image source="match3_sheet_0.png" width="410" height="304"/>
+ </tileset>
+ <layer name="background" width="9" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF+AAAASAAAQ==
+  </data>
+ </layer>
+ <layer name="platforms" width="9" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh8gBGImQiokQJiaTq4BQAX2AA5
+  </data>
+ </layer>
+ <objectgroup name="objects" width="9" height="8">
+  <object name="start" type="Player" x="32" y="32" width="16" height="16"/>
+ </objectgroup>
+</map>

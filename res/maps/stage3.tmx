@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="9" height="8" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tileset_5" tilewidth="16" tileheight="16" spacing="1">
+  <image source="tileset_5.png" width="425" height="204"/>
+ </tileset>
+ <layer name="background" width="9" height="8">
+  <data encoding="base64" compression="zlib">
+   eJzzZWBg8IViKSBmgtJ2SNgXCRtDaVM8akC4HkrjU4MNDzYAAADgCZ0=
+  </data>
+ </layer>
+ <layer name="platforms" width="9" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAfmA7EM/DgmUC8AYg34sGbgPgkEJ/Cg08D8SMgfowHPwFiEUYGBgkgFoXSIDcg02JADAD21xx9
+  </data>
+ </layer>
+ <objectgroup name="objects" width="9" height="8">
+  <object name="start" type="Player" x="32" y="32" width="16" height="16"/>
+ </objectgroup>
+</map>

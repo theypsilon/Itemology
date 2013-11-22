@@ -1,4 +1,4 @@
-local Task = require 'TaskQueue'
+local Tasks = require 'Tasks'
 
 return function(level, camera)
     local player
@@ -29,7 +29,7 @@ return function(level, camera)
 
         if player.power.djump == 0 or (cheat:contains(player) and trick) then
             if not djump then
-                Task.setOnce('respawnJump', function() level:add(createJump()) end, 150)
+                Tasks:once('respawnJump', function() level:add(createJump()) end, 150)
                 djump = true
             end
             trick = player.power.djump == 0

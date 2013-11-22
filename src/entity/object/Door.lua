@@ -18,5 +18,5 @@ return function(d,p)
 
     body.object = p.properties
 
-    return {body = body, x=x, y=y, tick=function() end}
+    return {body = body, x=x, y=y}
 end

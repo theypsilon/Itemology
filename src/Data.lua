@@ -1,6 +1,6 @@
 local meta = {}
 
-local task = require 'TaskQueue'
+local task = require 'Tasks'
 
 function meta.__index(table, key)
     local letter = key:sub(0,1)
@@ -57,13 +57,13 @@ function data._update()
 end
 
 if data.MainConfig.sanitychecks   then
-    task.set('dataAssertImmutable', function() data._autoUpdate(true) end)
+    task:set('dataAssertImmutable', function() data._autoUpdate(true) end)
 end
 if data.MainConfig.autoreloaddata then
-    task.set('dataAutoUpdate'     , data._autoUpdate                     )
+    task:set('dataAutoUpdate'     , data._autoUpdate                     )
 end
 if data.MainConfig.reloaddata     then
-    task.set('dataUpdate'         , data._update                         )
+    task:set('dataUpdate'         , data._update                         )
 end
 
 global{data = data}

@@ -6,13 +6,10 @@ return {
     constructCall   = true,
     sequences = {
         walk  = {'goomba1', 'goomba2'}, 
-        die   = function(animation, entity, a, c)
-            local layer = animation.atlass.layer
-            local init  = entity._ticks
+        die   = function(a, entity, a, c)
+            local  init  =  entity._ticks
             coroutine.yield()
-            while init + 100 > entity._ticks do
-                coroutine.yield('deadgoomba')
-            end
+            while  init + 100 > entity._ticks do coroutine.yield('deadgoomba') end
         end
     },
     extra = {
