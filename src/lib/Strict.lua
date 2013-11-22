@@ -6,22 +6,26 @@
 -- anywhere or assigned to inside a function.
 --
 
-local alert = error
+local env = _G
 
-local mt = getmetatable(_G)
+local mt = getmetatable(env)
 if mt == nil then
   mt = {}
-  setmetatable(_G, mt)
+  setmetatable(env, mt)
+else
+  assert(not mt.__newindex)
+  assert(not mt.__declared)
+  assert(not mt.__index   )
 end
 
-__STRICT = true
+__STRICT = false
 mt.__declared = {}
 
 mt.__newindex = function (t, n, v)
   if __STRICT and not mt.__declared[n] then
     local w = debug.getinfo(2, "S").what
     if w ~= "main" and w ~= "C" then
-      alert("assign to undeclared variable '"..n.."' in ", 2)
+      error("assign to undeclared variable '"..n.."' in ", 2)
     end
     mt.__declared[n] = true
   end
@@ -29,18 +33,28 @@ mt.__newindex = function (t, n, v)
 end
   
 mt.__index = function (t, n)
-  if not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
-    alert("variable '"..n.."' is not declared", 2)
+  if __STRICT and not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
+    error("variable '"..n.."' is not declared", 2)
   end
   return rawget(t, n)
 end
 
-function global(...)
+local function global(...)
   local params = {...}
   if params[1]  and  type(params[1]) == 'table' 
-  then for k, v in  pairs(params[1]) do mt.__declared[k] = true; _G[k] = v end
+  then for k, v in  pairs(params[1]) do mt.__declared[k] = true; env[k] = v end
   else for _, v in ipairs(params)    do mt.__declared[v] = true end 
   end
 end
 
-function defined(var) return mt.__declared[var] end
+local function defined(var) return mt.__declared[var] end
+
+local exports = {
+  __STRICT = true,
+  global   = global,
+  defined  = defined
+}
+
+require('lib.Import').make_exportable(exports)
+
+return exports

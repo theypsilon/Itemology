@@ -1,4 +1,4 @@
-local resource, layer = require 'Resource', require 'Layer'
+local resource, layer = require 'resource.Resource', require 'Layer'
 
 return function(ts, dir)
     local spa = ts.spacing

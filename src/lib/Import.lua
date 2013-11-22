@@ -1,4 +1,4 @@
-function addPackagePath(path)
+local function add_package_path(path)
     if path == '' then return end
     package.path = package.path .. ';' .. path .. '?.lua'
     package.path = package.path .. ';' .. path .. '?/init.lua'
@@ -23,7 +23,7 @@ local function get_file(path)
     return path:sub(i+1,#path)
 end
 
-local function hackRequire(pathTable)
+local function hack_require(pathTable)
     for k, v in pairs(pathTable) do
         if type(k) == 'table' then
             for _, path in ipairs(k) do
@@ -44,21 +44,21 @@ local function hackRequire(pathTable)
     end
 end
 
-function import(pathTable, envscope, declwithdirs)
+local function import(pathTable, envscope, declwithdirs)
     local oldpackage = package.path
     local oldrequire = require
     local env = envscope or {}
     for k,v in pairs(pathTable) do
         if type(k) == 'number' then
             if is_dir(v) then
-                addPackagePath(v)
+                add_package_path(v)
             else
                 env[declwithdirs and v or get_file(v)] = require(v)
             end
             pathTable[k] = nil
         end
     end
-    require = hackRequire(pathTable)
+    require = hack_require(pathTable)
     for k,_ in pairs(pathTable) do
         env[declwithdirs and k or get_file(k)] = require(k)
     end
@@ -66,3 +66,25 @@ function import(pathTable, envscope, declwithdirs)
     package.path = oldpackage
     return env
 end
+
+local    metaexport = {}
+function metaexport.__call(t, env)
+    env = env or _G
+    for k, v in pairs(t) do
+        if __STRICT then global(k) end -- deal with strict mode
+        assert(not env[k], k .. ' is already defined')
+        env[k] = v 
+    end
+end
+
+local function make_exportable(exports)
+    assert(not getmetatable(exports), 'cant make this exportable')
+    setmetatable(exports, metaexport)
+    return exports
+end
+
+return {
+    add_package_path = add_package_path,
+    import           = import,
+    make_exportable  = make_exportable
+}

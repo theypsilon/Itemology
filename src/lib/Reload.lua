@@ -64,4 +64,4 @@ reload.file     = reloadFile
 reload.tasks    = reload.tasks or {}
 reload.all      = reloadTasks
 
-return reload
+return require('lib.Import').make_exportable{ reload = reload }

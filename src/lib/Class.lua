@@ -232,4 +232,11 @@ class.properties = {}
 class.properties.__index    = property_access('get_', rawget)
 class.properties.__newindex = property_access('set_', rawset)
 
-return class
+local exports = {
+    class      = class,
+    properties = class.properties
+}
+
+require('lib.Import').make_exportable(exports)
+
+return exports

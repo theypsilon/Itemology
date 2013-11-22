@@ -1,4 +1,4 @@
-require 'Includes'
+require 'Globals'
 local flow, scenes, layer, data, Atlass = require 'Flow', require 'Scenes', require 'Layer', require 'Data', require 'Atlass'
 
 function flow.load()
@@ -7,8 +7,6 @@ function flow.load()
     layer.main:setPartition(MOAIPartition.new())
 
     resource.IMAGE_PATH = 'res/img/'
-
-    global{sprites   = Atlass(data.atlass.Sprites)}
 
 	scenes.run('First')
 end
