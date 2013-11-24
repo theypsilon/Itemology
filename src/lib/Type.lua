@@ -8,10 +8,12 @@ local is_string   = gen_is_type('string'  )
 local is_boolean  = gen_is_type('boolean' )
 local is_table    = gen_is_type('table'   )
 local is_userdata = gen_is_type('userdata')
+local is_thread   = gen_is_type('thread'  )
 
 local function is_callable(f)
-    return is_function(f) or 
-        is_callable(getmetatable(f).__call)
+    if is_function(f) then return true end
+     local mt = getmetatable(f)
+    return mt and is_callable(mt.__call)
 end
 
 local function is_integer(n)
@@ -25,6 +27,7 @@ local exports = {
     is_boolean  = is_boolean ,
     is_table    = is_table   ,
     is_userdata = is_userdata,
+    is_thread   = is_thread  ,
     is_callable = is_callable,
     is_integer  = is_integer
 }
