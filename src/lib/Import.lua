@@ -71,8 +71,8 @@ local    metaexport = {}
 function metaexport.__call(t, env)
     env = env or _G
     for k, v in pairs(t) do
-        assert(not rawget(env, k), k .. ' is already defined')
-        assert(type(k) == 'string', 'only strings')
+        assert(not rawget(env, k) , k .. ' is already defined')
+        assert(type(k) == 'string', 'only strings are allowed')
         rawset(env, k, v)
     end
 end
