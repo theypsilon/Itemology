@@ -1,4 +1,4 @@
-local Animation, Physics, Input, Flow, Text; import()
+local Animation, Physics, Input, Text; import()
 
 local super    = require 'entity.Mob'
 local Position = require 'entity.Position'
