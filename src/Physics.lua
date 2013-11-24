@@ -1,5 +1,3 @@
-local data = require 'Data'
-
 local Physics = {}
 function Physics:init(def)
     if not self.started then

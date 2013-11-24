@@ -1,11 +1,12 @@
-local Map, layer, data, util = require 'map.Map', require 'Layer', require 'Data', require 'map.Util'
+local Layer, Data; import()
+local Map, Util = require 'map.Map', require 'map.Util'
 
 local Level = class.Level()
 
 function Level:_init(mapfile)
     self.name = mapfile 
     self.map  = Map('res/maps/' .. mapfile)
-    self.map:setLayer(layer.main)
+    self.map:setLayer(Layer.main)
 
     self.entitiesInMap = {}
     self.entities      = {}
@@ -119,7 +120,7 @@ function Level:initEntities(layer)
     layer = layer._name == 'LayerObject' and layer or self.map(layer)
     for k,v in pairs(layer.objects) do
         if v.x and v.y and v.type then
-            local def = data.entity[v.type]
+            local def = Data.entity[v.type]
             local e   = require(def.class)(self, def, v, layer)
             if e then 
                 self:add(e) 
@@ -130,7 +131,7 @@ end
 
 function Level:initStructure(layer)
     layer = layer._name == 'LayerObject' and layer or self.map(layer)
-    self.structure = util.makeChainFixtures(util.getSolidStructure(layer, true))
+    self.structure = Util.makeChainFixtures(Util.getSolidStructure(layer, true))
 end
 
 function Level:initProperties(camera)
