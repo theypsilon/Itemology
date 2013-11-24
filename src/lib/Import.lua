@@ -4,46 +4,6 @@ local function add_package_path(path)
     package.path = package.path .. ';' .. path .. '?/init.lua'
 end
 
-local function assert_string(string)
-    if type(string) ~= 'string' then
-        error('wrong format, string expected, but got '..type(string))
-    end
-end
-
-local function is_dir(path)
-    local  endchar = path:sub(-1)
-    return endchar == '/' or endchar == '.'
-end
-
-local function get_file(path)
-    local i = #path
-    while i > 0 and not is_dir(path:sub(i,i)) do
-        i = i - 1
-    end
-    return path:sub(i+1,#path)
-end
-
-local function hack_require(pathTable)
-    for k, v in pairs(pathTable) do
-        if type(k) == 'table' then
-            for _, path in ipairs(k) do
-                pathTable[path] = v
-            end
-            pathTable[k] = nil
-        else assert_string(k) end
-    end
-    local require = require
-    return function(path)
-        assert_string(path)
-        local search = pathTable[path]
-        if search == nil then
-            return require(path)
-        else
-            return require(is_dir(search) and search..path or search)
-        end
-    end
-end
-
 local function empty_locals(level)
     local variables, idx = {}, 1
 
