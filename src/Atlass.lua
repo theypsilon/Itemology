@@ -1,6 +1,6 @@
 local Atlass = class.Atlass()
 
-local global_layer = require 'Layer'
+local global_layer, resource = require 'Layer', require 'resource'
 
 local function validate(path)
 

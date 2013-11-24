@@ -1,6 +1,6 @@
 local Camera = class.Camera()
 
-local Entity, layer = require 'entity.Entity', require 'Layer'
+local Entity, layer, graphics = require 'entity.Entity', require 'Layer', require 'Graphics'
 
 local function validate(area, padding)
     if area and (not area.x or not area.y or not area.w or not area.h) then

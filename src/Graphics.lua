@@ -1,5 +1,4 @@
-global('love', 'graphics')
-graphics = love and love.graphics or {}
+local graphics = defined('love') and love.graphics or {}
 
 local flow = require 'Flow'
 
@@ -16,3 +15,5 @@ end
 function graphics.getScreenH()
     return  MOAIEnvironment.screenHeight
 end
+
+return graphics

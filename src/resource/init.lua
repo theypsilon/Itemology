@@ -33,15 +33,4 @@ function resource.getDirectoryPath(path)
     return path:match("(.*"..resource.DIRECTORY_SEPARATOR..")")
 end
 
-setmetatable(resource, {
-    __call = function(t, env, name)
-        env  = env or _G
-        name = name or 'resource'
-        if __STRICT then global(name) end
-        assert(not env[name], name .. ' is already defined')
-        env[name] = resource
-        setmetatable(resource, nil)
-    end
-})
-
-return resource
+return make_exportable(resource)

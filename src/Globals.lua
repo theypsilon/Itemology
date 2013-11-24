@@ -1,6 +1,6 @@
 -- import helper
 
-require 'lib.Import'
+require 'lib.Import'()
 
 -- own lua libs
 
@@ -11,9 +11,7 @@ require 'lib.Class' ()
 require 'lib.Debug' ()
 require 'lib.Reload'()
 
--- application
+-- application globals
 
 global{timeStart = os.time ()    }
 global{nothing   = function() end}
-require 'resource.Resource'()
-require 'Graphics'

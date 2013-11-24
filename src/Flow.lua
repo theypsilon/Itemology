@@ -42,7 +42,7 @@ function flow.reset()
 end
 
 function flow.exit()
-	if love then
+	if defined('love') then
 		love.event.push("quit")
 	else
 		os.exit()
@@ -50,7 +50,7 @@ function flow.exit()
 end
 
 function flow.run(config)
-	if love then return end
+	if defined('love') then return end
 
 	config = config or { 
 		title  = 'Noname', 
@@ -58,7 +58,7 @@ function flow.run(config)
 		world  = {width = 800, height = 600},
 	}
 
-	if config.sanitychecks then print '*sanity checks enabled*' end
+	if config.dev.sanitychecks then print '*sanity checks enabled*' end
 
 	flow.config = config
 

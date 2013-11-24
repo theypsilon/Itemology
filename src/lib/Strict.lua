@@ -47,7 +47,7 @@ local function global(...)
   end
 end
 
-local function defined(var) return mt.__declared[var] end
+local function defined(var) return mt.__declared[var] or rawget(env,var) ~= nil end
 
 local exports = {
   __STRICT = true,

@@ -1,4 +1,4 @@
-local config = { screen = {}, world = {}}
+local config = { screen = {}, world = {}, dev = {}}
 
 config.title    = 'Itemology'    -- The title of the window the game is in (string)
 config.author   = 'theypsilon'   -- The author of the game (string)
@@ -15,12 +15,12 @@ config.screen.fsaa       = 0     -- The number of FSAA-buffers (number)
 config.world.width       = 568
 config.world.height      = 320
 
-config.sanitychecks   = timeStart % 10 == 0
-if not config.sanitychecks then
-    config.autoreloaddata = false
-    config.reloaddata     = true
+config.dev.sanitychecks   = timeStart % 10 == 0
+if not config.dev.sanitychecks then
+    config.dev.autoreloaddata = false
+    config.dev.reloaddata     = true
 end
 
---config.debugPhysics = true
+--config.dev.debug_physics = true
 
 return config

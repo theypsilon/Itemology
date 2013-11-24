@@ -56,13 +56,13 @@ function data._update()
     reload_data('data.move.Goomba')
 end
 
-if data.MainConfig.sanitychecks   then
+if data.MainConfig.dev.sanitychecks   then
     task:set('dataAssertImmutable', function() data._autoUpdate(true) end)
 end
-if data.MainConfig.autoreloaddata then
+if data.MainConfig.dev.autoreloaddata then
     task:set('dataAutoUpdate'     , data._autoUpdate                     )
 end
-if data.MainConfig.reloaddata     then
+if data.MainConfig.dev.reloaddata     then
     task:set('dataUpdate'         , data._update                         )
 end
 

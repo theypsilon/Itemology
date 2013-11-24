@@ -3,7 +3,7 @@ local LayerTile   = require 'map.LayerTile'
 local Layer       = require 'map.Layer'
 local loader      = require 'map.Loader'
 
-local Atlass, layer = require 'Atlass', require 'Layer'
+local Atlass, layer, resource = require 'Atlass', require 'Layer', require 'resource'
 
 local Map = class('Map')
 

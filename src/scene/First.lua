@@ -9,7 +9,7 @@ function scene:load(start, hp)
 
     Physics:init(data.world.First)
 
-    if Data.MainConfig.debugPhysics then Layer.main:setBox2DWorld (Physics.world) end
+    if Data.MainConfig.dev.debugPhysics then Layer.main:setBox2DWorld (Physics.world) end
     
     local level     = Level (start and start.level or "stage1.tmx")
           level:initEntities ('objects'  )

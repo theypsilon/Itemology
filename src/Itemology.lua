@@ -1,5 +1,7 @@
 require 'Globals'
-local flow, scenes, layer, data, Atlass = require 'Flow', require 'Scenes', require 'Layer', require 'Data', require 'Atlass'
+
+local flow, scenes, layer, data = require 'Flow', require 'Scenes', require 'Layer', require 'Data'
+local resource = require 'resource'
 
 function flow.load()
 	print 'Welcome to Itemology!'
