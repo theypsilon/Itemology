@@ -1,6 +1,6 @@
-local flow = {}
+local Layer = require 'Layer'
 
-local layer = require 'Layer'
+local flow = {}
 
 local callbacks = {
 	'load', 'update', 'draw', 'mousepressed', 'mousereleased',
@@ -122,7 +122,7 @@ function flow.run(config)
 
 				if scene then
 					scene:update( dt )
-					--for _,v in pairs(layer) do v:clearTemp() end
+					--for _,v in pairs(Layer) do v:clearTemp() end
 					scene:draw()
 				end
 			end				
@@ -135,7 +135,7 @@ function flow.clear()
 	local physics = require 'Physics'
 	
 	physics:clear()
-	layer.main:clear()
+	Layer.main:clear()
 	-- table.each_recursive(item, function(k, v)
 	-- 	local t = type(v)
 

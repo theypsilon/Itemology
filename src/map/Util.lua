@@ -1,8 +1,7 @@
+local Physics         = require 'Physics'
 local MarchingSquares = require 'algorithm.MarchingSquares'
 
 local Util     = {}
-
-local physics = require 'Physics'
 
 local function check(x,y,isWall,checked)
     checked = checked or {}
@@ -81,7 +80,7 @@ end
 function Util.makeChainFixtures(structure)
     local chains = {}
     for _,poly in pairs(structure) do
-        local floor = physics:registerBody{
+        local floor = Physics:registerBody{
             option = 'static',
             x = 0, y = 0,
             fixtures = {{
@@ -108,7 +107,7 @@ function Util.makeSquareFixtures(wall, width, height)
         end
     end end
 
-    return physics:registerBody{
+    return Physics:registerBody{
         option = 'static',
         x = 0, y = 0,
         fixtures = edges

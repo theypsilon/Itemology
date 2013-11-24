@@ -1,6 +1,6 @@
-local Level = class.Level()
-
 local Map, layer, data, util = require 'map.Map', require 'Layer', require 'Data', require 'map.Util'
+
+local Level = class.Level()
 
 function Level:_init(mapfile)
     self.name = mapfile 

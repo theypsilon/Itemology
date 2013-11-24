@@ -1,4 +1,4 @@
-local resource, layer = require 'resource', require 'Layer'
+local resource, Layer; import()
 
 return function(ts, dir)
     local spa = ts.spacing
@@ -28,7 +28,7 @@ return function(ts, dir)
         -- prop:setDeck ( quad )
         -- prop:setLoc(w/2, h/2)
         -- prop:setPriority(1000)
-        -- layer.text:insertProp ( prop )
+        -- Layer.text:insertProp ( prop )
 
         ts.tex = texture
     else

@@ -1,4 +1,4 @@
-local physics   = require 'Physics'
+local Physics   = require 'Physics'
 local Animation = require 'Animation'
 
 local function remove(self) self.removed = true   end
@@ -10,7 +10,7 @@ return function(d,p)
     animation:setAnimation(p.properties.power)
 
     local prop  = animation.prop
-    local body, fix = physics:registerBody({
+    local body, fix = Physics:registerBody({
         id = 'Mob',
         option = 'static',
         fixtures = {

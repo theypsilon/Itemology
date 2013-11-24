@@ -1,7 +1,6 @@
-local Text = {store = {}}
-
 local Layer = require 'Layer'
 
+local Text = {store = {}}
 function Text:init()
     local def = data.language.Config
 

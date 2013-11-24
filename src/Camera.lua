@@ -1,6 +1,6 @@
-local Camera = class.Camera()
+local Entity, Layer, Graphics = require 'entity.Entity', require 'Layer', require 'Graphics'
 
-local Entity, layer, graphics = require 'entity.Entity', require 'Layer', require 'Graphics'
+local Camera = class.Camera()
 
 local function validate(area, padding)
     if area and (not area.x or not area.y or not area.w or not area.h) then
@@ -23,10 +23,10 @@ function Camera:_init(target, area, padding)
         self:setTarget(target)
         self.area    = area or { 
             x = 0, y = 0, 
-            w = graphics.getWidth () <  self._end.x and
-                graphics.getWidth () or self._end.x, 
-            h = graphics.getHeight() <  self._end.y and
-                graphics.getHeight() or self._end.y,
+            w = Graphics.getWidth () <  self._end.x and
+                Graphics.getWidth () or self._end.x, 
+            h = Graphics.getHeight() <  self._end.y and
+                Graphics.getHeight() or self._end.y,
         }
     end
 
@@ -49,7 +49,7 @@ function Camera:setTarget(target)
     self._end.x, self._end.y = target.map:getBorder()
     self._end.x, self._end.y = self._end.x - 48, self._end.y - 16;
     self._begin = {x=0, y=0}
-    (target.prop.layer or layer.main):setCamera(self.cam)
+    (target.prop.layer or Layer.main):setCamera(self.cam)
 end
 
 function Camera:draw()

@@ -1,9 +1,8 @@
+local Animation = require 'Animation'
+
 local super = require 'entity.Entity'
 
 local ParticleAnimation = class.ParticleAnimation(super)
-
-local Animation = require 'Animation'
-
 function ParticleAnimation:_init(level, def, default, p, prop, skip, ...)
     super._init(self, level, p.x, p.y)
 

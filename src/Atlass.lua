@@ -1,6 +1,6 @@
-local Atlass = class.Atlass()
+local Layer, resource; import()
 
-local global_layer, resource = require 'Layer', require 'resource'
+local Atlass = class.Atlass()
 
 local function validate(path)
 
@@ -67,7 +67,7 @@ function Atlass:_init(definition, layer, cpu)
         end
 
         self.tex      = tex
-        self.layer    = layer or global_layer.main
+        self.layer    = layer or Layer.main
         self.deck     = deck
         self.graphics = frames
         self.total    = total

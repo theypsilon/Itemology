@@ -1,8 +1,8 @@
-local physics = require 'Physics'
+local Physics = require 'Physics'
 
 return function(d,p)
     local x, y, w, h = p.x, p.y, p.width, p.height
-    local body, fix = physics:registerBody {
+    local body, fix = Physics:registerBody {
         id = 'Mob',
         option = 'static',
         fixtures = {

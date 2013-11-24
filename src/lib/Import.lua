@@ -44,27 +44,23 @@ local function hack_require(pathTable)
     end
 end
 
-local function import(pathTable, envscope, declwithdirs)
-    local oldpackage = package.path
-    local oldrequire = require
-    local env = envscope or {}
-    for k,v in pairs(pathTable) do
-        if type(k) == 'number' then
-            if is_dir(v) then
-                add_package_path(v)
-            else
-                env[declwithdirs and v or get_file(v)] = require(v)
-            end
-            pathTable[k] = nil
-        end
+local function empty_locals(level)
+  local variables = {}
+  local idx = 1
+  while true do
+    local ln, lv = debug.getlocal(level, idx)
+    if ln ~= nil and lv == nil then
+      variables[ln] = idx
+    else
+      break
     end
-    require = hack_require(pathTable)
-    for k,_ in pairs(pathTable) do
-        env[declwithdirs and k or get_file(k)] = require(k)
-    end
-    require      = oldrequire
-    package.path = oldpackage
-    return env
+    idx = 1 + idx
+  end
+  return variables
+end
+
+local function import()
+    for k,v in pairs(empty_locals(3)) do debug.setlocal(2, v, require(k)) end
 end
 
 local    metaexport = {}

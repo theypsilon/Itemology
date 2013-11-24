@@ -1,7 +1,5 @@
 local scenes = {}
 
-local flow = require 'Flow'
-
 local callbacks = { 
 	'update', 'draw', 'mousepressed', 'mousereleased',
 	'keypressed', 'keyreleased', 'focus' 

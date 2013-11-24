@@ -1,9 +1,9 @@
-local LayerObject = require 'map.LayerObject'
-local LayerTile   = require 'map.LayerTile'
-local Layer       = require 'map.Layer'
-local loader      = require 'map.Loader'
+local Atlass, Layer, resource; import()
 
-local Atlass, layer, resource = require 'Atlass', require 'Layer', require 'resource'
+local LayerObject  = require 'map.LayerObject'
+local LayerTile    = require 'map.LayerTile'
+local LayerFactory = require 'map.Layer'.factory
+local Loader       = require 'map.Loader'
 
 local Map = class('Map')
 
@@ -35,7 +35,7 @@ function Map:_init(path)
 	return resource.getCallable(path, function()
 		local path, format  = validate(path)
 
-		local data    = loader[format](path)
+		local data    = Loader[format](path)
 
 		data.path = resource.getDirectoryPath(path)
 
@@ -72,7 +72,7 @@ function Map:_setLayers(layers)
 	local tileLayers, objectLayers, i = {}, {}, 0
 	for _,layer in ipairs(layers) do
 		layer.id, i    = i, i + 1
-		local newLayer = Layer.factory(layer, self)
+		local newLayer = LayerFactory(layer, self)
 		if layer.type == 'tilelayer' then
 			tileLayers  [layer.name] = newLayer
 		else
@@ -131,7 +131,7 @@ function Map:getTilesetAsAtlass(index)
 	    end end
 
 	    atlass = Atlass({image='../maps/' .. ts.image, frames=frame}
-	    	            , layer.main, MOAIImage)
+	    	            ,Layer.main, MOAIImage)
 
 	    self.tileatlass[index] = atlass
 	else

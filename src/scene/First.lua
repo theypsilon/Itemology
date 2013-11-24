@@ -1,9 +1,6 @@
-scene = {}
+local Scenes, Layer, Camera, Level, Data, Physics, Test, Tasks, Input, Flow, Text, Job; import()
 
-local Scenes, Layer, Camera, Level, Data, Physics, Test, Tasks, Input, Flow, Text, Job =  
-require 'Scenes', require 'Layer',   require 'Camera', require 'Level', 
-require 'Data',   require 'Physics', require 'Test',   require 'Tasks',
-require 'Input',  require 'Flow',    require 'Text',   require 'Job'
+scene = {}
 
 function scene:load(start, hp)
 

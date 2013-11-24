@@ -1,20 +1,19 @@
 require 'Globals'
 
-local flow, scenes, layer, data = require 'Flow', require 'Scenes', require 'Layer', require 'Data'
-local resource = require 'resource'
+local Flow, Scenes, Layer, Data, resource; import()
 
-function flow.load()
+function Flow.load()
 	print 'Welcome to Itemology!'
 
-    layer.main:setPartition(MOAIPartition.new())
+    Layer.main:setPartition(MOAIPartition.new())
 
     resource.IMAGE_PATH = 'res/img/'
 
-	scenes.run('First')
+	Scenes.run('First')
 end
 
-function flow.quit()
+function Flow.quit()
 	print 'Bye bye!'
 end
 
-flow.run(data.MainConfig)
+Flow.run(Data.MainConfig)

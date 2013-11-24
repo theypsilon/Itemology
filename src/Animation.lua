@@ -1,5 +1,6 @@
-local Animation = class.Animation()
 local Atlass = require 'Atlass'
+
+local Animation = class.Animation()
 
 local function table_next(self)
     local animation = self.animation

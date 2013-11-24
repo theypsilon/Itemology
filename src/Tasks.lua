@@ -1,7 +1,6 @@
-local Tasks = class.Tasks()
-
 local Job = require 'Job'
 
+local Tasks = class.Tasks()
 function Tasks:_init() self.callbacks = {} end
 
 function Tasks:_prepareIndex(index) return index end

@@ -1,7 +1,7 @@
-local super = require 'entity.Mob'
+local Animation, Physics, Input, Flow, Text; import()
 
-local Position, Animation, physics, input = require 'entity.Position', require 'Animation', require 'Physics', require 'Input'
-local flow, Text = require 'Flow', require 'Text'
+local super    = require 'entity.Mob'
+local Position = require 'entity.Position'
 
 local Player = class('Player', super, require 'entity.player.Move')
 
@@ -11,7 +11,7 @@ function Player:_init(level, def, p)
     self.animation = Animation(def.animation)
     self.prop      = self.animation.prop
 
-    self.body = physics:registerBody(def.fixture, self.prop, self)
+    self.body = Physics:registerBody(def.fixture, self.prop, self)
 
     local coll = require('entity.player.Collision')
     coll._setListeners(self)
@@ -44,19 +44,19 @@ function Player:_setInput()
     -- walk
     self.dir = {left = 0, right = 0, up = 0, down = 0}
     for k,_ in pairs(self.dir) do
-        input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
+        Input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
     end
 
     -- jump
-    input.bindAction('b2', 
+    Input.bindAction('b2', 
         function() self.keyJump = true end, 
         function() self.keyJump = false; self:resetJump() end)
 
     -- run
-    input.bindAction('b1', function() self.keyRun = true end, function() self.keyRun = false end)
+    Input.bindAction('b1', function() self.keyRun = true end, function() self.keyRun = false end)
 
     -- debug - print location
-    input.bindAction('r', function() 
+    Input.bindAction('r', function() 
         print(self.pos:get())
         self:wallhack(true)
     end, function() self:wallhack(false) end)    

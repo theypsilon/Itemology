@@ -1,9 +1,8 @@
+local Text, Layer; import()
+
 local super = require 'entity.Entity'
 
-local Text, Layer = require 'Text', require 'Layer'
-
 local JumpingText = class.JumpingText(super)
-
 function JumpingText:_init(level, msg, x, y)
     local rand = require('Random').next
     super._init(self, level, 0, 0)

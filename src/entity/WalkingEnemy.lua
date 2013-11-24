@@ -1,7 +1,8 @@
+local Animation, Physics; import()
+
+local Position = require 'entity.Position'
+
 local super = require 'entity.Mob'
-
-local Position, Animation, physics = require 'entity.Position', require 'Animation', require 'Physics'
-
 local WalkingEnemy = class.WalkingEnemy(super)
 
 function WalkingEnemy:_init(level, definition, p)
@@ -10,7 +11,7 @@ function WalkingEnemy:_init(level, definition, p)
     self.animation = Animation(definition.animation)
     self.prop      = self.animation.prop
 
-    self.body = physics:registerBody(definition.fixture, self.prop, self)
+    self.body = Physics:registerBody(definition.fixture, self.prop, self)
 
     self:_setListeners()
 

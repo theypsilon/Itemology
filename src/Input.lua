@@ -1,6 +1,6 @@
-local input = {}
+local Flow, Data; import()
 
-local flow, data = require 'Flow', require 'Data'
+local input = {}
 
 function input.init()
 	input.status = {}
@@ -8,7 +8,7 @@ function input.init()
 	input.status.keyboardCallbacks = {[true] = {}, [false] = {}}
 	input.status.toBind = {}
 
-	input.bindAction('ESC', function() flow.exit() end)
+	input.bindAction('ESC', function() Flow.exit() end)
 end
 
 function input.bindAction( action, callback1, callback2 )
@@ -54,11 +54,11 @@ local function onKeyboardEvent ( keyCode, down )
 	elseif down then print(keyCode) end
 end
 
-function flow.keypressed(key, unicode)
+function Flow.keypressed(key, unicode)
 	onKeyboardEvent(key, true)
 end
 
-function flow.keyreleased(key, unicode)
+function Flow.keyreleased(key, unicode)
 	onKeyboardEvent(key, false)
 end
 
@@ -70,7 +70,7 @@ MOAIInputMgr.device.mouseRight :setCallback ( function() end )
 
 input.init()
 
-for k,v in pairs(data.Keys) do
+for k,v in pairs(Data.Keys) do
 	input.bindActionToKeyCode(k, v)
 end
 

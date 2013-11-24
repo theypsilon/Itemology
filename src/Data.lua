@@ -1,7 +1,6 @@
+local Tasks = require 'Tasks'
+
 local meta = {}
-
-local task = require 'Tasks'
-
 function meta.__index(table, key)
     local letter = key:sub(0,1)
     local path   = rawget(table,'_path') or ''
@@ -57,13 +56,13 @@ function data._update()
 end
 
 if data.MainConfig.dev.sanitychecks   then
-    task:set('dataAssertImmutable', function() data._autoUpdate(true) end)
+    Tasks:set('dataAssertImmutable', function() data._autoUpdate(true) end)
 end
 if data.MainConfig.dev.autoreloaddata then
-    task:set('dataAutoUpdate'     , data._autoUpdate                     )
+    Tasks:set('dataAutoUpdate'     , data._autoUpdate                     )
 end
 if data.MainConfig.dev.reloaddata     then
-    task:set('dataUpdate'         , data._update                         )
+    Tasks:set('dataUpdate'         , data._update                         )
 end
 
 global{data = data}

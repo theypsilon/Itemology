@@ -1,12 +1,12 @@
+local Flow = require 'Flow'
+
 local graphics = defined('love') and love.graphics or {}
 
-local flow = require 'Flow'
-
 function graphics.getWidth()
-    return flow.config.world.width
+    return Flow.config.world.width
 end
 function graphics.getHeight()
-    return flow.config.world.height
+    return Flow.config.world.height
 end
 
 function graphics.getScreenW()
