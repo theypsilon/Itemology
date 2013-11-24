@@ -45,18 +45,16 @@ local function hack_require(pathTable)
 end
 
 local function empty_locals(level)
-  local variables = {}
-  local idx = 1
-  while true do
-    local ln, lv = debug.getlocal(level, idx)
-    if ln ~= nil and lv == nil then
-      variables[ln] = idx
-    else
-      break
+    local variables, idx = {}, 1
+
+    while true do
+        local ln, lv = debug.getlocal(level, idx)
+        if ln == nil then               break end
+        if lv == nil then variables[ln] = idx end
+        idx = 1 + idx
     end
-    idx = 1 + idx
-  end
-  return variables
+
+    return variables
 end
 
 local function import()
