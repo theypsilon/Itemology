@@ -10,7 +10,6 @@ local class = {}
 local    metaclass = {}
 function metaclass.__call(f, ...)
     local params = class.split_params({...})
-    if params.string == 'Player' then dump(params) end
     return class.new(params.mixin, params.string and params.string[1] or nil)
 end
 

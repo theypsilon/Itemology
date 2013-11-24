@@ -24,7 +24,6 @@ local function reload_data(path, node, alwaysload)
     node = node  or require(path)
     local new = reload.file(path, alwaysload)
     if alwaysload and not table.compare(node, new) then
-        dump(node, new)
         error('data objects are readonly, but "' .. path .. '" has been touched')
     elseif new then
         for k,_ in pairs(node) do node[k] = nil end
