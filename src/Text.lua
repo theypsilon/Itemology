@@ -1,4 +1,4 @@
-local Layer = require 'Layer'
+local Layer; import()
 
 local Text = {store = {}}
 function Text:init()

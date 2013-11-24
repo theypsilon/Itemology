@@ -1,4 +1,4 @@
-local Animation = require 'Animation'
+local Animation; import()
 
 local super = require 'entity.Entity'
 

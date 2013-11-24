@@ -1,4 +1,6 @@
-local Entity, Layer, Graphics = require 'entity.Entity', require 'Layer', require 'Graphics'
+local Layer, Graphics; import()
+
+local Entity = require 'entity.Entity'
 
 local Camera = class.Camera()
 

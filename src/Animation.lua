@@ -1,4 +1,4 @@
-local Atlass = require 'Atlass'
+local Atlass; import()
 
 local Animation = class.Animation()
 

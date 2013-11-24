@@ -1,4 +1,4 @@
-local Flow = require 'Flow'
+local Flow; import()
 
 local graphics = defined('love') and love.graphics or {}
 

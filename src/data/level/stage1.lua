@@ -1,4 +1,4 @@
-local Tasks = require 'Tasks'
+local Tasks; import()
 
 return function(level, camera)
     local player

@@ -1,4 +1,4 @@
-local Physics = require 'Physics'
+local Physics; import()
 
 return function(d,p)
     local x, y, w, h = p.x, p.y, p.width, p.height

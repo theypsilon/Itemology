@@ -1,4 +1,4 @@
-local Job = require 'Job'
+local Job; import()
 
 local Tasks = class.Tasks()
 function Tasks:_init() self.callbacks = {} end

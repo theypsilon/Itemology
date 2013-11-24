@@ -1,5 +1,4 @@
-local Physics   = require 'Physics'
-local Animation = require 'Animation'
+local Physics, Animation; import()
 
 local function remove(self) self.removed = true   end
 local function tick  (self) self.animation:next() end

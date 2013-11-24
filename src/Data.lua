@@ -1,4 +1,4 @@
-local Tasks = require 'Tasks'
+local Tasks; import()
 
 local meta = {}
 function meta.__index(table, key)
