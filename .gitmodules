@@ -2,14 +2,6 @@
 	path = lib/moai-dev
 	url = https://github.com/theypsilon/moai-dev.git
 	ignore = dirty
-[submodule "lib/rapanui"]
-	path = lib/rapanui
-	url = https://github.com/theypsilon/rapanui.git
-	ignore = dirty
-[submodule "lib/penlight"]
-	path = lib/penlight
-	url = https://github.com/theypsilon/Penlight.git
-	ignore = dirty
 [submodule "lib/hanappe"]
 	path = lib/hanappe
 	url = https://github.com/theypsilon/Hanappe.git
@@ -18,13 +10,6 @@
 	path = lib/inspect
 	url = git://github.com/kikito/inspect.lua.git
 	ignore = dirty
-[submodule "lib/middleclass"]
-	path = lib/middleclass
-	url = git://github.com/kikito/middleclass.git
-	ignore = dirty
 [submodule "lib/ATL"]
 	path = lib/ATL
 	url = https://github.com/Kadoba/Advanced-Tiled-Loader.git
-[submodule "lib/lovemoai"]
-	path = lib/lovemoai
-	url = git://github.com/SiENcE/lovemoai.git
