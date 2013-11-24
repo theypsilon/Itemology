@@ -18,7 +18,6 @@ else
   assert(not mt.__index   )
 end
 
-__STRICT = false
 mt.__declared = {}
 
 mt.__newindex = function (t, n, v)
