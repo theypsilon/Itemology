@@ -1,11 +1,10 @@
 local Text, Layer; import()
+local Entity;      import 'entity'
 
-local super = require 'entity.Entity'
-
-local JumpingText = class.JumpingText(super)
+local JumpingText = class.JumpingText(Entity)
 function JumpingText:_init(level, msg, x, y)
-    local rand = require('Random').next
-    super._init(self, level, 0, 0)
+    local rand = require 'Random' .next
+    Entity._init(self, level, 0, 0)
 
     local style = MOAITextStyle.new()
     style:setFont(Text.style:getFont())
@@ -21,7 +20,7 @@ function JumpingText:_init(level, msg, x, y)
 end
 
 function JumpingText:tick()
-    super.tick(self)
+    Entity.tick(self)
 
     if self._ticks > 60 then self:remove() end
 
@@ -37,7 +36,7 @@ function JumpingText:tick()
 end
 
 function JumpingText:remove()
-    super.remove(self)
+    Entity.remove(self)
     Layer.main:removeProp(self.text)
 end
 

@@ -1,9 +1,7 @@
-local Atlass, Layer, resource; import()
+local Atlass, Layer, resource; 			import()
+local LayerObject, LayerTile, Loader; 	import 'map'
 
-local LayerObject  = require 'map.LayerObject'
-local LayerTile    = require 'map.LayerTile'
 local LayerFactory = require 'map.Layer'.factory
-local Loader       = require 'map.Loader'
 
 local Map = class('Map')
 

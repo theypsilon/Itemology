@@ -1,10 +1,10 @@
 local Animation; import()
 
-local super = require 'entity.Entity'
+local Entity; import 'entity'
 
-local ParticleAnimation = class.ParticleAnimation(super)
+local ParticleAnimation = class.ParticleAnimation(Entity)
 function ParticleAnimation:_init(level, def, default, p, prop, skip, ...)
-    super._init(self, level, p.x, p.y)
+    Entity._init(self, level, p.x, p.y)
 
     self.animation = Animation(def, prop, skip, default)
     self.animation.prop:setLoc(p.x, p.y)
@@ -14,7 +14,7 @@ function ParticleAnimation:_init(level, def, default, p, prop, skip, ...)
 end
 
 function ParticleAnimation:tick()
-    super.tick(self)
+    Entity.tick(self)
     local changed, alive = self.animation:next()
     if not alive then self:remove() end
     self.x, self.y = self.prop:getLoc()

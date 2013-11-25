@@ -1,12 +1,11 @@
 local Animation, Physics, Input, Text; import()
 
-local super    = require 'entity.Mob'
-local Position = require 'entity.Position'
+local Mob, Position; import 'entity'
 
-local Player = class('Player', super, require 'entity.player.Move')
+local Player = class('Player', Mob, require 'entity.player.Move')
 
 function Player:_init(level, def, p)
-	super._init(self, level, p.x, p.y)
+	Mob._init(self, level, p.x, p.y)
 
     self.animation = Animation(def.animation)
     self.prop      = self.animation.prop
@@ -89,7 +88,7 @@ function Player:tick(dt)
 
     self:animate()
 
-	super.tick(self)
+	Mob.tick(self)
 end
 
 function Player:animate()
@@ -181,7 +180,7 @@ function Player:reaction(enemy)
 end
 
 function Player:draw(...)
-	super.draw(self, ...)
+	Mob.draw(self, ...)
 end
 
 return Player

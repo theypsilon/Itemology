@@ -17,8 +17,11 @@ local function empty_locals(level)
     return variables
 end
 
-local function import()
-    for k,v in pairs(empty_locals(3)) do debug.setlocal(2, v, require(k)) end
+local function import(path)
+    path = path and (path .. '.') or ''
+    for k,v in pairs(empty_locals(3)) do 
+        debug.setlocal(2, v, require(path .. k)) 
+    end
 end
 
 local    metaexport = {}

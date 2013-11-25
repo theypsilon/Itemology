@@ -1,12 +1,10 @@
 local Animation, Physics; import()
+local Mob, Position; import 'entity'
 
-local Position = require 'entity.Position'
-
-local super = require 'entity.Mob'
-local WalkingEnemy = class.WalkingEnemy(super)
+local WalkingEnemy = class.WalkingEnemy(Mob)
 
 function WalkingEnemy:_init(level, definition, p)
-    super._init(self, level, p.x, p.y)
+    Mob._init(self, level, p.x, p.y)
 
     self.animation = Animation(definition.animation)
     self.prop      = self.animation.prop
@@ -78,7 +76,7 @@ function WalkingEnemy:tick(dt)
 
     self:animate(vx, vy)
 
-    super.tick(self)
+    Mob.tick(self)
 end
 
 function WalkingEnemy:move(dt, vx, vy)
@@ -115,7 +113,7 @@ function WalkingEnemy:animate(vx, vy)
 end
 
 function WalkingEnemy:draw(...)
-    super.draw(self, ...)
+    Mob.draw(self, ...)
 end
 
 local Broken = require 'entity.particle.Broken'

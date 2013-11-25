@@ -1,4 +1,4 @@
-local Text = require 'Text'
+local Text; import()
 
 local Player = {}
 

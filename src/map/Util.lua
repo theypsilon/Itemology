@@ -1,5 +1,5 @@
-local Physics         = require 'Physics'
-local MarchingSquares = require 'algorithm.MarchingSquares'
+local Physics;          import()
+local MarchingSquares;  import 'algorithm'
 
 local Util     = {}
 

@@ -1,9 +1,9 @@
-local super = require 'entity.Entity'
+local Entity; import 'entity'
 
-local Broken = class.Broken(super)
+local Broken = class.Broken(Entity)
 
 function Broken:_init(level, def, p)
-    super._init(self, level, p.x, p.y)
+    Entity._init(self, level, p.x, p.y)
 
     self.animation = def.animation
     self.sequence  = def.sequence
@@ -14,7 +14,7 @@ function Broken:_init(level, def, p)
 end
 
 function Broken:tick()
-    super.tick(self)
+    Entity.tick(self)
 
     local current
 

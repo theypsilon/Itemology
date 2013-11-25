@@ -1,9 +1,9 @@
-local super = require 'entity.Entity'
+local Entity = import 'entity'
 
-local Spawn = class.Spawn(super)
+local Spawn = class.Spawn(Entity)
 
 function Spawn:_init   (level, definition, p)
-    super._init(self, level, p.x, p.y)
+    Entity._init(self, level, p.x, p.y)
 
     local pref  = definition.preferenceData
 
@@ -35,7 +35,7 @@ function Spawn:tick()
         self.num = self.num - 1
     end
 
-    super.tick(self)
+    Entity.tick(self)
 end
 
 return Spawn
