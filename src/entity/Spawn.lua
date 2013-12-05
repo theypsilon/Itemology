@@ -1,4 +1,4 @@
-local Entity = import 'entity'
+local Entity; import 'entity'
 
 local Spawn = class.Spawn(Entity)
 

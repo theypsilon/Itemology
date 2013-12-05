@@ -1,11 +1,3 @@
---
--- strict.lua
--- checks uses of undeclared global variables
--- All global variables must be 'declared' through a regular assignment
--- (even assigning nil will do) in a main chunk before being used
--- anywhere or assigned to inside a function.
---
-
 local function strict(env, main)
 
     main = env == _G and main
