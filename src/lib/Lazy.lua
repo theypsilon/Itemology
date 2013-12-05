@@ -15,7 +15,7 @@ end
 local function make_value(t, k, v)
     setmetatable(t, nil)
 
-    local  val  = t._callback(t._owner or t)
+    local  val  = t:_callback()
     t._callback = nil
 
     if not val or val == t then return special_case(t, k, v, val)
@@ -33,9 +33,9 @@ local proxy = {
     __call      = make_value
 }
 
-local function lazy(callback, owner)
-    assert(is_function(callback))
-    return setmetatable({val = false, _callback = callback, _owner = owner}, proxy)
+local function lazy(callback)
+    assert(type(callback) == 'function')
+    return setmetatable({val = false, _callback = callback}, proxy)
 end
 
 local exports = {lazy = lazy}

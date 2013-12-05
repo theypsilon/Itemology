@@ -1,6 +1,6 @@
 local tn = tonumber
 
-local    Position = class('BodyPosition', class.properties)
+local    Position = class(properties)
 function Position:_init(body) rawset(self, 'body', body)                   end
 
 function Position:get_x ( )  local x, y = self.body:getPosition() return x end

@@ -1,6 +1,6 @@
 local Entity; import 'entity'
 
-local Broken = class.Broken(Entity)
+local Broken = class(Entity)
 
 function Broken:_init(level, def, p)
     Entity._init(self, level, p.x, p.y)

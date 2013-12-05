@@ -1,7 +1,7 @@
 local Text, Layer; import()
 local Entity;      import 'entity'
 
-local JumpingText = class.JumpingText(Entity)
+local JumpingText = class(Entity)
 function JumpingText:_init(level, msg, x, y)
     local rand = require 'Random' .next
     Entity._init(self, level, 0, 0)

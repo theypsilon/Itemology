@@ -1,4 +1,4 @@
-local Factory = class.Factory()
+local Factory = class()
 
 function Factory:_init(callbacks)
     self.instances = {}

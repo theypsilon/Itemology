@@ -1,6 +1,6 @@
 local Layer, resource; import()
 
-local Atlass = class.Atlass()
+local Atlass = class()
 
 local function validate(path)
 

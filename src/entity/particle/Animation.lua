@@ -2,7 +2,7 @@ local Animation; import()
 
 local Entity; import 'entity'
 
-local ParticleAnimation = class.ParticleAnimation(Entity)
+local ParticleAnimation = class(Entity)
 function ParticleAnimation:_init(level, def, default, p, prop, skip, ...)
     Entity._init(self, level, p.x, p.y)
 

@@ -1,6 +1,6 @@
 local Atlass; import()
 
-local Animation = class.Animation()
+local Animation = class()
 
 local function table_next(self)
     local animation = self.animation

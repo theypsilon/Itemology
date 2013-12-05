@@ -1,6 +1,6 @@
 local Entity; import 'entity'
 
-local Spawn = class.Spawn(Entity)
+local Spawn = class(Entity)
 
 function Spawn:_init   (level, definition, p)
     Entity._init(self, level, p.x, p.y)

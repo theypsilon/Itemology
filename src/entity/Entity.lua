@@ -1,4 +1,4 @@
-local Entity = class.Entity()
+local Entity = class()
 
 local function validate(level, x, y)
     

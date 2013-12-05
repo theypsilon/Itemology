@@ -1,7 +1,7 @@
 local Animation, Physics, Data; import()
 local Mob, Position; import 'entity'
 
-local WalkingEnemy = class.WalkingEnemy(Mob)
+local WalkingEnemy = class(Mob)
 
 function WalkingEnemy:_init(level, definition, p)
     Mob._init(self, level, p.x, p.y)

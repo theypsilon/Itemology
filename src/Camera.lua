@@ -2,7 +2,7 @@ local Layer, Graphics, Data; import()
 
 local Entity = require 'entity.Entity'
 
-local Camera = class.Camera()
+local Camera = class()
 
 local function validate(area, padding)
     if area and (not area.x or not area.y or not area.w or not area.h) then

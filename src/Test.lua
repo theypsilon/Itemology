@@ -1,4 +1,4 @@
-local GC = class.GC()
+local GC = class()
 
 GC.i = 0
 

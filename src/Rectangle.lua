@@ -1,4 +1,4 @@
-local Rectangle = class.Rectangle()
+local Rectangle = class()
 
 function Rectangle:_init(x, y, w, h)
     self.x, self.y, self.w, self.h = x, y, w, h

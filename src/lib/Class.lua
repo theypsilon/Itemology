@@ -7,22 +7,10 @@ local class = {}
 
 -- metatable for declaring classes
 
-local    metaclass = {}
-function metaclass.__call(f, ...)
+setmetatable(class, { __call = function(f, ...)
     local params = class.split_params({...})
     return class.new(params.mixin, params.string and params.string[1] or nil)
-end
-
-function metaclass.__index(t, name)
-    local env = _G
-    return function(base)
-        local  klass = class.new(base, name)
-        --rawset(env, name, klass)
-        return klass
-    end
-end
-
-setmetatable(class, metaclass)
+end})
 
 -- private functions
 
@@ -81,12 +69,8 @@ local function new_finalizable(klass)
     return udata
 end
 
--- class public methods
-
-function class.new(base, name)
-    local metaklass = {} 
-    local     klass = setmetatable({}, metaklass)
-    function metaklass.__call(t,...)
+local function metacall(klass)
+    return function(t, ...)
         local dtor = rawget(klass, '__gc')
         local obj = dtor and new_finalizable(klass) or setmetatable({}, klass)
 
@@ -104,34 +88,63 @@ function class.new(base, name)
         end
         return obj
     end
+end
 
-    if base then
+local function apply_bases(klass, base)
+    if class.is_mixin(base) then base = {base} end
 
-        if type(base) ~= 'table' or class.is_mixin(base) then
-            base = {base}
-        end
-
-        for _,b in ipairs(base) do
-            if not class.is_mixin(b) then
-                error("must derive from a class/mixin",3)
-            end        
-            inherit(klass, b)
-        end
-
-        klass._base = base
+    for _,b in ipairs(base) do
+        if not class.is_mixin(b) then
+            error("must derive from a class/mixin",3)
+        end        
+        inherit(klass, b)
     end
 
+    return base
+end
+
+local function get_metaindex(klass)
     local index = rawget(klass, '__index')
     if index then
-        klass.__index = function(t, key) 
+        return function(t, key) 
             return rawget(t, key) or index(t, key) 
         end
     else
-        klass.__index = klass
+        return klass
     end
+end
 
+local function local_name_of(t, level)
+    local idx = 1
+
+    while true do
+        local ln, lv = debug.getlocal(level, idx)
+        if lv == t then return ln  end
+        if not ln  then return nil end
+        idx = 1 + idx
+    end
+end
+
+local function metanewindex(t, k, v)
+    getmetatable(t).__newindex  = nil
+    if not t._name then t._name = local_name_of(t, 3) or '<none>' end
+    t[k] = v
+end
+
+-- class public methods
+
+function class.new(base, name)
+    local klass     = {}
+    local metaklass = {__call = metacall(klass)}
+    setmetatable(klass, metaklass)
+
+    if base then klass._base = apply_bases(klass, base) end
+
+    klass.__index = get_metaindex(klass)
     klass.is_a    = class.is_a
     klass._name   = name
+
+    if not name then metaklass.__newindex = metanewindex end
 
     return klass
 end
@@ -231,16 +244,17 @@ class.properties = {}
 class.properties.__index    = property_access('get_', rawget)
 class.properties.__newindex = property_access('set_', rawset)
 
--- collected class (WARNING: Lua's GC is non-deterministic)
+-- gc class (WARNING: Lua's GC is non-deterministic)
 
-class.collected = class('collected')
-function class.collected:_init(callback) self.callback = callback end
-function class.collected:__gc (        ) self.callback()          end
+class.gc = class('gc')
+function class.gc:_init(callback) self.callback = callback end
+function class.gc:__gc (        ) self.callback()          end
 
 
 local exports = {
     class      = class,
-    properties = class.properties
+    properties = class.properties,
+    gc         = class.gc,
 }
 
 require('lib.Import').make_exportable(exports)

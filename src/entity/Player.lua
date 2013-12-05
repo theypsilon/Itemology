@@ -2,7 +2,7 @@ local Animation, Physics, Input, Text, Data, Tasks; import()
 
 local Mob, Position; import 'entity'
 
-local Player = class('Player', Mob, require 'entity.player.Move')
+local Player = class(Mob, require 'entity.player.Move')
 
 function Player:_init(level, def, p)
 	Mob._init(self, level, p.x, p.y)

@@ -1,6 +1,6 @@
 local Job; import()
 
-local Tasks = class.Tasks()
+local Tasks = class()
 function Tasks:_init() self.callbacks = {} end
 
 function Tasks:_prepareIndex(index) return index end
