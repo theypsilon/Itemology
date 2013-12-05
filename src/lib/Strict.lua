@@ -6,53 +6,66 @@
 -- anywhere or assigned to inside a function.
 --
 
-local env = _G
+local function strict(env, main)
 
-local mt = getmetatable(env)
-if mt == nil then
-  mt = {}
-  setmetatable(env, mt)
-else
-  assert(not mt.__newindex)
-  assert(not mt.__declared)
-  assert(not mt.__index   )
-end
+    main = env == _G and main
 
-mt.__declared = {}
+    if type(env) ~= 'table' then error 'env must be a table' end
 
-mt.__newindex = function (t, n, v)
-  if __STRICT and not mt.__declared[n] then
-    local w = debug.getinfo(2, "S").what
-    if w ~= "main" and w ~= "C" then
-      error("assign to undeclared variable '"..n.."' in ", 2)
+    local mt = getmetatable(env)
+    if mt == nil then
+        mt = {}
+        setmetatable(env, mt)
+    else
+        assert(not mt.__newindex)
+        assert(not mt.__declared)
+        assert(not mt.__index   )
     end
-    mt.__declared[n] = true
-  end
-  rawset(t, n, v)
-end
-  
-mt.__index = function (t, n)
-  if __STRICT and not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
-    error("variable '"..n.."' is not declared", 2)
-  end
-  return rawget(t, n)
+
+    mt.__declared = {}
+    mt.__STRICT   = true
+
+    function mt.__newindex(t, n, v)
+        if mt.__STRICT and not mt.__declared[n] then
+            local w = debug.getinfo(2, "S").what
+            if not main or (w ~= 'main' and w ~= 'C') then
+                error("assign to undeclared variable '"..n.."' in ", 2)
+            end
+            mt.__declared[n] = true
+        end
+        rawset(t, n, v)
+    end
+      
+    function mt.__index(t, n)
+        if mt.__STRICT and not mt.__declared[n] and 
+        (not main or debug.getinfo(2, "S").what ~= "C") then
+            error("variable '"..n.."' is not declared", 2)
+        end
+        return rawget(t, n)
+    end
+
+    local function global(...)
+        local params = {...}
+        if params[1]  and  type(params[1]) == 'table' 
+        then for k, v in  pairs(params[1]) do mt.__declared[k] = true; env[k] = v end
+        else for _, v in ipairs(params)    do mt.__declared[v] = true end 
+        end
+    end
+
+    local function defined (var) return mt.__declared[var] and rawget(env,var) ~= nil end
+    local function declared(var) return mt.__declared[var] end
+
+    return {
+        global   = global,
+        defined  = defined,
+        declared = declared
+    }
 end
 
-local function global(...)
-  local params = {...}
-  if params[1]  and  type(params[1]) == 'table' 
-  then for k, v in  pairs(params[1]) do mt.__declared[k] = true; env[k] = v end
-  else for _, v in ipairs(params)    do mt.__declared[v] = true end 
-  end
-end
+local exports = strict(_G)
 
-local function defined(var) return mt.__declared[var] or rawget(env,var) ~= nil end
-
-local exports = {
-  __STRICT = true,
-  global   = global,
-  defined  = defined
-}
+exports['strict'  ] = strict
+exports['__STRICT'] = true
 
 require('lib.Import').make_exportable(exports)
 

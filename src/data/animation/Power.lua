@@ -1,5 +1,6 @@
+local Data; import();
 return {
-    atlass          = data.atlass.Sprites,
+    atlass          = Data.atlass.Sprites,
     skip            = 6,
     default         = 'djump',
     mirror          = false,

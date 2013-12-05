@@ -1,4 +1,4 @@
-local scenes = {}
+local Scenes = {}
 
 local callbacks = { 
 	'update', 'draw', 'mousepressed', 'mousereleased',
@@ -6,9 +6,9 @@ local callbacks = {
 }
 
 local function runScene(self, ...)
-	if scenes.current and scenes.current.quit then scenes.current.quit() end
+	if Scenes.current and Scenes.current.quit then Scenes.current.quit() end
 
-	scenes.current = self
+	Scenes.current = self
 
 	if not self._init and self.load then
 		self:load(...)
@@ -17,7 +17,7 @@ local function runScene(self, ...)
 
 end
 
-function scenes.load(path)
+function Scenes.load(path)
 	local file = 'scene/' .. path
 	package.loaded[file] = nil
 	require(file)
@@ -26,9 +26,9 @@ function scenes.load(path)
 	return s
 end
 
-function scenes.run(path, ...)
-	if defined('scene') and scene.clear then scene.clear() end
-	scenes.load(path):run(...)
+function Scenes.run(path, ...)
+	if defined('scene') and scene.clear then scene:clear() end
+	Scenes.load(path):run(...)
 end
 
-return scenes
+return Scenes

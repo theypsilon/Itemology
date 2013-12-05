@@ -231,6 +231,13 @@ class.properties = {}
 class.properties.__index    = property_access('get_', rawget)
 class.properties.__newindex = property_access('set_', rawset)
 
+-- collected class (WARNING: Lua's GC is non-deterministic)
+
+class.collected = class('collected')
+function class.collected:_init(callback) self.callback = callback end
+function class.collected:__gc (        ) self.callback()          end
+
+
 local exports = {
     class      = class,
     properties = class.properties

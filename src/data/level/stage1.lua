@@ -1,4 +1,4 @@
-local Tasks; import()
+local Tasks, Data; import()
 
 return function(level, camera)
     local player
@@ -7,7 +7,7 @@ return function(level, camera)
     end
 
     local jump = level.map('objects').objects['jump']
-    local def  = data.entity[jump.type]
+    local def  = Data.entity[jump.type]
     local function createJump()
         return require(def.class)(level, def, jump, level.map('objects'))
     end
@@ -29,7 +29,7 @@ return function(level, camera)
 
         if player.power.djump == 0 or (cheat:contains(player) and trick) then
             if not djump then
-                Tasks:once('respawnJump', function() level:add(createJump()) end, 150)
+                gTasks:once('respawnJump', function() level:add(createJump()) end, 150)
                 djump = true
             end
             trick = player.power.djump == 0

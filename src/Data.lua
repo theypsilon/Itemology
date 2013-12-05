@@ -55,15 +55,13 @@ function data._update()
 end
 
 if data.MainConfig.dev.sanitychecks   then
-    Tasks:set('dataAssertImmutable', function() data._autoUpdate(true) end)
+    gTasks:set('dataAssertImmutable', function() data._autoUpdate(true) end)
 end
 if data.MainConfig.dev.autoreloaddata then
-    Tasks:set('dataAutoUpdate'     , data._autoUpdate                     )
+    gTasks:set('dataAutoUpdate'     , data._autoUpdate                     )
 end
 if data.MainConfig.dev.reloaddata     then
-    Tasks:set('dataUpdate'         , data._update                         )
+    gTasks:set('dataUpdate'         , data._update                         )
 end
-
-global{data = data}
 
 return data

@@ -30,10 +30,6 @@ function Tasks:once(index, f, delay)
     return self.callbacks[index]
 end
 
-function Tasks:iterator( ) return     pairs(self.callbacks) end
 function Tasks:__call(...) for _,t in pairs(self.callbacks) do t(...) end end
 
-function Tasks:new() return Tasks() end
-
-local  globalTasks = Tasks()
-return globalTasks
+return Tasks

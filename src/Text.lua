@@ -1,10 +1,10 @@
-local Layer; import()
+local Layer, Data; import()
 
 local Text = {store = {}}
 function Text:init()
-    local def = data.language.Config
+    local def = Data.language.Config
 
-    local lang = data.language[def.lang]
+    local lang = Data.language[def.lang]
     local font = MOAIFont.new()
 
     font:loadFromTTF('res/fonts/FreePixel.ttf', lang.charcodes, 100, 163 )
@@ -68,7 +68,7 @@ function Text:debug(object, index, string, deactivate)
     if debugList[string] then Layer.Debug:removeProp(debugList[string].t) end
     debugList[string] = {t=text, k=index, o=object}
 
-    Tasks:set('textDebug', function()
+    gTasks:set('textDebug', function()
         local i = 0
         for s,v in pairs(debugList) do 
             v.t:setString(s .. v.o[v.k])

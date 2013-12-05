@@ -58,18 +58,18 @@ function Player.object.Door(self, o, p, a)
 end
 
 function Player.object.Power(self, o, p, a)
-    if p == MOAIBox2DArbiter.BEGIN then 
-        self.tasks:once(o.power, function()
-            self.power[o.power] = o.charges + 
-                                 (o.add and self.power[o.power] or 0)
+    if p ~= MOAIBox2DArbiter.BEGIN then return end
 
-            local remove = tonumber(o.remove) or 1
+    self.tasks:once(o.power, function()
+        self.power [o.power] = o.charges + 
+                             (o.add and self.power[o.power] or 0)
 
-            if remove <= 1 
-            then o.parent:remove()
-            else o.remove = remove - 1 end
-        end)
-    end
+        local remove = tonumber(o.remove) or 1
+
+        if remove <= 1 
+        then o.parent:remove()
+        else o.remove = remove - 1 end
+    end)
 end
 
 return Player

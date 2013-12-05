@@ -204,7 +204,7 @@ end
 function Player:moveDoor()
     if self.dir.up == 1 and self.door then
         if self.door.level and self.door.level ~= self.level.name then
-            Tasks:once('changeMap', function() Scenes.run('First', self.door, self.hp) end)
+            gTasks:once('changeMap', function() Scenes.run('First', self.door, self.hp) end)
         else
             local link = self.door.layer.objects[self.door.link]
             self.pos:set(link.x, link.y)

@@ -1,10 +1,10 @@
-local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Flow, Text; import()
+local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Flow, Text, Data; import()
 
 scene = {}
 
 function scene:load(start, hp)
 
-    Physics:init(data.world.First)
+    Physics:init(Data.world.First)
 
     if Data.MainConfig.dev.debugPhysics then Layer.main:setBox2DWorld (Physics.world) end
     
@@ -36,14 +36,14 @@ function scene:load(start, hp)
     self.cameras, self.level, self.player = cameras, level, player
 
     Input.bindAction('reset', function() 
-        Tasks:once('reset', function()
+        gTasks:once('reset', function()
             for i = 1, 1, 1 do Scenes.run('First') end
         end)
     end)
 
     local fps    = Text:print('FPS: 60.1', 10, 8)
 
-    Tasks:set('updateFPS'   , function() 
+    gTasks:set('updateFPS'   , function() 
         fps:setString('FPS: ' .. tostring(MOAISim.getPerformance()):sub(0, 4))
     end, 100)
 end 
@@ -71,7 +71,7 @@ function scene:update(dt)
         self.player.removed = nil
     end
 
-    Tasks()
+    gTasks()
 end
 
 function scene:focus(inside)

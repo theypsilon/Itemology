@@ -1,4 +1,4 @@
-local Layer, Graphics; import()
+local Layer, Graphics, Data; import()
 
 local Entity = require 'entity.Entity'
 
@@ -19,7 +19,7 @@ function Camera:_init(target, area, padding)
     validate(area, padding)
 
     self.cam = MOAICamera.new()
-    local f = data.MainConfig.screen.width / data.MainConfig.world.width
+    local f = Data.MainConfig.screen.width / Data.MainConfig.world.width
 
     if target then 
         self:setTarget(target)

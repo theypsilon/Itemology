@@ -1,6 +1,7 @@
+local Data; import();
 return {
     class     = 'entity.Player',
-    animation = data.animation.TinyMario,
-    fixture   = data.fixture  .TinyMario,
-    move      = data.move     .Mario
+    animation = Data.animation.TinyMario,
+    fixture   = Data.fixture  .TinyMario,
+    move      = Data.move     .Mario
 }

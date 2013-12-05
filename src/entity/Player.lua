@@ -1,4 +1,4 @@
-local Animation, Physics, Input, Text; import()
+local Animation, Physics, Input, Text, Data, Tasks; import()
 
 local Mob, Position; import 'entity'
 
@@ -18,7 +18,7 @@ function Player:_init(level, def, p)
     self:_setPower(p)
     self:_setInitialMove(p)
 
-    self.tasks = require('Tasks').new()
+    self.tasks = Tasks()
 
     self.pos = Position(self.body)
     self.pos:set(p.x, p.y)
@@ -150,7 +150,7 @@ function Player:applyDamage()
         local PText = require 'entity.particle.JumpingText'
         local PAnim = require 'entity.particle.Animation'
         if self.hp <= 0 then 
-            self.level:add(PAnim(self.level, data.animation.TinyMario, 'die', self))
+            self.level:add(PAnim(self.level, Data.animation.TinyMario, 'die', self))
             self:remove() 
         end
         self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))

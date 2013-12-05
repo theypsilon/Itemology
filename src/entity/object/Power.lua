@@ -1,11 +1,11 @@
-local Physics, Animation; import()
+local Physics, Animation, Data; import()
 
 local function remove(self) self.removed = true   end
 local function tick  (self) self.animation:next() end
 
 return function(d,p)
     local x, y, w, h = p.x, p.y, p.width, p.height
-    local animation = Animation(data.animation.Power)
+    local animation = Animation(Data.animation.Power)
     animation:setAnimation(p.properties.power)
 
     local prop  = animation.prop

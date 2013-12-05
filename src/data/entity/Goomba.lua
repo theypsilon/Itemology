@@ -1,6 +1,7 @@
+local Data; import();
 return {
     class     = 'entity.WalkingEnemy',
-    animation = data.animation.Goomba,
-    fixture   = data.fixture  .WalkingEnemy,
-    move      = data.move     .Goomba
+    animation = Data.animation.Goomba,
+    fixture   = Data.fixture  .WalkingEnemy,
+    move      = Data.move     .Goomba
 }
