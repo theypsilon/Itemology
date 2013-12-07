@@ -11,6 +11,8 @@ local function clear_temp(self)
 end
 
 local function make_layer(t, index)
+    local Flow; import()
+
     print('creating layer "'..index..'"')
 
     local newLayer      = MOAILayer2D.new()
@@ -21,7 +23,9 @@ local function make_layer(t, index)
         newLayer:removeProp(prop) 
     end
 
-    newLayer:setViewport(viewport)
+
+
+    newLayer:setViewport(Flow.viewport)
 
     local renderTable = MOAIRenderMgr.getRenderTable() or {}
     table.insert(renderTable, newLayer)

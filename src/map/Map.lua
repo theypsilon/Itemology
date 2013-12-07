@@ -5,6 +5,8 @@ local LayerFactory = require 'map.Layer'.factory
 
 local Map = class('Map')
 
+Map.PATH = ''
+
 local function validate(path)
 	local pathList = {
 		[path] = path:sub(-3),
@@ -30,6 +32,7 @@ local function validate(path)
 end
 
 function Map:_init(path)
+	path = Map.PATH .. path
 	return resource.getCallable(path, function()
 		local path, format  = validate(path)
 

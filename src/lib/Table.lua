@@ -139,6 +139,23 @@ local function pack(...)
     return { n = select("#", ...), ... }
 end
 
+local function first(t)
+    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    for _,v in pairs(t) do return v end
+end
+
+local function first_key(t)
+    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    for k,_ in pairs(t) do return k end
+end
+
+local function filter(t, f)
+    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    local result = {}
+    for k,v in pairs(t) do if f(v) then result[k] = v end end
+    return result
+end
+
 local exports = {
     flip            = flip,
     keys            = keys,
@@ -151,7 +168,10 @@ local exports = {
     make_const      = make_const,
     at              = at,
     set             = set,
-    pack            = pack
+    pack            = pack,
+    first           = first,
+    first_key       = first_key,
+    filter          = filter
 }
 
 require('lib.Import').make_exportable(exports)

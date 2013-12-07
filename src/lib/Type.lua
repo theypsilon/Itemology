@@ -21,6 +21,18 @@ local function is_integer(n)
     return is_number(n) and math.floor(n) == n
 end
 
+local function is_positive(n)
+    return is_number(n) and n >= 0
+end
+
+local function is_negative(n)
+    return is_number(n) and n < 0
+end
+
+local function is_object(o)
+    return is_table(o) or is_userdata(o)
+end
+
 local function is_path(s)
     if not is_string(s) then return false end
      local path = s:match('(.-)([^\\/]-%.?([^%.\\/]*))$')
@@ -66,9 +78,12 @@ local exports = {
     is_boolean  = is_boolean ,
     is_table    = is_table   ,
     is_userdata = is_userdata,
+    is_object   = is_object  ,
     is_thread   = is_thread  ,
     is_callable = is_callable,
-    is_integer  = is_integer
+    is_integer  = is_integer ,
+    is_positive = is_positive,
+    is_negative = is_negative,
 }
 
 require('lib.Import').make_exportable(exports)

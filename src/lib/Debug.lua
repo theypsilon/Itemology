@@ -1,4 +1,4 @@
-local inspect = require 'lib.inspect.inspect'
+local inspect = require(project .. 'lib.inspect.inspect')
 
 assert(debug)
 

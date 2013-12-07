@@ -7,7 +7,7 @@ function Text:init()
     local lang = Data.language[def.lang]
     local font = MOAIFont.new()
 
-    font:loadFromTTF('res/fonts/FreePixel.ttf', lang.charcodes, 100, 163 )
+    font:loadFromTTF(project .. 'res/fonts/FreePixel.ttf', lang.charcodes, 100, 163 )
 
     local style = MOAITextStyle.new()
     style:setFont(font)

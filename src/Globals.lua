@@ -20,3 +20,7 @@ global{gTasks    = Tasks   ()    }
 global{timeStart = os.time ()    }
 global{nothing   = function() end}
 global('scene')
+global{die = function(...)
+    dump(...)
+    os.exit()
+end}

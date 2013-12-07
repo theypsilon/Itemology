@@ -25,6 +25,15 @@ dict['rect'     ] = bodyTable.addRect
 dict['circle'   ] = bodyTable.addCircle
 dict['chain'    ] = bodyTable.addChain
 
+local function clear_error() error 'im already cleared' end
+
+function bodyTable:clear()
+    for k,v in pairs(self.fixtures) do v:destroy() end
+    self:destroy()
+    self.fixtures = nil
+    self.clear    = false--clear_error
+end
+
 bodyTable = nil
 
 function Physics:registerBody(def, prop, parent)
@@ -41,36 +50,54 @@ function Physics:registerBody(def, prop, parent)
         MOAIProp2D.TRANSFORM_TRAIT 
     ) end
 
-    if def.mass          then body:setMassData(def.mass) body:resetMassData() end
-    if def.fixedRotation then body:setFixedRotation(def.fixedRotation)        end
-    if parent            then body.parent = parent                            end
+    if def.mass          then body:setMassData(def.mass)               end
+    if def.fixedRotation then body:setFixedRotation(def.fixedRotation) end
+    if def.bullet        then body:setBullet(def.bullet)               end
+    if def.gravityScale  then body:setGravityScale(def.gravityScale)   end
+    if parent            then body.parent = parent                     end
+
+    body.fixtures = self.registerFixtures( 
+        def.fixtures or {}, body,
+        def.fixCategory, def.fixMask, def.fixGroup 
+    )
+
+    self.bodies[#self.bodies + 1] = body
+
+    return body
+end
+
+function Physics.registerFixtures(fixtures, body, category, mask, group)
+    local filters = category or mask or group
 
     local outFixtures = {}
-    def.fixtures = def.fixtures or {}
 
-    for k, value in pairs(def.fixtures) do
+    local density
+
+    for k, value in pairs(fixtures) do
         local fix = dict[value.option](body,  unpack(value.args))
-        if value.density     then fix:setDensity    (value.density    ) end
         if value.restitution then fix:setRestitution(value.restitution) end
         if value.friction    then fix:setFriction   (value.friction   ) end
         if value.sensor      then fix:setSensor     (value.sensor     ) end
+        if value.density     then fix:setDensity    (value.density    ) 
+                                                         density = true end
+
+        if filters then
+            local categoryBits, maskBits, groupIndex = fix:getFilter()
+            fix:setFilter(
+                category or categoryBits, 
+                mask     or maskBits, 
+                group    or groupIndex
+            )
+        end
 
         fix.name = k
 
         outFixtures[k] = fix
     end
 
-    body.fixtures = outFixtures
-    body.clear = function(self) 
-        for k,v in pairs(self.fixtures) do v:destroy() end
-        self:destroy()
-        self.fixtures = nil
-        self.clear    = nil
-    end
+    if density then body:resetMassData() end
 
-    self.bodies[#self.bodies + 1] = body
-
-    return body, outFixtures
+    return outFixtures
 end
 
 function Physics:clear()

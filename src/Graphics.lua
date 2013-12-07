@@ -1,12 +1,12 @@
-local Flow; import()
+local Data; import()
 
 local graphics = defined('love') and love.graphics or {}
 
 function graphics.getWidth()
-    return Flow.config.world.width
+    return Data.MainConfig.world.width
 end
 function graphics.getHeight()
-    return Flow.config.world.height
+    return Data.MainConfig.world.height
 end
 
 function graphics.getScreenW()

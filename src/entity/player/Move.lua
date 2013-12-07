@@ -1,4 +1,5 @@
-local Tasks, Scenes, Text; import()
+local Tasks, Scenes, Text, Data, Physics; import()
+local Bullet; import 'entity.particle'
 
 local abs     = math.abs
 
@@ -7,6 +8,7 @@ local Player = {}
 function Player:_setInitialMove(p)
     self. jumping = 0
     self.djumping = 0
+    self.shooting = nothing
 
     self.moveJump = self.moveDoubleJump
     --self.moveWallJump = nothing
@@ -17,6 +19,7 @@ end
 function Player:move(dt)
     dt = 1 / (dt * self.moveDef.timeFactor)
 
+    self:moveShoot      (  )
     self:moveDoor       (  )
     self:moveWallJump   (  )
     self:moveJump       (dt)
@@ -33,11 +36,19 @@ function Player:calcMainForces(dt)
         -- which forces apply on character
         og and def.ogHorForce or def.oaHorForce,
         -- if running, maxspeed is different
-        ((og                        and self.keyRun) or
+        ((og                          and self.keyRun) or
          (def.maxVxWalk < 0.9*abs(vx) and self.keyRun) or
           def.alwaysRun) 
         and def.maxVxRun or def.maxVxWalk
 
+end
+
+function Player:moveShoot()
+    if self.shooting() then
+        local scalar = 400
+        local speed  = {self.lookLeft and -scalar or scalar, 0}
+        self.level:add(Bullet(self.level, Data.animation.Bullet, self, speed, self))
+    end
 end
 
 function Player:moveLateral(dt, force, maxVel)
@@ -102,8 +113,8 @@ function Player:moveDoubleJump()
 
         if  self.jumping == 0 
         then 
-            if  self.power.djump > 0 and 
-                self.djumping   == 0 
+            if  self.power.djump ~= 0 and 
+                self.djumping    == 0 
             then
                 self.djumping = 1
                 self.power.djump = self.power.djump - 1
@@ -213,22 +224,42 @@ function Player:moveDoor()
     end
 end
 
-function Player:wallhack(on)
-    on = on == true
+local function move_on_wallhack(self)
+    local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
+    local vel = self.keyRun and 15 or 5
+    self.pos:set(self.x + dx*vel, self.y + dy*vel)
+    self.body:setLinearVelocity(0, 0)
+    self:moveShoot()
+end
 
-    local physics = require 'Physics'
+function Player:wallhack_on(freeze_world)
+    freeze_world = freeze_world == true
 
-    if on then
-        physics.world:stop()
-        function self.move()
-            local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
-            local vel = self.keyRun and 15 or 5
-            self.pos:set(self.x + dx*vel, self.y + dy*vel)
-        end
-    else
-        physics.world:start()
-        self.move = Player.move
+    if freeze_world then 
+        Physics.world:stop()
+        self.wallhack_freeze_world = freeze_world
     end
+
+    self:removeMasksFixtures()
+    
+    self.wallhack_gravity = self.body:getGravityScale()
+    self.body:setGravityScale(0)
+    self.move = move_on_wallhack
+    self.applyDamage = nothing
+end
+
+function Player:wallhack_off()
+    if self.wallhack_freeze_world then
+        Physics.world:start()
+        self.wallhack_freeze_world = nil
+    end
+
+    self:restoreMaskFixtures()
+
+    self.body:setGravityScale(self.wallhack_gravity)
+    self.move             = nil
+    self.wallhack_gravity = nil
+    self.applyDamage      = nil
 end
 
 return Player

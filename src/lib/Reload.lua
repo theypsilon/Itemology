@@ -21,7 +21,7 @@ local function reloadFile(file, alwaysload)
 
 	if loaded then
 		local ospath    = srcpath .. file:gsub('%.' , '/') .. '.lua'
-		local time      = lfs.attributes(ospath, 'modification') or nil
+		local time      = declared('lfs') and lfs.attributes(ospath, 'modification') or nil
 		local last_time = time and ospath_last_time[ospath] or nil
 
 		if alwaysload or (last_time and last_time < time) then

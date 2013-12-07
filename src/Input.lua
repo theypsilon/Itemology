@@ -8,7 +8,7 @@ function input.init()
 	input.status.keyboardCallbacks = {[true] = {}, [false] = {}}
 	input.status.toBind = {}
 
-	input.bindAction('ESC', function() Flow.exit() end)
+	input.bindAction('ESC', function() die('ESC says shut down!') end)
 end
 
 function input.bindAction( action, callback1, callback2 )

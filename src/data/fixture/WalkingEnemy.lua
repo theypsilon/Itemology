@@ -1,3 +1,4 @@
+local f = require 'data.fixture.Filters'
 return {
     id = 'Mob',
     option = 'dynamic',
@@ -5,14 +6,12 @@ return {
         ['area']={
                 option = 'rect',
                 args = {-6, 0, 6, 8},
-                density = 0.01,
                 restitution = 0,
                 friction = 0
         },
         body = {
                 option = 'rect',
                 args = {-6, -6, 6, 0},
-                density = 0.01,
                 restitution = 0,
                 friction = 0     
         },
@@ -34,6 +33,7 @@ return {
     },
     x = 100,
     y = 100,
-    mass = 1,
     fixedRotation = true,
+    fixCategory = f.C_ENEMY,
+    fixMask     = f.M_ENEMY
 }

@@ -1,8 +1,8 @@
-local Animation, Physics, Input, Text, Data, Tasks; import()
+local Animation, Physics, Text, Data, Tasks; import()
+local Mob , Position ; import 'entity'
+local Move, Collision, InputPower; import 'entity.player'
 
-local Mob, Position; import 'entity'
-
-local Player = class(Mob, require 'entity.player.Move')
+local Player = class(Mob, Move, Collision, InputPower)
 
 function Player:_init(level, def, p)
 	Mob._init(self, level, p.x, p.y)
@@ -12,8 +12,7 @@ function Player:_init(level, def, p)
 
     self.body = Physics:registerBody(def.fixture, self.prop, self)
 
-    local coll = require('entity.player.Collision')
-    coll._setListeners(self)
+    self:_setListeners(self)
     self:_setInput(p)
     self:_setPower(p)
     self:_setInitialMove(p)
@@ -38,36 +37,6 @@ function Player:_init(level, def, p)
     level.player = self
 end
 
-function Player:_setInput()
-
-    -- walk
-    self.dir = {left = 0, right = 0, up = 0, down = 0}
-    for k,_ in pairs(self.dir) do
-        Input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
-    end
-
-    -- jump
-    Input.bindAction('b2', 
-        function() self.keyJump = true end, 
-        function() self.keyJump = false; self:resetJump() end)
-
-    -- run
-    Input.bindAction('b1', function() self.keyRun = true end, function() self.keyRun = false end)
-
-    -- debug - print location
-    Input.bindAction('r', function() 
-        print(self.pos:get())
-        self:wallhack(true)
-    end, function() self:wallhack(false) end)    
-end
-
-function Player:_setPower()
-    self.power = {djump = 0}
-    Text:debug(self.power, 'djump')
-end
-
-local abs = math.abs
-
 function Player:tick(dt)
 
     self.tasks()
@@ -91,6 +60,7 @@ function Player:tick(dt)
 	Mob.tick(self)
 end
 
+local abs = math.abs
 function Player:animate()
     local def, maxVxWalk = self.animation.extra, self.moveDef.maxVxWalk
 
@@ -131,6 +101,12 @@ function Player:hurt(enemy)
     self.damage[enemy] = 1
 end
 
+local healthyMask = Data.fixture.Filters.M_FRIEND
+local woundedMask = healthyMask - Data.fixture.Filters.C_ENEMY
+
+local PText = require 'entity.particle.JumpingText'
+local PAnim = require 'entity.particle.Animation'
+
 function Player:applyDamage()
     local dmg = 0
     for enemy,hp in pairs(self.damage) do
@@ -141,19 +117,19 @@ function Player:applyDamage()
     if self.wounded > 0 then
         self.wounded = self.wounded - 1
         self.damage  = {}
+        if self.wounded == 0 then self:maskFixtures(healthyMask) end
         return
     end
 
     if dmg > 0 then
         self.wounded = 100
         self.hp = self.hp - dmg
-        local PText = require 'entity.particle.JumpingText'
-        local PAnim = require 'entity.particle.Animation'
         if self.hp <= 0 then 
             self.level:add(PAnim(self.level, Data.animation.TinyMario, 'die', self))
             self:remove() 
         end
         self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
+        self:maskFixtures(woundedMask)
     end
 
     self.damage = {}
@@ -177,6 +153,25 @@ function Player:reaction(enemy)
 
     self.body:setLinearVelocity(ix, iy)
 
+end
+
+function Player:maskFixtures (value)
+    assert(is_positive(value))
+    for _,fix in pairs(self.body.fixtures) do
+        local categoryBits, maskBits, groupIndex = fix:getFilter()
+        fix:setFilter(categoryBits, value, groupIndex)
+    end
+end
+
+function Player:removeMasksFixtures()
+    local _, maskBits, _ = table.first(self.body.fixtures):getFilter()
+    self:maskFixtures(0)
+    self.removed_mask_fixtures = maskBits
+end
+
+function Player:restoreMaskFixtures()
+    self:maskFixtures(self.removed_mask_fixtures)
+    self.removed_mask_fixtures = nil
 end
 
 function Player:draw(...)

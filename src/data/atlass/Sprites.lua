@@ -1,6 +1,7 @@
 return {
-    image  = 'grid.png',
-    frames = {
+    image     = 'grid.png',
+    defaultcp = {x = 7,    y = 7},
+    frames    = {
         stand = {x = 0,    y = 0,   w = 16, h = 16},
         walk  = {x = 16,   y = 0,   w = 16, h = 16},
         skid  = {x = 32,   y = 0,   w = 16, h = 16},
@@ -32,5 +33,7 @@ return {
         coin6   = {x = 80,  y = 64, w = 16, h = 16},
         coin7   = {x = 96,  y = 64, w = 16, h = 16},
         coin8   = {x = 112, y = 64, w = 16, h = 16},
+
+        bullet = {x = 0, y = 80, w = 16, h = 16},
     }
 }

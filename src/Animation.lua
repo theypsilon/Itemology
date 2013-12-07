@@ -32,21 +32,24 @@ function Animation:_init(definition, prop, skip, default)
 
     local newSequences = {}
     for name,seq in pairs(definition.sequences) do
-        if type(seq) == 'table' then
+        if is_table(seq) then
             local newSeq = {}
             for k,v in pairs(seq) do newSeq[k] = atlass:get(v).i end
             newSequences[name] = newSeq
-        else
+        elseif is_function(seq) then
             self.atlass = atlass
             newSequences[name] = coroutine.create(seq)
-        end
+        else error 'bad definition of animation' end
     end
     self.sequences = newSequences
     self._nextStep = table_next
 
     if default then self:setAnimation(default) end
 
-    atlass:get(definition.sequences[definition.default][1]):newProp(self.prop)
+    local sample = table.first(table.filter(definition.sequences, is_table))
+    assert(sample)
+
+    atlass:get(table.first(sample)):newProp(self.prop)
 end
 
 function Animation:setAnimation(animation)

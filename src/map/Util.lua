@@ -89,6 +89,7 @@ function Util.makeChainFixtures(structure)
                 closed = true
             }}
         }
+        floor.structure = true
         chains[#chains + 1] = floor
     end
 

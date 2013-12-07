@@ -4,6 +4,22 @@ local Map, Util = require 'map.Map', require 'map.Util'
 
 local Level = class()
 
+local function lazyLoadEntityByName(self)
+    if self.entityByName and not self.entityByName.val then 
+        return self.entityByName 
+    end
+    return lazy(function()
+        local table = {}
+        for e,_ in pairs(self.entities) do
+            local name = e._name or '<none>'
+            local sub  = table[name]
+            if sub then sub[#sub + 1] = e
+            else table[name] = {e} end
+        end
+        return table
+    end)
+end
+
 function Level:_init(mapfile)
     self.name = mapfile 
     self.map  = Map('res/maps/' .. mapfile)
@@ -11,6 +27,8 @@ function Level:_init(mapfile)
 
     self.entitiesInMap = {}
     self.entities      = {}
+
+    self.entityByName = lazyLoadEntityByName(self)
 end
 
 local function clear_entity(self)
@@ -35,11 +53,13 @@ function Level:add(entity)
     if not entity.clear then entity.clear = clear_entity end
     self.entities[entity] = true
     self:insertEntity(entity, self.map:toXYO(entity.x, entity.y))
+    self.entityByName = lazyLoadEntityByName(self)
 end
 
 function Level:remove(entity)
     self.entities[entity] = nil
     self:removeEntity(entity, self.map:toXYO(entity.x, entity.y))
+    self.entityByName = lazyLoadEntityByName(self)
 end
 
 function Level:getEntities(xo, yo, x1, y1)
