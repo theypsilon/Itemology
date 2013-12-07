@@ -32,7 +32,7 @@ local function validate(path)
 end
 
 function Map:_init(path)
-	path = Map.PATH .. path
+	path = is_relative_path(path) and (Map.PATH .. path) or path
 	return resource.getCallable(path, function()
 		local path, format  = validate(path)
 

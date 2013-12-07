@@ -7,8 +7,8 @@ require (srcpath .. 'lib.Import') . add_package_path(srcpath)
 -- defining global variables
 require 'Globals'
 
--- running the game 
--- ** from now on, declaring global vars is illegal, and an error is thrown
+-- Running the GAME 
+-- * from now on, declaring globals is avoided, and an error might be thrown
 
 local Flow, Scenes, Layer, Data, map, resource; import()
 Flow.run(Data.MainConfig, function()

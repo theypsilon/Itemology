@@ -39,6 +39,10 @@ local function is_path(s)
     return path ~= ''
 end
 
+local function is_relative_path(s)
+    return #s > 1 and s:sub(1, 1) ~= '/'
+end
+
 local function file_exist(path)
     if not is_string(path) then return false end
 
@@ -84,6 +88,8 @@ local exports = {
     is_integer  = is_integer ,
     is_positive = is_positive,
     is_negative = is_negative,
+
+    is_relative_path = is_relative_path,
 }
 
 require('lib.Import').make_exportable(exports)
