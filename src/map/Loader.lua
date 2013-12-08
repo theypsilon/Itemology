@@ -2,6 +2,7 @@ local loader = {}
 
 function loader.lua(source)
     local  map = dofile(source)
+    error 'this has to be reimplemented'
     return map
 end
 

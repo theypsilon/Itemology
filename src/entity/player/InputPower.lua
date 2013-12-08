@@ -32,10 +32,14 @@ function Player:_setInput()
 
     -- debug - print location
     Input.bindAction('r', function() 
-        print(self.pos:get())
-        self:wallhack_on ()
+        self.tasks:once('wallhack', function() 
+            self:wallhack_on ()
+            print(self.pos:get()) 
+        end)
     end, function() 
-        self:wallhack_off() 
+        self.tasks:once('wallhack', function() 
+            self:wallhack_off() 
+        end)
     end)    
 end
 

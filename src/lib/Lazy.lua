@@ -16,10 +16,10 @@ local function make_value(t, k, v)
     setmetatable(t, nil)
 
     local  val  = t:_callback()
-    t._callback = nil
+    --t._callback = nil
 
-    if not val or val == t then return special_case(t, k, v, val)
-    else t.val  = val end
+    if not val or val == t then return special_case(t, k, v, val) end   
+    t.val = val
 
     setmetatable(t, {__index = val, __newindex = val, __call = call})
 
@@ -38,7 +38,18 @@ local function lazy(callback)
     return setmetatable({val = false, _callback = callback}, proxy)
 end
 
-local exports = {lazy = lazy}
+local function restart_lazy(lazy)
+    if lazy.val ~= false then
+        lazy.val = false
+        assert(type(lazy._callback) == 'function')
+        return setmetatable(lazy, proxy)
+    end
+end
+
+local exports = {
+    lazy         = lazy,
+    restart_lazy = restart_lazy
+}
 
 require('lib.Import').make_exportable(exports)
 

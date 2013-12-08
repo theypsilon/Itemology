@@ -16,11 +16,10 @@ require 'lib.Lazy'  ()
 
 local Tasks = require 'Tasks'
 
-global{gTasks    = Tasks   ()    }
-global{timeStart = os.time ()    }
-global{nothing   = function() end}
+global{gTasks    = Tasks  ()}
+global{timeStart = os.time()}
+
+global{nothing = function(   )                      end}
+global{die     = function(...) dump(...); os.exit() end}
+
 global('scene')
-global{die = function(...)
-    dump(...)
-    os.exit()
-end}
