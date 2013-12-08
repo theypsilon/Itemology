@@ -1,4 +1,4 @@
-local Job; import()
+local Job, Update; import()
 
 local Tasks = class()
 function Tasks:_init() self.callbacks = {} end
@@ -31,5 +31,7 @@ function Tasks:once(index, f, delay)
 end
 
 function Tasks:__call(...) for _,t in pairs(self.callbacks) do t(...) end end
+
+Update.instance(Tasks())
 
 return Tasks

@@ -1,18 +1,5 @@
-local class_to_file = {}
-local function getFileFromClass(class)
-	if class_to_file[class] == nil then
-		for k,_ in pairs(package.loaded) do
-			if stringx.endswith(k, '.' .. class) then 
-				class_to_file[class] = k 
-			end
-		end
-	end
-
-	return class_to_file[class]
-end
-
 local ospath_last_time = {}
-local function reloadFile(file, alwaysload)
+local function reload_file(file, alwaysload)
 	local  loaded = package.loaded[file]
 	if not loaded then
 		   file   = file:gsub('%.' , '/')
@@ -24,6 +11,8 @@ local function reloadFile(file, alwaysload)
 		local time      = declared('lfs') and lfs.attributes(ospath, 'modification') or nil
 		local last_time = time and ospath_last_time[ospath] or nil
 
+		alwaysload = alwaysload == true or not time
+
 		if alwaysload or (last_time and last_time < time) then
 			ospath_last_time[ospath] = time
 			package.loaded  [file]   = nil
@@ -33,38 +22,46 @@ local function reloadFile(file, alwaysload)
 	return false
 end
 
-local function reloadBases(metaClass)
-	local alwaysload = nil
-	if metaClass._base ~= nil then
-		alwaysload = reloadBases(metaClass._base)
+local function get_related_files(table)
+	if type(table) ~= 'table' then return {} end
+
+	local files = {}
+	for k,v in pairs(table) do
+		assert(type(k) == 'string')
+		if type(v) == 'function' then
+			files[debug.getinfo(v).short_src] = true
+		end
 	end
-	return reloadFile(getFileFromClass(metaClass._name), alwaysload)
+
+	local meta = getmetatable(table)
+	if meta then
+		for k,_ in pairs(get_related_files(meta)) do
+			files[k] = true
+		end
+	end
+	return files
 end
 
-local function updateInstance(instance)
-	local meta = getmetatable(instance)
+local function reload_related_files(item)
+	if type(item) == 'function' then
+		return reload_file(debug.getinfo(item).short_src)
+	end
 
-	if reloadBases(meta) then
-		local class = _G[meta._name]
-		setmetatable(instance,class)
+	if type(item) == 'table' then
+		for file,_ in pairs(get_related_files(item)) do
+			reload_file(file)
+		end
 		return true
 	end
-	return false
+
+	error 'reload_related_files can only deduce functions or tables'
 end
 
-local function reloadTasks()
-	for _,v in ipairs(reload.tasks) do
-		if type(v) == 'string' then reload.file(v) else reload.instance(v) end
-	end
-end
-
-local reload = {}
-reload.instance = updateInstance
-reload.file     = reloadFile
-reload.tasks    = reload.tasks or {}
-reload.all      = reloadTasks
-
-local exports = { reload = reload }
+local exports = { 
+	reload_file          = reload_file,
+	reload_related_files = reload_related_files,
+	get_related_files    = get_related_files,
+}
 
 require('lib.Import').make_exportable(exports)
 
