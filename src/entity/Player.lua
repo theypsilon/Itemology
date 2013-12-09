@@ -133,7 +133,7 @@ function Player:applyDamage()
             self:remove() 
         end
         self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
-        self:maskFixtures(woundedMask)
+        self:maskFixtures{area = woundedMask}
     end
 
     self.damage = {}
@@ -159,11 +159,23 @@ function Player:reaction(enemy)
 
 end
 
-function Player:maskFixtures (value)
+local function setFixtureMask(fix, mask)
+    local categoryBits, maskBits, groupIndex = fix:getFilter()
+    fix:setFilter(categoryBits, value, groupIndex)
+end
+
+function Player:maskFixtures (value, name)
+    if is_table(value) then
+        for k, v in pairs(value) do self:maskFixtures(v, k) end
+    end
+
     assert(is_positive(value), tostring(value) .. ': is not positive')
-    for _,fix in pairs(self.body.fixtures) do
-        local categoryBits, maskBits, groupIndex = fix:getFilter()
-        fix:setFilter(categoryBits, value, groupIndex)
+    if is_string(name) then
+        setFixtureMask(self.body.fixtures[name], value)
+    else
+        for _,fix in pairs(self.body.fixtures) do
+            setFixtureMask(fix, value)
+        end
     end
 end
 
