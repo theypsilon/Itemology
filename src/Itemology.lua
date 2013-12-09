@@ -10,11 +10,9 @@ require 'Globals'
 -- Running the GAME 
 -- * from now on, declaring globals is avoided, and an error might be thrown
 
-local Flow, Scenes, Layer, Data, Input, map, resource; import()
+local Flow, Scenes, Data, Input, map, resource; import()
 Flow.run(Data.MainConfig, function()
     print 'Welcome to Itemology!'
-
-    Layer.main:setPartition(MOAIPartition.new())
 
     resource.IMAGE_PATH = project .. 'res/img/'
                map.PATH = project .. 'res/maps/'

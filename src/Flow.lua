@@ -62,6 +62,8 @@ function flow.run(config, starter)
     	config.screen.width, config.screen.height
     )
 
+	--Layer.main:setPartition(MOAIPartition.new())
+
     starter()
 
 	flow.thread = MOAIThread.new ()
