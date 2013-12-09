@@ -121,18 +121,10 @@ local function at( tab, ... )
     return last
 end
 
-local function set( tab, val, ... )
-    local dim    = {...}
-    local lt, li = nil
-    local ld = nil
-    for _, d in ipairs(dim) do ld = d end
-    for _, d in ipairs(dim) do
-        if d == ld then
-            tab[d] = val
-            return
-        end
-        tab    = tab[d]
-    end
+local function set( tab )
+    local new = {}
+    for _, d in pairs(tab) do new[d] = true end
+    return new
 end
 
 local function pack(...)
