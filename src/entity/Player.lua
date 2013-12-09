@@ -1,4 +1,4 @@
-local Animation, Physics, Text, Data, Tasks, Update; import()
+local Animation, Physics, Text, Data, Tasks, Update, Job; import()
 local Mob , Position ; import 'entity'
 local Move, Collision, InputPower; import 'entity.player'
 
@@ -23,7 +23,6 @@ function Player:_init(level, def, p)
     self.pos:set(p.x, p.y)
 
     self.hp = 3
-    self.wounded = 0
     self.damage = {}
     Text:debug(self, 'hp')
 
@@ -73,7 +72,8 @@ function Player:animate()
     if abs(vx) > def.toleranceX then 
         self.lookLeft = vx < 0
         if abs(vy) < def.toleranceY  then 
-            self.animation:setAnimation(abs(vx)*def.walkRunUmbral <= maxVxWalk and 'walk' or 'run') 
+            self.animation:setAnimation(
+                abs(vx)*def.walkRunUmbral <= maxVxWalk and 'walk' or 'run')
         end
     else 
         self.animation:setAnimation('stand')
@@ -90,15 +90,6 @@ function Player:animate()
 
     self.animation:setMirror(self.lookLeft == true)
     self.animation:next()
-
-    if self.wounded > 0 then
-        local layer = self.level.map('platforms').layer
-        if self.wounded % 10 == 0 then
-            layer:removeProp(self.prop)
-        elseif self.wounded % 10 == 5 then
-            layer:insertProp(self.prop)
-        end
-    end
 end
 
 function Player:hurt(enemy)
@@ -118,25 +109,34 @@ function Player:applyDamage()
         self:reaction(enemy)
     end
 
-    if self.wounded > 0 then
-        self.wounded = self.wounded - 1
-        self.damage  = {}
-        if self.wounded == 0 then self:maskFixtures(healthyMask) end
-        return
-    end
+    self.damage = {}
 
-    if dmg > 0 then
-        self.wounded = 100
+    if dmg > 0 and not self.wounded then
+
         self.hp = self.hp - dmg
         if self.hp <= 0 then 
-            self.level:add(PAnim(self.level, Data.animation.TinyMario, 'die', self))
+            self.level:add(
+                PAnim(self.level, Data.animation.TinyMario, 'die', self))
             self:remove() 
         end
         self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
         self:maskFixtures{area = woundedMask}
+
+        self.wounded = true
+        local layer  = self.level.map('platforms').layer
+
+        self.tasks:set('wounded', Job.interval(function(c)
+            local  n = c.ticks % 10
+            if     n == 0 then layer:removeProp(self.prop)
+            elseif n == 5 then layer:insertProp(self.prop) end
+        end, 0, 100)):after(function(c) 
+            self:maskFixtures(healthyMask)
+            self.wounded = nil
+            c:finish() 
+        end)
+        
     end
 
-    self.damage = {}
 end
 
 function Player:reaction(enemy)

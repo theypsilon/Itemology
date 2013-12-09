@@ -2,8 +2,10 @@ local Text; import()
 
 local Player = {}
 
+local BEGIN = MOAIBox2DArbiter.BEGIN
+
 function Player:_setListeners()
-    local begend = MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END 
+    local begend = BEGIN + MOAIBox2DArbiter.END 
 
     local fix = self.body.fixtures
 
@@ -24,7 +26,7 @@ end
 function Player.footSensor(p, fa, fb, a)
     local self  = fa:getBody().parent
     local enemy = fb:getBody().parent
-    if p == MOAIBox2DArbiter.BEGIN then             
+    if p == BEGIN then             
         if not enemy then self.groundCount = self.groundCount + 1 end
         if not self:onGround() and fb.name == 'head' and self.vy >= 0
         and enemy and enemy.hurt then
@@ -39,26 +41,38 @@ function Player.handSensor(side)
     return function(p, fa, fb, a)
         if fb.name ~= nil then
             local self = fa:getBody().parent
-            self.touch = self.touch + (p == MOAIBox2DArbiter.BEGIN and side or -side)
+            self.touch = self.touch + (p == BEGIN and side or -side)
         end
     end
 end
 
-function Player.area(p, fa, fb, a) 
-    local object = fb:getBody().object
-    if object then Player.object[object.class](fa:getBody().parent, object, p, a)
-    end
+function Player.area(p, fa, fb, a)
+    local  contact = fb:getBody().parent
+    if not contact then return end
+    Player.contact[contact._name](fa:getBody().parent, contact, p, a, fb)
+end
+
+Player.contact = {}
+
+function Player.contact.WalkingEnemy(self, enemy, p)
+    if p ~= BEGIN then return end
+
+    self:hurt(enemy, true)
+end
+
+function Player.contact.Object (self, object, p)
+    Player.object[object.class](self, object, p)
 end
 
 Player.object = {}
 
-function Player.object.Door(self, o, p, a)
-    if p == MOAIBox2DArbiter.BEGIN then self.door = o
+function Player.object.Door(self, o, p)
+    if p == BEGIN then self.door = o
     elseif self.door == o          then self.door = nil end
 end
 
-function Player.object.Power(self, o, p, a)
-    if p ~= MOAIBox2DArbiter.BEGIN then return end
+function Player.object.Power(self, o, p)
+    if p ~= BEGIN then return end
 
     self.tasks:once(o.power, function()
         self.power [o.power] = o.charges + 
@@ -67,7 +81,7 @@ function Player.object.Power(self, o, p, a)
         local remove = tonumber(o.remove) or 1
 
         if remove <= 1 
-        then o.parent:remove()
+        then o:remove()
         else o.remove = remove - 1 end
     end)
 end

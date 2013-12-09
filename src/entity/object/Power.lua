@@ -23,13 +23,13 @@ return function(d,p)
         y = y,
     }, prop)
 
-    body.object = p.properties
+    local object = table.copy(p.properties)
+    object.x, object.y = x, y
+    object.prop = prop
+    object.animation = animation
+    object.body = body
+    object.tick = tick
+    object.remove = remove
 
-    return {
-        body = body, 
-        prop = prop, 
-        x=x, y=y, 
-        animation = animation, 
-        remove = remove, tick = tick
-    }
+    return object
 end

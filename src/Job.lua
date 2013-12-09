@@ -1,5 +1,31 @@
 local Job = {}
 
+local Chain = class()
+function Chain:_init(f) assert(is_callable(f)); self.job = f end
+function Chain:finish() self.finished = true end
+
+function Chain:__call()
+    local  ret = self.job(self)
+    if self.finished then 
+        if #self.next > 0 then 
+            self.job  = table.remove(self.next, 1)
+            self.finished = nil 
+        else self.job = nothing end
+    end
+    return ret
+end
+
+function Chain:after  (f)
+    assert(is_callable(f))
+    self.next = self.next or {}
+    self.next[#self.next + 1] = f
+    return self
+end
+
+function Chain.is(o) return o._name == 'Chain' end
+
+Job.chain = Chain
+
 function Job.refListener(table, key, onChange, firstTime, ...)
     assert(is_object(table))
     assert(key ~= nil)
@@ -36,16 +62,22 @@ end
 function Job.interval(f, initial, final)
     assert(is_callable(f))
     assert(is_positive(initial))
-    assert(is_positive(final  ))
-    local ticks = 0
-    return function(...)
-        if ticks >= initial and ticks <= final then
-            return  true, ticks, f(...)
-        else
-            return false, ticks, nil
-        end
-        ticks = ticks + 1
-    end
+    assert(is_positive(final  ) or is_nil(final))
+
+    local run = Chain(function(c, ...)
+        c.ticks = c.ticks + 1
+        if final and c.ticks >= final then return c:finish() end
+        return f(c, ...)
+    end)
+
+    run.ticks = -1
+
+    if initial > 0 then
+        return Chain(function(c)
+            c.ticks = c.ticks + 1
+            if c.ticks >= initial then c:finish() end
+        end):after(run)
+    else return run end
 end
 
 return Job

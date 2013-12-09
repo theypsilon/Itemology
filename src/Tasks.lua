@@ -1,7 +1,21 @@
-local Job, Update; import()
+local Job; import()
 
 local Tasks = class()
-function Tasks:_init() self.callbacks = {} end
+function Tasks:_init(chains)
+    self.callbacks = {} 
+    if chains then
+        local proxy = {}
+        local is_chain = Job.class.is
+        setmetatable(self.callbacks, {
+            __newindex = function(t, k, v) 
+                proxy[k] = is_chain(v) and v or Job.chain(v)
+            end,
+            __index    = function(t, k) 
+                return proxy[k] 
+            end
+        })
+    end
+end
 
 function Tasks:_prepareIndex(index) return index end
 
@@ -30,6 +44,12 @@ function Tasks:once(index, f, delay)
     return self.callbacks[index]
 end
 
-function Tasks:__call(...) for _,t in pairs(self.callbacks) do t(...) end end
+function Tasks:__call(...) 
+    local cbs = self.callbacks
+    for k, v in pairs(cbs) do 
+        v(...)
+        if is_object(cbs[k]) and cbs[k].finished then cbs[k] = nil end
+    end 
+end
 
 return Tasks

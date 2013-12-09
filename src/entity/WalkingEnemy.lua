@@ -21,23 +21,12 @@ function WalkingEnemy:_init(level, definition, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    p = p.properties
     self.moveDef = definition.move
-    self.dir     = p and tonumber(p.dir) or 1
+    self.dir     = p.properties and p.properties.dir or 1
 end
 
 function WalkingEnemy:_setListeners()
     local fix = self.body.fixtures
-    fix['area']:setCollisionHandler( 
-        function(phase, fix_a, fix_b, arbiter)
-            if phase == MOAIBox2DArbiter.BEGIN and not fix_b.sensor then
-                local victim = fix_b:getBody().parent
-                if victim and victim.hurt then victim:hurt(self, true) end
-            end
-        end, 
-        MOAIBox2DArbiter.BEGIN  
-    )
-
     local function floorSensor(var)
         self[var] = 0
         return function(phase, fix_a, fix_b, arbiter)
@@ -121,8 +110,8 @@ local Broken = require 'entity.particle.Broken'
 
 function WalkingEnemy:hurt(rival)
     if rival._name == 'Player' then
-        local Particle = require 'entity.particle.Animation'
-        self.level:add(Particle(self.level, Data.animation.Goomba, 'die', self))
+        local P = require 'entity.particle.Animation'
+        self.level:add(P(self.level, Data.animation.Goomba, 'die', self))
         self:remove()
 
         rival:hurt(self)

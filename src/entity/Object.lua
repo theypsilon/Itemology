@@ -5,9 +5,9 @@ local function Object(level, definition, p, layer)
     local o      = loader (definition, p)
 
     if o.body then 
-        o.body.object = p.properties
-        o.body.object.layer = layer
-        o.body.object.parent = o
+        o.layer = layer
+        o._name = 'Object'
+        o.body.parent = o
     end
 
     if not o.tick then o.tick = nothing end

@@ -25,10 +25,6 @@ local function count( tab )
     return i
 end
 
-local function copy(from, to, deep)
-    return deep and deep_copy(from, to) or shallow_copy(from, to)
-end
-
 local function deep_copy(from, to)
     local ret = (to == nil) and {} or to
     for k, v in pairs(from) do 
@@ -43,6 +39,10 @@ local function shallow_copy(from, to)
         ret[k] = v 
     end
     return ret
+end
+
+local function copy(from, to, deep)
+    return deep and deep_copy(from, to) or shallow_copy(from, to)
 end
 
 local function compare(t1, t2)

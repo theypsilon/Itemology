@@ -16,7 +16,9 @@ return function(d,p)
         y = y,
     }
 
-    body.object = p.properties
+    local object = table.copy(p.properties)
+    object.body  = body
 
-    return {body = body, x=x, y=y}
+    object.x, object.y = p.x, p.y
+    return object
 end
