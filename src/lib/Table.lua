@@ -110,7 +110,7 @@ end
 local function at( tab, ... )
     local dim  = {...}
     local last = nil
-    for _, d in ipairs(dim) do
+    for _, d in pairs(dim) do
         last = tab[d]
         if last then
             tab = last
