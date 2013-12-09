@@ -22,7 +22,7 @@ local data = setmetatable({},meta)
 
 local function reload_data(path, node, alwaysload)
     node = node  or require(path)
-    local new = reload_file(path, alwaysload)
+    local _, new = reload_file(path, alwaysload)
     if alwaysload and not table.compare(node, new) then
         error('data objects are readonly, but "' .. path .. '" has been touched')
     elseif new then

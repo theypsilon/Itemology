@@ -32,6 +32,4 @@ end
 
 function Tasks:__call(...) for _,t in pairs(self.callbacks) do t(...) end end
 
-Update.instance(Tasks())
-
 return Tasks

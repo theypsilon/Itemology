@@ -1,4 +1,4 @@
-local Animation, Physics, Text, Data, Tasks; import()
+local Animation, Physics, Text, Data, Tasks, Update; import()
 local Mob , Position ; import 'entity'
 local Move, Collision, InputPower; import 'entity.player'
 
@@ -35,6 +35,10 @@ function Player:_init(level, def, p)
     self.prop:setPriority(5000)
 
     level.player = self
+
+    gTasks:set('reload_player', function()
+        Update.instance(self)
+    end)
 end
 
 function Player:tick(dt)
@@ -156,7 +160,7 @@ function Player:reaction(enemy)
 end
 
 function Player:maskFixtures (value)
-    assert(is_positive(value))
+    assert(is_positive(value), tostring(value) .. ': is not positive')
     for _,fix in pairs(self.body.fixtures) do
         local categoryBits, maskBits, groupIndex = fix:getFilter()
         fix:setFilter(categoryBits, value, groupIndex)
@@ -170,6 +174,7 @@ function Player:removeMasksFixtures()
 end
 
 function Player:restoreMaskFixtures()
+    if is_nil(self.removed_mask_fixtures) then return end
     self:maskFixtures(self.removed_mask_fixtures)
     self.removed_mask_fixtures = nil
 end

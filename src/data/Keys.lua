@@ -1,4 +1,6 @@
 return {
+    [1]   = 49,  -- 1
+
     left  = 97,  -- A
     right = 100, -- D
     up    = 119, -- W

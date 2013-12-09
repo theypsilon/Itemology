@@ -249,6 +249,8 @@ function Player:wallhack_on(freeze_world)
 end
 
 function Player:wallhack_off()
+    if is_nil(self.wallhack_gravity) then return end
+    
     if self.wallhack_freeze_world then
         Physics.world:start()
         self.wallhack_freeze_world = nil

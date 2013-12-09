@@ -23,6 +23,7 @@ Flow.run(Data.MainConfig, function()
         Input.bindActionToKeyCode(k, v)
     end
     Input.bindAction('ESC', function() die('ESC says shut down!') end)
+    Input.bindAction(1    , function() debug.debug()              end)
 
     Scenes.run('First')
 end)
