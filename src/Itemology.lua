@@ -16,8 +16,8 @@ Flow.run(Data.MainConfig, function()
 
     Layer.main:setPartition(MOAIPartition.new())
 
-               map.PATH = project .. 'res/maps/'
     resource.IMAGE_PATH = project .. 'res/img/'
+               map.PATH = project .. 'res/maps/'
 
     for k,v in pairs(Data.Keys) do
         Input.bindActionToKeyCode(k, v)
