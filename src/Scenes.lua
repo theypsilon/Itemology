@@ -18,7 +18,7 @@ local function runScene(self, ...)
 end
 
 function Scenes.load(path)
-	local file = 'scene/' .. path
+	local file = 'scene.' .. path
 	package.loaded[file] = nil
 	require(file)
 	local s = scene
