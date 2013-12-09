@@ -161,21 +161,20 @@ end
 
 local function setFixtureMask(fix, mask)
     local categoryBits, maskBits, groupIndex = fix:getFilter()
-    fix:setFilter(categoryBits, value, groupIndex)
+    fix:setFilter(categoryBits, mask, groupIndex)
 end
 
 function Player:maskFixtures (value, name)
     if is_table(value) then
         for k, v in pairs(value) do self:maskFixtures(v, k) end
+        return
     end
 
     assert(is_positive(value), tostring(value) .. ': is not positive')
-    if is_string(name) then
-        setFixtureMask(self.body.fixtures[name], value)
-    else
-        for _,fix in pairs(self.body.fixtures) do
-            setFixtureMask(fix, value)
-        end
+
+    if is_string(name) then setFixtureMask(self.body.fixtures[name], value)
+    else 
+        for _,f in pairs(self.body.fixtures) do setFixtureMask(f, value) end
     end
 end
 

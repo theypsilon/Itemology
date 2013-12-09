@@ -30,7 +30,7 @@ function WalkingEnemy:_setListeners()
     local fix = self.body.fixtures
     fix['area']:setCollisionHandler( 
         function(phase, fix_a, fix_b, arbiter)
-            if phase == MOAIBox2DArbiter.BEGIN then
+            if phase == MOAIBox2DArbiter.BEGIN and not fix_b.sensor then
                 local victim = fix_b:getBody().parent
                 if victim and victim.hurt then victim:hurt(self, true) end
             end

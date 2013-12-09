@@ -90,7 +90,8 @@ function Physics.registerFixtures(fixtures, body, category, mask, group)
             )
         end
 
-        fix.name = k
+        fix.name   = k
+        fix.sensor = value.sensor
 
         outFixtures[k] = fix
     end
