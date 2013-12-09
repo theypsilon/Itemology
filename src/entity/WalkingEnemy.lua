@@ -55,8 +55,9 @@ function WalkingEnemy:_setListeners()
         end
     end
 
-    fix['sensorL']:setCollisionHandler(floorSensor('gLeft' ), MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END)
-    fix['sensorR']:setCollisionHandler(floorSensor('gRight'), MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END)
+    local begend = MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END
+    fix['sensorL']:setCollisionHandler(floorSensor('gLeft' ), begend)
+    fix['sensorR']:setCollisionHandler(floorSensor('gRight'), begend)
 end
 
 local abs = math.abs
