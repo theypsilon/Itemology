@@ -22,7 +22,7 @@ end
 
 function Level:_init(mapfile)
     self.name = mapfile 
-    self.map  = Map('res/maps/' .. mapfile)
+    self.map  = Map(mapfile)
     self.map:setLayer(Layer.main)
 
     self.entitiesInMap = {}

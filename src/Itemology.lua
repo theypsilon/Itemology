@@ -16,7 +16,7 @@ Flow.run(Data.MainConfig, function()
 
     Layer.main:setPartition(MOAIPartition.new())
 
-    map.PATH            = project
+               map.PATH = project .. 'res/maps/'
     resource.IMAGE_PATH = project .. 'res/img/'
 
     for k,v in pairs(Data.Keys) do
