@@ -6,11 +6,10 @@ local abs     = math.abs
 local Player = {}
 
 function Player:_setInitialMove(p)
-    self.shooting = nothing
-
-    self.setJump  = self.setSingleJump
-
-    self.moveJump = nothing
+    self.shooting     = nothing
+    self.setJump      = self.setDoubleJump
+    self.doDoubleJump = self.doStandardDoubleJump
+    self.moveJump     = nothing
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveFallingDown = nothing
@@ -90,7 +89,12 @@ function Player:setDoubleJump()
 
         if c.ticks == max then
             c.ticks = nil
-            self.setJump = function() djump = true end
+            self.setJump = function() 
+                if not djump and self.power.djump > 0 then
+                    self.power.djump = self.power.djump - 1
+                    djump = true 
+                end
+            end
         end
 
         if djump then
@@ -170,8 +174,7 @@ function Player:doJump(step)
     self.body:applyLinearImpulse(0, -jump[step])
 end
 
-function Player:doDoubleJump()
-    print 'do de dudde jump'
+function Player:doStandardDoubleJump()
     local def = self.moveDef
 
     local dx   = -1*self.dir.left + self.dir.right
