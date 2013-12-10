@@ -67,8 +67,8 @@ end
 Player.object = {}
 
 function Player.object.Door(self, o, p)
-    if p == BEGIN then self.door = o
-    elseif self.door == o          then self.door = nil end
+    if p == BEGIN         then self.door = o
+    elseif self.door == o then self.door = nil end
 end
 
 function Player.object.Power(self, o, p)
