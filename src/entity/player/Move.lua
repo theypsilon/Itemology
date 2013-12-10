@@ -54,7 +54,8 @@ function Player:moveLateral(dt, force, maxVel)
     local vx, dx = self.vx, self.dx
     -- horizontal walk/run
     if dx ~= 0 then
-        self.body:applyForce( dt*dx*force*(maxVel-abs(vx)), 0)
+        local vel = abs(maxVel - abs(vx))
+        self.body:applyForce( dt*dx*force*vel, 0)
     end
 
     -- fake friction in horizontal axis
