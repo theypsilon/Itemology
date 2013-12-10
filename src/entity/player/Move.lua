@@ -1,4 +1,4 @@
-local Tasks, Scenes, Text, Data, Physics; import()
+local Tasks, Scenes, Text, Data, Job, Physics; import()
 local Bullet; import 'entity.particle'
 
 local abs     = math.abs
@@ -6,11 +6,11 @@ local abs     = math.abs
 local Player = {}
 
 function Player:_setInitialMove(p)
-    self. jumping = 0
-    self.djumping = 0
     self.shooting = nothing
 
-    self.moveJump = self.moveDoubleJump
+    self.setJump  = self.setDoubleJump
+
+    self.moveJump = nothing
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveFallingDown = nothing
@@ -76,70 +76,43 @@ function Player:moveFallingDown()
     else self.body:applyLinearImpulse(0, def.addGravity) end
 end
 
-function Player:moveSingleJump()
-    if not self.keyJump then return end
+function Player:setDoubleJump()
+    if self.tasks.callbacks.jumping then return end
 
-    local jump = self.moveDef.jumpImp
+    local max    = #self.moveDef.jumpImp
+    local djump  = nil
+    self.setJump = nothing
+    self.tasks:set('jumping', Job.interval(function(c)
+        if not self.keyJump then return c:finish() end
+        self:doJump(c.ticks + 1)
+    end, 0, max)):after(function(c)
+        if self:onGround()  then return c:finish(true) end
 
-    if  self:onGround() and 
-        self.jumping == 0 
-    then
-        self.jumping = 1
-        self:doJump()
-    elseif  
-        self.jumping == 0 
-    then 
-        self.jumping = #jump
-    elseif 
-        self.jumping > 0 and  
-        self.jumping < #jump 
-    then
-        self.jumping = self.jumping + 1
-        self:doJump()
-    end
+        if c.ticks == max then
+            c.ticks = nil
+            self.setJump = function() djump = true end
+        end
+
+        if djump then
+            self:doDoubleJump()
+            c:finish()
+        end
+    end):after(function(c)
+        self.setJump = self.setDoubleJump
+        if self:onGround()  then return c:finish() end
+    end)
 end
 
-function Player:moveDoubleJump()
-    if  self:onGround() and 
-        self.keyJump    and 
-        self.jumping == 0 
-    then
-        self.jumping = 1
-        self:doJump()
-    elseif 
-        self.keyJump 
-    then
-        local jump = self.moveDef.jumpImp
+function Player:setSingleJump()
+    if self.tasks.callbacks.jumping then return end
 
-        if  self.jumping == 0 
-        then 
-            if  self.power.djump ~= 0 and 
-                self.djumping    == 0 
-            then
-                self.djumping = 1
-                self.power.djump = self.power.djump - 1
-                self:doDoubleJump()
-            elseif 
-                self.djumping > 0 and 
-                self.djumping < #jump 
-            then
-                self.djumping = self.djumping + 1
-                --self:doDoubleJump()
-            else
-                self.jumping = #jump
-            end
-        elseif  
-            self.jumping > 0 and  
-            self.jumping < #jump 
-        then
-            self.jumping = self.jumping + 1
-            self:doJump()
-        end
-    elseif 
-        self:onGround() 
-    then 
-        self.djumping = 0 
-    end
+    local jump   = self.moveDef.jumpImp
+    self.tasks:set('jumping', Job.interval(function(c)
+        if not self.keyJump then return c:finish() end
+        self:doJump(c.ticks + 1)
+    end, 0, #jump)):after(function(c)
+        if self:onGround()  then return c:finish() end
+    end)
 end
 
 function Player:moveWallJump()
@@ -193,12 +166,13 @@ function Player:onGround()
     return self.groundCount ~= 0
 end
 
-function Player:doJump()
+function Player:doJump(step)
     local jump = self.moveDef.jumpImp
-    self.body:applyLinearImpulse(0, -jump[self.jumping])
+    self.body:applyLinearImpulse(0, -jump[step])
 end
 
 function Player:doDoubleJump()
+    print 'do de dudde jump'
     local def = self.moveDef
 
     local dx   = -1*self.dir.left + self.dir.right
@@ -206,10 +180,6 @@ function Player:doDoubleJump()
     local vx = dx*abs(vx)
     if vx > def.djumpMaxVx then vx = def.djumpMaxVx end
     self.body:setLinearVelocity(vx, -def.djumpUp)
-end
-
-function Player:resetJump()
-    self.jumping = 0
 end
 
 function Player:moveDoor()

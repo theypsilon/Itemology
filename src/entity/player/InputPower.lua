@@ -12,8 +12,8 @@ function Player:_setInput()
 
     -- jump
     Input.bindAction('b2', 
-        function() self.keyJump = true end, 
-        function() self.keyJump = false; self:resetJump() end)
+        function() self.keyJump = true; self:setJump() end, 
+        function() self.keyJump = false end)
 
     -- run
     Input.bindAction('b1', function() 

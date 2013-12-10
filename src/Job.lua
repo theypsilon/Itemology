@@ -1,15 +1,31 @@
 local Job = {}
 
 local Chain = class()
-function Chain:_init(f) assert(is_callable(f)); self.job = f end
-function Chain:finish() self.finished = true end
+function Chain:_init(f) 
+    assert(is_callable(f))
+    self.job = f 
+end
+
+function Chain:finish(fallthrough) 
+    self.finished    = true
+    self.fallthrough = fallthrough 
+end
+
+function Chain:BREAK() 
+    self.finished = true
+    self.next = nil 
+end
 
 function Chain:__call()
     local  ret = self.job(self)
     if self.finished then 
-        if #self.next > 0 then 
+        if self.next and #self.next > 0 then 
             self.job  = table.remove(self.next, 1)
-            self.finished = nil 
+            self.finished = nil
+            if  self.fallthrough then
+                self.fallthrough = nil
+                return self:__call()
+            end
         else self.job = nothing end
     end
     return ret
@@ -64,20 +80,24 @@ function Job.interval(f, initial, final)
     assert(is_positive(initial))
     assert(is_positive(final  ) or is_nil(final))
 
-    local run = Chain(function(c, ...)
+    local run = function(c, ...)
+        local ret = f(c, ...)
         c.ticks = c.ticks + 1
         if final and c.ticks >= final then return c:finish() end
-        return f(c, ...)
-    end)
-
-    run.ticks = -1
+        return ret
+    end
 
     if initial > 0 then
-        return Chain(function(c)
+        run = Chain(function(c)
             c.ticks = c.ticks + 1
             if c.ticks >= initial then c:finish() end
         end):after(run)
-    else return run end
+    else
+        run = Chain(run)
+    end
+
+    run.ticks = 0
+    return run
 end
 
 return Job
