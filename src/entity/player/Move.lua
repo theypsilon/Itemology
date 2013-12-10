@@ -8,7 +8,7 @@ local Player = {}
 function Player:_setInitialMove(p)
     self.shooting     = nothing
     self.setJump      = self.setDoubleJump
-    self.doDoubleJump = self.doStandardDoubleJump
+    self.doDoubleJump = self.doFalconJump
     self.moveJump     = nothing
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
@@ -166,6 +166,35 @@ end
 function Player:doJump(step)
     local jump = self.moveDef.jumpImp
     self.body:applyLinearImpulse(0, -jump[step])
+end
+
+function Player:doFalconJump()
+    if not self.power.fjump or self.power.fjump <= 0 then return end
+
+    local vx, vy = self.body:getLinearVelocity()
+    local dx, dy = vx > 0 and 1 or -1, vy > 0 and 1 or -1
+
+    if abs(vx) < 100 then vx = 0 
+    else vx = vx > 0 and 1 or -1 end
+    if abs(vy) < 100 then vy = 0
+    else vy = vy > 0 and 1 or -1 end
+
+    local gravity = self.body:getGravityScale()
+
+    self.body:setLinearVelocity(vx*3, vy*3)
+    self.body:setGravityScale(0)
+    self.move = nothing
+
+    self.tasks:set('fjump', Job.interval(nil, 0, 60)):after(function(c)
+        local x, y = self.dx, -1 * self.dir.up + self.dir.down
+        if x == 0 and y == 0 then x, y = dx, dy end
+        self.body:setLinearVelocity(x * 60, y * 60)
+        c:finish()
+    end):after(Job.interval(nil, 0, 120)):after(function(c)
+        self.move = nil
+        self.body:setGravityScale(gravity)
+        c:finish()
+    end)
 end
 
 function Player:doStandardDoubleJump()

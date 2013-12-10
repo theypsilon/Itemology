@@ -31,10 +31,23 @@ function Chain:__call()
     return ret
 end
 
+local function merge(self, c)
+    if c.job then self.next[#self.next + 1] = c.job end
+
+    if c.next then
+        for _,v in pairs(c.next) do self.next[#self.next + 1] = v end
+    end
+
+    return self
+end
+
 function Chain:after  (f)
+    if is_object(f) and f._name == 'Chain' then return merge(self, f) end
+
     assert(is_callable(f))
     self.next = self.next or {}
     self.next[#self.next + 1] = f
+
     return self
 end
 
@@ -76,6 +89,7 @@ function Job.cron(every, f, initial)
 end
 
 function Job.interval(f, initial, final)
+    f = f or nothing
     assert(is_callable(f))
     assert(is_positive(initial))
     assert(is_positive(final  ) or is_nil(final))
