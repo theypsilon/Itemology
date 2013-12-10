@@ -8,7 +8,7 @@ local Player = {}
 function Player:_setInitialMove(p)
     self.shooting = nothing
 
-    self.setJump  = self.setDoubleJump
+    self.setJump  = self.setSingleJump
 
     self.moveJump = nothing
     --self.moveWallJump = nothing
@@ -106,11 +106,10 @@ end
 function Player:setSingleJump()
     if self.tasks.callbacks.jumping then return end
 
-    local jump   = self.moveDef.jumpImp
     self.tasks:set('jumping', Job.interval(function(c)
         if not self.keyJump then return c:finish() end
         self:doJump(c.ticks + 1)
-    end, 0, #jump)):after(function(c)
+    end, 0, #self.moveDef.jumpImp)) :after(function(c)
         if self:onGround()  then return c:finish() end
     end)
 end
