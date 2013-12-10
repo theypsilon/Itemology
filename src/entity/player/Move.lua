@@ -79,19 +79,17 @@ end
 function Player:setDoubleJump()
     if self.tasks.callbacks.jumping then return end
 
-    local max    = #self.moveDef.jumpImp
-    local djump  = nil
-    self.setJump = nothing
-    self.tasks:set('jumping', Job.interval(function(c)
-        if not self.keyJump then return c:finish() end
-        self:doJump(c.ticks + 1)
-    end, 0, max)):after(function(c)
-        if self:onGround()  then return c:finish(true) end
+    local max, step, djump = #self.moveDef.jumpImp, 0, nil
 
-        if c.ticks == max then
-            c.ticks = nil
+    self.tasks:set('jumping', Job.chain(function(c)
+        step = step + 1
+        self:doJump(step)
+        if not self.keyJump or step == max then
             self.setJump = function() djump = true end
+            c:finish()
         end
+    end)):after(function(c)
+        if self:onGround()  then return c:finish(true) end
 
         if djump then
             self:doDoubleJump()
