@@ -89,13 +89,12 @@ function Job.cron(every, f, initial)
 end
 
 function Job.interval(f, initial, final)
-    f = f or nothing
-    assert(is_callable(f))
+    assert(is_callable(f) or is_nil(f))
     assert(is_positive(initial))
     assert(is_positive(final  ) or is_nil(final))
 
     local run = function(c, ...)
-        local ret = f(c, ...)
+        local ret = f and f(c, ...)
         c.ticks = c.ticks + 1
         if final and c.ticks >= final then return c:finish() end
         return ret
