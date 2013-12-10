@@ -89,12 +89,7 @@ function Player:setDoubleJump()
 
         if c.ticks == max then
             c.ticks = nil
-            self.setJump = function() 
-                if not djump and self.power.djump > 0 then
-                    self.power.djump = self.power.djump - 1
-                    djump = true 
-                end
-            end
+            self.setJump = function() djump = true end
         end
 
         if djump then
@@ -175,6 +170,10 @@ function Player:doJump(step)
 end
 
 function Player:doStandardDoubleJump()
+    if not self.power.djump or self.power.djump <= 0 then return end
+
+    self.power.djump = self.power.djump - 1
+    
     local def = self.moveDef
 
     local dx   = -1*self.dir.left + self.dir.right
