@@ -10,7 +10,6 @@ function Player:_setInitialMove(p)
     self.jumpBackup   = self.setDoubleJump
     self.setJump      = self.setDoubleJump
     self.doDoubleJump = self.doPeachJump
-    self.moveJump     = nothing
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveFallingDown = nothing
@@ -22,7 +21,6 @@ function Player:move(dt)
     self:moveShoot      (  )
     self:moveDoor       (  )
     self:moveWallJump   (  )
-    self:moveJump       (dt)
     self:moveLateral    (dt, self:calcMainForces(dt))
     self:moveFallingDown(dt)
     
@@ -59,6 +57,7 @@ function Player:moveLateral(dt, force, maxVel)
     -- horizontal walk/run
     if dx ~= 0 then
         local vel = abs(maxVel - abs(vx))
+        dump(vel)
         self.body:applyForce( dt*dx*force*vel, 0)
     end
 
