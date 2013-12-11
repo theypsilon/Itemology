@@ -92,16 +92,13 @@ function Player:setDoubleJump()
         self.setJump = function() jump = true end
         c:fallthrough()
     end):after(function(c)
+    
         if self:onGround() then return c:fallthrough() end
 
         if self:moveWallJump(true) then jump = nil end
 
-        if jump then
-            self:doDoubleJump()
-            jump = nil
-            c:next()
-        end
-        
+        if jump then self:doDoubleJump(); c:next() end
+
     end):after(function(c)
         if self:onGround() then 
             self.setJump = self.setDoubleJump
