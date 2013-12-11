@@ -13,6 +13,7 @@ function Player:_setInitialMove(p)
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveFallingDown = nothing
+    self.moveShoot    = nothing
 end
 
 function Player:move(dt)
@@ -52,11 +53,16 @@ function Player:moveShoot()
     end
 end
 
+local function sig(v)
+    return v > 0 and 1 or v < 0 and -1 or 0
+end
+
 function Player:moveLateral(dt, force, maxVel)
     local vx, dx = self.vx, self.dx
     -- horizontal walk/run
     if dx ~= 0 then
         local vel = maxVel - abs(vx)
+        if abs(vel) > maxVel and sig(vel) == dx then vel = -vel end
         self.body:applyForce( dt*dx*force*vel, 0)
     end
 

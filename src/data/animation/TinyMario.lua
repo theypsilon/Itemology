@@ -15,16 +15,21 @@ return {
         skid  = {'skid'},
         die   = function(animation, entity)
             local  body = require('Physics'):registerBody({option = 'dynamic'}, animation.prop)
-            local    ey = entity.y
-            local _, ly = entity.level.map:getBorder()
+            local     e = entity.y
+            local _,  l = entity.level.map:getBorder()
             local _,  y = body:getPosition()
-            y = y + ey
+            y = y + e
 
             coroutine.yield()
-            body:applyLinearImpulse(0, -250)
-            while y < ly do
+            body:applyLinearImpulse(0, -175)
+            body:setGravityScale(.5)
+
+            local v
+            while y < l do
                 _, y = body:getPosition()
-                y = y + ey
+                y = y + e
+                _, v = body:getLinearVelocity()
+                if v > 150 then body:setLinearVelocity(0, 150) end
                 coroutine.yield('dead')
             end
         end

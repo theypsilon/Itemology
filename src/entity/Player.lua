@@ -142,7 +142,9 @@ function Player:reaction(enemy)
     local dx, dy = ex - mx, ey - my
     local max = math.sqrt(dx*dx + dy*dy)
     local rx, ry = dx / max, dy / max
-    local ix, iy = -rx*250, -ry*200 * (self.keyJump and 1.5 or 1)
+    local ix, iy = 
+        -rx*250 * (self.keyRun  and 1.60 or 1), 
+        -ry*200 * (self.keyJump and 1.50 or 1)
 
     if enemy.removed then
         local _
@@ -151,7 +153,7 @@ function Player:reaction(enemy)
         ix, iy = ix * 1.5, iy * .5
     end
 
-    self.body:setLinearVelocity(ix, iy)
+    self.body:applyLinearImpulse(ix, iy)
 
 end
 
