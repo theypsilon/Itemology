@@ -148,6 +148,11 @@ local function filter(t, f)
     return result
 end
 
+local function empty(t)
+    for k,v in pairs(t) do return false end
+    return true
+end
+
 local exports = {
     flip            = flip,
     keys            = keys,
@@ -163,7 +168,8 @@ local exports = {
     pack            = pack,
     first           = first,
     first_key       = first_key,
-    filter          = filter
+    filter          = filter,
+    empty           = empty
 }
 
 require('lib.Import').make_exportable(exports)

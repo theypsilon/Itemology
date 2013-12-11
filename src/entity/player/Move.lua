@@ -77,48 +77,58 @@ function Player:moveFallingDown()
 end
 
 function Player:setDoubleJump()
-    if self.tasks.callbacks.jumping then return end
+    if  self.tasks.callbacks.jumping or 
+        self.walltouch or
+        not self:onGround() then return end
 
-    local max, step, djump = #self.moveDef.jumpImp, 0, nil
+    local djump = nil
 
-    self.tasks:set('jumping', Job.chain(function(c)
-        step = step + 1
-        self:doJump(step)
-        if not self.keyJump or step == max then
-            self.setJump = function() djump = true end
-            c:finish()
+    self.tasks:set('jumping', Job.interval(function(c)
+        if not self.keyJump then return c:next() end
+        self:doJump(c.ticks + 1)
+    end, 0, #self.moveDef.jumpImp)):after(function(c)
+        self.setJump = function() djump = true end
+        c:fallthrough()
+    end):after(function(c)
+        if self:onGround() then return c:fallthrough() end
+
+        if self:tryWallJump(djump) then
+            djump = nil
         end
-    end)):after(function(c)
-        if self:onGround()  then return c:finish(true) end
 
         if djump then
             self:doDoubleJump()
-            c:finish()
+            djump = nil
+            c:next()
         end
+        
     end):after(function(c)
-        self.setJump = self.setDoubleJump
-        if self:onGround()  then return c:finish() end
+        if self:onGround() then 
+            self.setJump = self.setDoubleJump
+            return c:next() 
+        end
+        self:tryWallJump(djump)
     end)
 end
 
 function Player:setSingleJump()
-    if self.tasks.callbacks.jumping then return end
+    if  self.tasks.callbacks.jumping or 
+        self.walltouch or
+        not self:onGround() then return end
 
     self.tasks:set('jumping', Job.interval(function(c)
-        if not self.keyJump then return c:finish() end
+        if not self.keyJump then return c:next() end
         self:doJump(c.ticks + 1)
     end, 0, #self.moveDef.jumpImp)) :after(function(c)
-        if self:onGround()  then return c:finish() end
+        if self:onGround()  then return c:next() end
+        self:tryWallJump(c)
     end)
 end
 
-function Player:moveWallJump()
-    local vx, vy, dx = self.vx, self.vy, self.dx
+function Player:tryWallJump(jumping)
+    if self.moveWallJump == nothing then return false end
 
-    if  self:onGround() then
-        self.walltouch, self.lastwalljump = false, 0
-        return
-    end
+    local vx, vy, dx = self.vx, self.vy, self.dx
 
     local touch = self.touch == 0 and 0 or self.touch / math.abs(self.touch)
 
@@ -139,24 +149,34 @@ function Player:moveWallJump()
         local def = self.moveDef
 
         if  self.keyJump    and 
-            self.jumping == 0 
+            jumping 
         then
-            self.jumping = -1
             self.body:setLinearVelocity(
                 -touch * ( def.wjumpVxPlus + abs(dx) * def.wjumpVxBase ), 
                 -def.wjumpUp
             )
             self.lastwalljump = touch
+            return true
         else
             local ws = def.wallSlidingSpeed
-            if (self.jumping == 0 or self.lastwalljump  ~= touch) and
+            if (jumping or self.lastwalljump  ~= touch) and
                 vy  > ws    
             then
                 local v = vy - ws
                 self.body:setLinearVelocity(vx, ws)
         end end
     end
+    return false
+end
 
+function Player:moveWallJump() 
+    if  self:onGround() then
+        self.walltouch, self.lastwalljump = false, 0
+        return
+    end
+    if not self.tasks.callbacks.jumping then
+        self:tryWallJump(true) 
+    end
 end
 
 function Player:onGround()
@@ -189,11 +209,11 @@ function Player:doFalconJump()
         local x, y = self.dx, -1 * self.dir.up + self.dir.down
         if x == 0 and y == 0 then x, y = dx, dy end
         self.body:setLinearVelocity(x * 60, y * 60)
-        c:finish()
-    end):after(Job.interval(nil, 0, 120)):after(function(c)
+        c:next()
+    end):after(Job.interval(nil, 0, 60)):after(function(c)
         self.move = nil
         self.body:setGravityScale(gravity)
-        c:finish()
+        c:next()
     end)
 end
 

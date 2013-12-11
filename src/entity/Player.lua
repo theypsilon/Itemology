@@ -132,7 +132,7 @@ function Player:applyDamage()
         end, 0, 100)):after(function(c) 
             self:maskFixtures(healthyMask)
             self.wounded = nil
-            c:finish() 
+            c:next() 
         end)
         
     end

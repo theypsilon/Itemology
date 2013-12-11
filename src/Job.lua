@@ -6,24 +6,38 @@ function Chain:_init(f)
     self.job = f 
 end
 
-function Chain:finish(fallthrough) 
-    self.finished    = true
-    self.fallthrough = fallthrough 
+function Chain:exit() 
+    self.finished = true
+    self.fall     = nil 
+    self.pending  = nil
 end
 
-function Chain:BREAK() 
+function Chain:next(key, fall) 
     self.finished = true
-    self.next = nil 
+    self.continue = key
+    self.fall     = fall
 end
+
+function Chain:fallthrough(key) self:next(key, true) end
 
 function Chain:__call()
     local  ret = self.job(self)
     if self.finished then 
-        if self.next and #self.next > 0 then 
-            self.job  = table.remove(self.next, 1)
+        if self.pending then
+            if self.continue then
+                self.job  = self.pending[self.continue]
+                --self.pending[self.continue] = nil
+            else
+                self.job = table.remove(self.pending, 1)
+            end
+
+            if not self.job then self.job = nothing; return end
+
+            if table.empty(self.pending) then self.pending = nil end
+
             self.finished = nil
-            if  self.fallthrough then
-                self.fallthrough = nil
+            if  self.fall then
+                self.fall = nil
                 return self:__call()
             end
         else self.job = nothing end
@@ -31,22 +45,26 @@ function Chain:__call()
     return ret
 end
 
-local function merge(self, c)
-    if c.job then self.next[#self.next + 1] = c.job end
+local function merge(self, c, key)
+    if c.job then self.pending[key and key or (#self.pending + 1)] = c.job end
 
-    if c.next then
-        for _,v in pairs(c.next) do self.next[#self.next + 1] = v end
+    if c.pending then
+        for k,v in pairs(c.pending) do 
+            if is_number(k) then k = #self.pending + 1 end
+            assert(is_nil(self.pending[k]), 'cant merge two chains. key: '..k)
+            self.pending[k] = v
+        end
     end
 
     return self
 end
 
-function Chain:after  (f)
-    if is_object(f) and f._name == 'Chain' then return merge(self, f) end
+function Chain:after  (f, key)
+    self.pending = self.pending or {}
+    if is_object(f) and f._name == 'Chain' then return merge(self, f, key) end
 
     assert(is_callable(f))
-    self.next = self.next or {}
-    self.next[#self.next + 1] = f
+    self.pending[key and key or (#self.pending + 1)] = f
 
     return self
 end
@@ -93,23 +111,25 @@ function Job.interval(f, initial, final)
     assert(is_positive(initial))
     assert(is_positive(final  ) or is_nil(final))
 
+    local ticks = 0
+
     local run = function(c, ...)
+        c.ticks = ticks
         local ret = f and f(c, ...)
-        c.ticks = c.ticks + 1
-        if final and c.ticks >= final then return c:finish() end
+        ticks   = ticks + 1
+        if final and ticks >= final then return c:next() end
         return ret
     end
 
     if initial > 0 then
         run = Chain(function(c)
-            c.ticks = c.ticks + 1
-            if c.ticks >= initial then c:finish() end
+            ticks = ticks + 1
+            if ticks >= initial then c:next() end
         end):after(run)
     else
         run = Chain(run)
     end
 
-    run.ticks = 0
     return run
 end
 
