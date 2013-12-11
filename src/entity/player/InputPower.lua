@@ -47,24 +47,27 @@ function Player:_setInput()
 end
 
 function Player:_setPower()
-    self.power = {djump = 0, pjump = 0, fjump = 0}
+    self.power = {djump = 0, pjump = 0, fjump = 0, xjump = 0}
     self.power_djump = false
     Text:debug(self.power, 'djump')
     Text:debug(self.power, 'pjump')
     Text:debug(self.power, 'fjump')
+    Text:debug(self.power, 'xjump')
     Text:debug(self, 'power_djump')
 end
 
 local setup = {
     djump = function(self) self.doDoubleJump = self.doStandardDoubleJump end,
     pjump = function(self) self.doDoubleJump = self.doPeachJump          end,
+    xjump = function(self) self.doDoubleJump = self.doDixieJump          end,
     fjump = function(self) self.doDoubleJump = self.doFalconJump         end,
 }
 
 local power_type = {
     djump = 'power_djump',
     pjump = 'power_djump',
-    fjump = 'power_djump'
+    xjump = 'power_djump',
+    fjump = 'power_djump',
 }
 
 function Player:findPower(o)

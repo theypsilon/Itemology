@@ -7,6 +7,7 @@ local Player = {}
 
 function Player:_setInitialMove(p)
     self.shooting     = nothing
+    self.jumpBackup   = self.setDoubleJump
     self.setJump      = self.setDoubleJump
     self.doDoubleJump = self.doPeachJump
     self.moveJump     = nothing
@@ -92,7 +93,7 @@ function Player:setDoubleJump()
         self.setJump = function() jump = true end
         c:fallthrough()
     end):after(function(c)
-    
+
         if self:onGround() then return c:fallthrough() end
 
         if self:moveWallJump(true) then jump = nil end
@@ -146,6 +147,9 @@ function Player:moveWallJump(fromJumping)
 
         local ws = self.moveDef.wallSlidingSpeed
 
+-- problema cuando wallslides hasta que tocas suelo, dejas de saltar, como si setJump quedara nothing tío
+        -- probablemente porque jumping termine antes que walljumping
+
         local jump
         local function setWallJump() jump = true end
         self.setJump = setWallJump
@@ -167,7 +171,7 @@ function Player:moveWallJump(fromJumping)
 
             if self.vy > ws then self.body:setLinearVelocity(self.vx, ws) end
         end)):after(function(c)
-            if self.setJump == prevSetJump then self.setJump = prevSetJump end
+            if self.setJump ~= self.jumpBackup then self.setJump = prevSetJump end
             c:next()
         end)
         return true
@@ -200,10 +204,14 @@ function Player:doFalconJump()
     self.body:setGravityScale(0)
     self.move = nothing
 
-    self.tasks:set('fjump', Job.interval(nil, 0, 60)):after(function(c)
-        local x, y = self.dx, -1 * self.dir.up + self.dir.down
-        if x == 0 and y == 0 then x, y = dx, dy end
-        self.body:setLinearVelocity(x * 60, y * 60)
+    local x, y = 0, 0
+
+    self.tasks:set('fjump', Job.interval(function()
+        local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
+        x, y = x + dx, y + dy
+    end, 0, 60)):after(function(c)
+        if math.abs(x) < 10 and math.abs(y) < 10 then return c:next(5) end
+        self.body:setLinearVelocity(x*1.3, y*1.3)
         c:next()
     end):after(Job.interval(nil, 0, 60)):after(function(c)
         self.move = nil
@@ -242,6 +250,29 @@ function Player:doPeachJump()
             self.move = movePeach
             c:next(1)  
         end
+    end)
+end
+
+function Player:doDixieJump()
+    if not self:usePower('xjump') then return end
+
+    local gravity = self.body:getGravityScale()
+
+    self.body:setGravityScale(0.3 * gravity)
+    self.body:setLinearVelocity(self.vx, 0)
+    self.move = movePeach
+
+    self.tasks:set('djump', Job.chain(function(c)
+        if not self.keyJump then c:next() end
+        if self:onGround() then c:fallthrough() end
+
+        if self.vy > 30 then self.body:setLinearVelocity(self.vx, 30) end
+    end)):after(function(c)
+        if self.move == movePeach then
+            self.move = nil
+            self.body:setGravityScale(gravity)
+        end
+        if self:onGround()               then return c:next() end
     end)
 end
 
