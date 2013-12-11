@@ -8,12 +8,14 @@ return {
 
     b1    = 13, -- ENTER
     b2    = 32, -- ESPACE
+    b3    = 000, -- ESPACE
+
+    s1    = 102, -- f
+    s2    = 000,
 
     ESC   = 27, -- ESCAPE
 
     reset = 48, -- 0
 
     r     = 114, -- r
-
-    shift = 102, -- f
 }
