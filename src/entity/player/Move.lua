@@ -12,7 +12,7 @@ function Player:_setInitialMove(p)
     self.doDoubleJump = self.doPeachJump
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
-    --self.moveFallingDown = nothing
+    --self.moveVertical = nothing
     self.moveShoot    = nothing
 end
 
@@ -23,7 +23,8 @@ function Player:move(dt)
     self:moveDoor       (  )
     self:moveWallJump   (  )
     self:moveLateral    (dt, self:calcMainForces(dt))
-    self:moveFallingDown(dt)
+    self:moveVertical   (dt)
+
     
 end
 
@@ -77,11 +78,13 @@ function Player:moveLateral(dt, force, maxVel)
     end
 end
 
-function Player:moveFallingDown()
+function Player:moveVertical()
     local def, vy = self.moveDef, self.vy
     if def.addGravity + vy > def.maxVyFall 
     then self.body:applyLinearImpulse(0, def.maxVyFall - vy - def.addGravity)
     else self.body:applyLinearImpulse(0, def.addGravity) end
+
+    if vy < -400 then self.body:applyLinearImpulse(0, -vy - 400) end
 end
 
 function Player:moveDoor()
