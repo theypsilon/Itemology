@@ -17,7 +17,7 @@ function Player:_setListeners()
         sensor:setCollisionHandler(Player.footSensor, begend)
     end
 
-    self.touch = 0; Text:debug(self, 'touch')
+    self.touch = 0
 
     fix['hand1']:setCollisionHandler(Player.handSensor(-1), begend)
     fix['hand2']:setCollisionHandler(Player.handSensor( 1), begend)
