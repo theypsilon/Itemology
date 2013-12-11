@@ -1,5 +1,5 @@
 local function calculate_current_dirpath()
-    local src = debug.getinfo(1).short_src
+    local src = debug.getinfo(2).source:sub(2)
     local len = #src
 
     for i = len, 0, -1 do

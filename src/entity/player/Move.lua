@@ -56,8 +56,7 @@ function Player:moveLateral(dt, force, maxVel)
     local vx, dx = self.vx, self.dx
     -- horizontal walk/run
     if dx ~= 0 then
-        local vel = abs(maxVel - abs(vx))
-        dump(vel)
+        local vel = maxVel - abs(vx)
         self.body:applyForce( dt*dx*force*vel, 0)
     end
 
