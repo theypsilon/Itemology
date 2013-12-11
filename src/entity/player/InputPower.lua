@@ -30,7 +30,13 @@ function Player:_setInput()
         end
     end)
 
-    Input.bindAction('shift', function() self:selectNextJumpPower() end)
+    -- shoot
+    Input.bindAction('b3', function()
+
+    end)
+
+    -- select jump
+    Input.bindAction('s1', function() self:selectNextJumpPower() end)
 
     -- debug - print location
     Input.bindAction('r', function() 

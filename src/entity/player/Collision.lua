@@ -17,6 +17,8 @@ function Player:_setListeners()
         sensor:setCollisionHandler(Player.footSensor, begend)
     end
 
+    fix['foot3']:setCollisionHandler(Player.jumpSensor, BEGIN)
+
     self.touch = 0
 
     fix['hand1']:setCollisionHandler(Player.handSensor(-1), begend)
@@ -28,12 +30,18 @@ function Player.footSensor(p, fa, fb, a)
     local enemy = fb:getBody().parent
     if p == BEGIN then             
         if not enemy then self.groundCount = self.groundCount + 1 end
-        if not self:onGround() and fb.name == 'head' and self.vy >= 0
-        and enemy and enemy.hurt then
-            enemy:hurt(self)
-        end
     elseif p == MOAIBox2DArbiter.END and not enemy then
         self.groundCount = self.groundCount - 1
+    end
+end
+
+function Player.jumpSensor(p, fa, fb, a)
+    local self  = fa:getBody().parent
+    local enemy = fb:getBody().parent
+
+    if not self:onGround() and fb.name == 'head' and self.vy >= 0
+    and enemy and enemy.hurt then
+        self.tasks:once('reaction', function() enemy:hurt(self) end)
     end
 end
 
@@ -57,7 +65,7 @@ Player.contact = {}
 function Player.contact.WalkingEnemy(self, enemy, p)
     if p ~= BEGIN then return end
 
-    self:hurt(enemy, true)
+    self.tasks:once('hurt', function() self:hurt(enemy, true) end, 2)
 end
 
 function Player.contact.Object (self, object, p)

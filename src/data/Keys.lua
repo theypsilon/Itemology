@@ -6,12 +6,12 @@ return {
     up    = 119, -- W
     down  = 115, -- S
 
-    b1    = 13, -- ENTER
-    b2    = 32, -- ESPACE
-    b3    = 000, -- ESPACE
+    b1    = 106, -- j
+    b2    = {32, 107}, -- k
+    b3    = 108, -- l
 
     s1    = 102, -- f
-    s2    = 000,
+    s2    = 101, -- e
 
     ESC   = 27, -- ESCAPE
 

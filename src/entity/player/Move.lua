@@ -84,7 +84,7 @@ function Player:moveVertical()
     then self.body:applyLinearImpulse(0, def.maxVyFall - vy - def.addGravity)
     else self.body:applyLinearImpulse(0, def.addGravity) end
 
-    if vy < -400 then self.body:applyLinearImpulse(0, -vy - 400) end
+    if vy < -300 then self.body:applyLinearImpulse(0, -vy - 300) end
 end
 
 function Player:moveDoor()

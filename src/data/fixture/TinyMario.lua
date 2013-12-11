@@ -19,6 +19,11 @@ return {
                 args = {4, 8, 2},
                 sensor = true
         },
+        foot3 = {
+                option = 'rect',
+                args = {-8, 6, 8, 12},
+                sensor = true
+        },
         ['hand1']={
                 option = 'circle',
                 args = {-8, 0, 3},
@@ -33,6 +38,7 @@ return {
     x = 0,
     y = 0,
     fixedRotation = true,
+    bullet      = true,
     fixCategory = f.C_FRIEND,
     fixMask     = f.M_FRIEND,
 }

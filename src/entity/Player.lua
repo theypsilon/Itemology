@@ -147,6 +147,7 @@ function Player:reaction(enemy)
         -ry*200 * (self.keyJump and 1.50 or 1)
 
     if enemy.removed then
+        print 'hello'
         ix = 0
     else
         ix, iy = ix * 1.5, iy * .5
