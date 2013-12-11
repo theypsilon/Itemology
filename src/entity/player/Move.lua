@@ -190,6 +190,8 @@ end
 function Player:doFalconJump()
     if not self:usePower('fjump') then return end
 
+    self.lastwalljump = false
+
     local vx, vy = self.body:getLinearVelocity()
     local dx, dy = vx > 0 and 1 or -1, vy > 0 and 1 or -1
 
@@ -206,7 +208,7 @@ function Player:doFalconJump()
 
     local x, y = 0, 0
 
-    self.tasks:set('fjump', Job.interval(function()
+    self.tasks:set('djumping', Job.interval(function()
         local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
         x, y = x + dx, y + dy
     end, 0, 60)):after(function(c)
@@ -229,13 +231,15 @@ end
 function Player:doPeachJump()
     if not self:usePower('pjump') then return end
 
+    self.lastwalljump = false
+
     local gravity = self.body:getGravityScale()
 
     self.body:setGravityScale(0)
     self.body:setLinearVelocity(self.vx, 0)
     self.move = movePeach
 
-    self.tasks:set('djump', Job.interval(function(c)
+    self.tasks:set('djumping', Job.interval(function(c)
         if not self.keyJump then c:next() end
     end, 0, 60)):after(function(c)
         if self.move == movePeach then
@@ -256,13 +260,15 @@ end
 function Player:doDixieJump()
     if not self:usePower('xjump') then return end
 
+    self.lastwalljump = false
+
     local gravity = self.body:getGravityScale()
 
     self.body:setGravityScale(0.3 * gravity)
     self.body:setLinearVelocity(self.vx, 0)
     self.move = movePeach
 
-    self.tasks:set('djump', Job.chain(function(c)
+    self.tasks:set('djumping', Job.chain(function(c)
         if not self.keyJump then c:next() end
         if self:onGround() then c:fallthrough() end
 
@@ -278,6 +284,8 @@ end
 
 function Player:doStandardDoubleJump()
     if not self:usePower('djump') then return end
+
+    self.lastwalljump = false
     
     local def = self.moveDef
 
