@@ -1,9 +1,12 @@
 local Job = {}
 
 local Chain = class()
-function Chain:_init(f) 
+function Chain:_init(f, key) 
     assert(is_callable(f))
-    self.job = f 
+    key          = key and key or 1
+    self.job     = f
+    self.pending = {[key] = f} 
+    self.cur     = is_number(key) and key or 0
 end
 
 function Chain:exit() 
@@ -12,28 +15,29 @@ function Chain:exit()
     self.pending  = nil
 end
 
+local function get_continue(self)
+    return self.cur + 1
+end
+
 function Chain:next(key, fall) 
     self.finished = true
-    self.continue = key
+    self.continue = key and key or get_continue(self)
     self.fall     = fall
 end
 
 function Chain:fallthrough(key) self:next(key, true) end
+function Chain:free(key)     self.pending[key] = nil end
 
 function Chain:__call()
     local  ret = self.job(self)
     if self.finished then 
         if self.pending then
-            if self.continue then
-                self.job  = self.pending[self.continue]
-                --self.pending[self.continue] = nil
-            else
-                self.job = table.remove(self.pending, 1)
-            end
+            
+            if is_number(self.continue) then self.cur = self.continue end
+
+            self.job  = self.pending[self.continue]
 
             if not self.job then self.job = nothing; return end
-
-            if table.empty(self.pending) then self.pending = nil end
 
             self.finished = nil
             if  self.fall then
@@ -91,8 +95,8 @@ function Job.refListener(table, key, onChange, firstTime, ...)
 end
 
 function Job.cron(every, f, initial)
-    assert(is_positive(every))
-    assert(is_callable(f))
+    assert(is_positive(every),every)
+    assert(is_callable(f),f)
     local ticks = is_positive(initial) and initial or 0
     f = f or nothing
     return function(...)
@@ -106,7 +110,7 @@ function Job.cron(every, f, initial)
     end
 end
 
-function Job.interval(f, initial, final)
+function Job.interval(f, initial, final, key)
     assert(is_callable(f) or is_nil(f))
     assert(is_positive(initial))
     assert(is_positive(final  ) or is_nil(final))
@@ -125,9 +129,9 @@ function Job.interval(f, initial, final)
         run = Chain(function(c)
             ticks = ticks + 1
             if ticks >= initial then c:next() end
-        end):after(run)
+        end, key):after(run)
     else
-        run = Chain(run)
+        run = Chain(run, key)
     end
 
     return run

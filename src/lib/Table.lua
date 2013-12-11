@@ -1,4 +1,8 @@
+local function not_table(t) return type(t) ~= 'table' end
+
 local function flip ( tab )
+    if not_table(tab) then return nil end
+
     local newTable = {}
  
     for k,v in pairs ( tab ) do
@@ -9,6 +13,8 @@ local function flip ( tab )
 end
 
 local function keys ( tab )
+    if not_table(tab) then return nil end
+
     local new = {}
     for k in pairs(tab) do
         new[#new + 1] = k
@@ -17,7 +23,8 @@ local function keys ( tab )
 end
 
 local function count( tab )
-    if type(tab) ~= 'table' then return 0 end
+    if not_table(tab) then return nil end
+
     local i = 0
     for _ in pairs(tab) do
         i = i + 1
@@ -132,23 +139,24 @@ local function pack(...)
 end
 
 local function first(t)
-    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    if not_table(t) then return nil end
     for _,v in pairs(t) do return v end
 end
 
 local function first_key(t)
-    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    if not_table(t) then return nil end
     for k,_ in pairs(t) do return k end
 end
 
 local function filter(t, f)
-    if type(t) ~= 'table' and type(t) ~= 'userdata' then return nil end
+    if not_table(t) then return nil end
     local result = {}
     for k,v in pairs(t) do if f(v) then result[k] = v end end
     return result
 end
 
 local function empty(t)
+    if not_table(t) then return true  end
     for k,v in pairs(t) do return false end
     return true
 end

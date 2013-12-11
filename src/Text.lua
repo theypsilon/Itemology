@@ -71,8 +71,8 @@ function Text:debug(object, index, string, deactivate)
     gTasks:set('textDebug', function()
         local i = 0
         for s,v in pairs(debugList) do 
-            v.t:setString(s .. v.o[v.k])
-            v.t:setLoc(450, i*20)
+            v.t:setString(s .. tostring(v.o[v.k]))
+            v.t:setLoc(350, i*20)
             i = i + 1
         end
     end)

@@ -75,8 +75,7 @@ function Player.object.Power(self, o, p)
     if p ~= BEGIN then return end
 
     self.tasks:once(o.power, function()
-        self.power [o.power] = o.charges + 
-                             (o.add and self.power[o.power] or 0)
+        self:findPower(o)
 
         local remove = tonumber(o.remove) or 1
 

@@ -30,6 +30,8 @@ function Player:_setInput()
         end
     end)
 
+    Input.bindAction('shift', function() self:selectNextJumpPower() end)
+
     -- debug - print location
     Input.bindAction('r', function() 
         self.tasks:once('wallhack', function() 
@@ -44,8 +46,64 @@ function Player:_setInput()
 end
 
 function Player:_setPower()
-    self.power = {djump = 0, shoot = 0}
+    self.power = {djump = 0, pjump = 0, fjump = 0}
+    self.power_djump = false
     Text:debug(self.power, 'djump')
+    Text:debug(self.power, 'pjump')
+    Text:debug(self.power, 'fjump')
+    Text:debug(self, 'power_djump')
+end
+
+local setup = {
+    djump = function(self) self.doDoubleJump = self.doStandardDoubleJump end,
+    pjump = function(self) self.doDoubleJump = self.doPeachJump          end,
+    fjump = function(self) self.doDoubleJump = self.doFalconJump         end,
+}
+
+local power_type = {
+    djump = 'power_djump',
+    pjump = 'power_djump',
+    fjump = 'power_djump'
+}
+
+function Player:findPower(o)
+    local ptype = power_type[o.power]
+    if ptype and not self[ptype] then 
+        self[ptype]   = o.power 
+        self:setupPower(o.power)
+    end
+    self.power[o.power] = o.charges + (o.add and self.power[o.power] or 0)
+end
+
+function Player:setupPower(power) 
+    setup[power](self) 
+end
+
+function Player:selectNextJumpPower()
+    local powers = table.keys(
+                        table.filter(self.power, 
+                            function(v) return v > 0 end))
+
+    if table.empty(powers) then 
+        self.power_djump = false    
+        return 
+    end
+
+    local cur = self.power_djump
+    local key = cur and table.flip(powers)[cur] or 1
+    self.power_djump = key == #powers and powers[1] or powers[key + 1]
+    self:setupPower(self.power_djump)
+end
+
+function Player:usePower(key)
+    local  use = self.power[key]
+    if not use or use == 0 then  return false end
+    if use > 0 then 
+        use = use - 1
+        self.power[key] = use
+        if use == 0 then self:selectNextJumpPower() end
+    end
+    return true
 end
 
 return Player

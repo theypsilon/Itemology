@@ -189,7 +189,7 @@ function Player:doJump(step)
 end
 
 function Player:doFalconJump()
-    if not self.power.fjump or self.power.fjump == 0 then return end
+    if not self:usePower('fjump') then return end
 
     local vx, vy = self.body:getLinearVelocity()
     local dx, dy = vx > 0 and 1 or -1, vy > 0 and 1 or -1
@@ -217,32 +217,41 @@ function Player:doFalconJump()
     end)
 end
 
+local function movePeach(self, dt)
+    dt = 1 / (dt * self.moveDef.timeFactor)
+
+    self:moveLateral(dt, self:calcMainForces(dt))    
+end
+
 function Player:doPeachJump()
-    if not self.power.djump or self.power.djump == 0 then return end
+    if not self:usePower('pjump') then return end
 
     local gravity = self.body:getGravityScale()
 
     self.body:setGravityScale(0)
     self.body:setLinearVelocity(self.vx, 0)
-    self.move = function(self, dt)
-        dt = 1 / (dt * self.moveDef.timeFactor)
-
-        self:moveLateral(dt, self:calcMainForces(dt))    
-    end
+    self.move = movePeach
 
     self.tasks:set('djump', Job.interval(function(c)
         if not self.keyJump then c:next() end
     end, 0, 60)):after(function(c)
-        self.move = nil
-        self.body:setGravityScale(gravity)
-        c:next()
+        if self.move == movePeach then
+            self.move = nil
+            self.body:setGravityScale(gravity)
+        end
+        if self:onGround()               then return c:next() end
+        if self.keyJump and c.ticks < 59 then
+            gravity = self.body:getGravityScale()
+            self.body:setGravityScale(0)
+            self.body:setLinearVelocity(self.vx, 0)
+            self.move = movePeach
+            c:next(1)  
+        end
     end)
 end
 
 function Player:doStandardDoubleJump()
-    if not self.power.djump or self.power.djump == 0 then return end
-
-    self.power.djump = self.power.djump - 1
+    if not self:usePower('djump') then return end
     
     local def = self.moveDef
 

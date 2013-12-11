@@ -20,6 +20,8 @@ end
 function Tasks:_prepareIndex(index) return index end
 
 function Tasks:set(index, f, delay)
+    assert(is_callable(f))
+    assert(not delay or is_positive(delay))
     index = Tasks:_prepareIndex(index)
     self.callbacks[index] = delay and Job.cron(delay, f) or f
     return self.callbacks[index]

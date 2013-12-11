@@ -14,4 +14,6 @@ return {
     reset = 48, -- 0
 
     r     = 114, -- r
+
+    shift = 102, -- f
 }
