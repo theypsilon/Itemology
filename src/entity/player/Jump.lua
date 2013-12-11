@@ -71,9 +71,6 @@ function Player:moveWallJump(fromJumping)
 
         local ws = self.moveDef.wallSlidingSpeed
 
--- problema cuando wallslides hasta que tocas suelo, dejas de saltar, como si setJump quedara nothing tío
-        -- probablemente porque jumping termine antes que walljumping
-
         local jump
         local function setWallJump() jump = true end
         self.setJump = setWallJump
