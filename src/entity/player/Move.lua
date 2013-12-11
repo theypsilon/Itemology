@@ -188,7 +188,7 @@ function Player:doJump(step)
     self.body:applyLinearImpulse(0, -jump[step])
 end
 
-function Player:doFalconJumpPeachJump
+function Player:doFalconJump()
     if not self.power.fjump or self.power.fjump == 0 then return end
 
     local vx, vy = self.body:getLinearVelocity()
@@ -223,9 +223,16 @@ function Player:doPeachJump()
     local gravity = self.body:getGravityScale()
 
     self.body:setGravityScale(0)
-    self.move = self.moveLateral
+    self.body:setLinearVelocity(self.vx, 0)
+    self.move = function(self, dt)
+        dt = 1 / (dt * self.moveDef.timeFactor)
 
-    self.tasks:set('djump', Job.interval(nil, 0, 60)):after(function(c)
+        self:moveLateral(dt, self:calcMainForces(dt))    
+    end
+
+    self.tasks:set('djump', Job.interval(function(c)
+        if not self.keyJump then c:next() end
+    end, 0, 60)):after(function(c)
         self.move = nil
         self.body:setGravityScale(gravity)
         c:next()
