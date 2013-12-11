@@ -34,10 +34,6 @@ function Player:_init(level, def, p)
     self.prop:setPriority(5000)
 
     level.player = self
-
-    gTasks:set('reload_player', function()
-        Update.instance(self)
-    end)
 end
 
 function Player:tick(dt)

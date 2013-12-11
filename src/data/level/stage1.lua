@@ -14,7 +14,7 @@ return function(level, camera)
     assert(player)
 
     local wallJump = player.moveWallJump
-    player.moveWallJump = nothing
+    --player.moveWallJump = nothing
 
     local createJump, jumpCharges = getJumpFactory(level)
 
