@@ -85,6 +85,14 @@
     <property name="power" value="xjump"/>
    </properties>
   </object>
+  <object name="jump" type="Object" x="368" y="384" width="16" height="16">
+   <properties>
+    <property name="add" value="true"/>
+    <property name="charges" value="3"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="sjump"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="regions" width="38" height="52">
   <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>

@@ -72,7 +72,7 @@ function Text:debug(object, index, string, deactivate)
         local i = 0
         for s,v in pairs(debugList) do 
             v.t:setString(s .. tostring(v.o[v.k]))
-            v.t:setLoc(350, i*20)
+            v.t:setLoc(400, i*20)
             i = i + 1
         end
     end)

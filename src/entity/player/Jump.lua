@@ -47,6 +47,32 @@ function Player:setSingleJump()
     end)
 end
 
+function Player:setSpaceJump()
+    if not self:usePower('sjump') then return end
+
+    if  self.tasks.callbacks.jumping or 
+        self.walltouch or
+        not self:onGround() then return end
+
+    local gravity = self.body:getGravityScale()
+    self.body:setGravityScale(0.7)
+
+    self.moveVertical = nothing
+
+    self.tasks:set('jumping', Job.interval(function(c)
+        if not self.keyJump then return c:next() end
+        self:doJump(c.ticks + 1)
+    end, 0, #self.moveDef.jumpImp)) :after(function(c)
+        if self:onGround()  then 
+            self.moveVertical = nil
+            self.body:setGravityScale(gravity)
+            return c:next() 
+        end
+        if self.vy > 100 then self.body:setLinearVelocity(self.vx, 100) end
+        self:moveWallJump(true)
+    end)
+end
+
 local function prepare_touch(touch)
     return touch == 0 and 0 or touch / abs(touch)
 end
