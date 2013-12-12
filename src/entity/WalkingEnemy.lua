@@ -106,15 +106,11 @@ function WalkingEnemy:draw(...)
     Mob.draw(self, ...)
 end
 
-local Broken = require 'entity.particle.Broken'
-
-function WalkingEnemy:hurt(rival)
+function WalkingEnemy:hurtBy(rival)
     if rival._name == 'Player' then
         local P = require 'entity.particle.Animation'
         self.level:add(P(self.level, Data.animation.Goomba, 'die', self))
         self:remove()
-
-        rival:hurt(self)
     end
 end
 

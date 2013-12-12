@@ -21,7 +21,7 @@ return {
         },
         foot3 = {
                 option = 'rect',
-                args = {-8, 6, 8, 12},
+                args = {-8, 6, 8, 10},
                 sensor = true
         },
         ['hand1']={

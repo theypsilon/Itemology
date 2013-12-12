@@ -5,15 +5,10 @@ return {
     fixtures = {
         ['area']={
                 option = 'rect',
-                args = {-6, 0, 6, 8},
+                args = {-6, 2, 6, 8},
                 restitution = 0,
-                friction = 0
-        },
-        body = {
-                option = 'rect',
-                args = {-6, -6, 6, 0},
-                restitution = 0,
-                friction = 0     
+                friction = 0,
+                kills = true
         },
         ['sensorL']={
                 option = 'circle',
@@ -27,7 +22,7 @@ return {
         },
         ['head']={
                 option = 'rect',
-                args = { -6, -4, 6, -4},
+                args = { -6, -4, 6, 2},
                 sensor = true
         }
     },

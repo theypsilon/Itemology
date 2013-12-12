@@ -28,7 +28,7 @@ function Tasks:set(index, f, delay)
 end
 
 function Tasks:once(index, f, delay)
-    index = Tasks:_prepareIndex(index)
+    index = Tasks:_prepareIndex(index and index or (#self.callbacks + 1))
     local final = function(...)
         self.callbacks[index] = nil
         return true, f(...)

@@ -23,4 +23,6 @@ end
 
 config.dev.debug_physics = true
 
+config.start = 'stage1'
+
 return config

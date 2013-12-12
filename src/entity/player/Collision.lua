@@ -40,8 +40,12 @@ function Player.jumpSensor(p, fa, fb, a)
     local enemy = fb:getBody().parent
 
     if not self:onGround() and fb.name == 'head' and self.vy >= 0
-    and enemy and enemy.hurt then
-        self.tasks:once('reaction', function() enemy:hurt(self) end)
+    and enemy and enemy.hurtBy then
+        self.hitted[enemy] = true
+        self.tasks:once('jumpenemy', function() 
+            enemy:hurtBy(self) 
+            self:reaction(enemy)
+        end)
     end
 end
 
@@ -62,10 +66,10 @@ end
 
 Player.contact = {}
 
-function Player.contact.WalkingEnemy(self, enemy, p)
+function Player.contact.WalkingEnemy(self, enemy, p, a, fb)
     if p ~= BEGIN then return end
 
-    self.tasks:once('hurt', function() self:hurt(enemy, true) end, 2)
+    if fb.kills then self:hurtBy(enemy) end
 end
 
 function Player.contact.Object (self, object, p)

@@ -88,7 +88,7 @@ function Player:animate()
     self.animation:next()
 end
 
-function Player:hurt(enemy)
+function Player:hurtBy(enemy)
     self.damage[enemy] = 1
 end
 
@@ -100,11 +100,15 @@ local PAnim = require 'entity.particle.Animation'
 
 function Player:applyDamage()
     local dmg = 0
+
     for enemy,hp in pairs(self.damage) do
-        if not enemy.removed then dmg = dmg + hp end
-        self:reaction(enemy)
+        if not enemy.removed and not self.hitted[enemy] then 
+            dmg = dmg + hp
+            self:reaction(enemy, true)
+        end
     end
 
+    self.hitted = {}
     self.damage = {}
 
     if dmg > 0 and not self.wounded then
@@ -135,25 +139,29 @@ function Player:applyDamage()
 
 end
 
-function Player:reaction(enemy)
+function Player:reaction(enemy, attacker)
     local ex, ey = enemy.x, enemy.y
     local mx, my = self.pos:get()
 
     local dx, dy = ex - mx, ey - my
     local max = math.sqrt(dx*dx + dy*dy)
     local rx, ry = dx / max, dy / max
-    local ix, iy = 
-        -rx*250 * (self.keyRun  and 1.60 or 1), 
-        -ry*200 * (self.keyJump and 1.50 or 1)
 
-    if enemy.removed then
-        print 'hello'
-        ix = 0
+    if not attacker then
+        local iy = ry > .75 and -250 
+                or ry > .50 and -235
+                or ry > .25 and -210
+                or              -190
+
+        self.body:setLinearVelocity(0, iy * (self.keyJump and 1.4 or 1))
     else
-        ix, iy = ix * 1.5, iy * .5
-    end
+        local ix, iy = 
+            -rx*250 * (self.keyRun  and 1.60 or 1), 
+            -ry*100 * (self.keyJump and 3.00 or 1)
 
-    self.body:applyLinearImpulse(ix, iy)
+        self.body:applyLinearImpulse(ix * 1.4, iy * .5)
+    end
+    
 end
 
 local function setFixtureMask(fix, mask)

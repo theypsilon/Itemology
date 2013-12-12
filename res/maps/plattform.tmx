@@ -38,8 +38,8 @@
    <properties>
     <property name="class" value="Goomba"/>
     <property name="offset" value="120"/>
-    <property name="rate" value="120"/>
-    <property name="total" value="10"/>
+    <property name="rate" value="50"/>
+    <property name="total" value="20"/>
    </properties>
   </object>
   <object name="door1" type="Object" x="128" y="192" width="17" height="17">
