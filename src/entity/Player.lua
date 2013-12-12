@@ -156,10 +156,10 @@ function Player:reaction(enemy, attacker)
         self.body:setLinearVelocity(0, iy * (self.keyJump and 1.4 or 1))
     else
         local ix, iy = 
-            -rx*250 * (self.keyRun  and 1.60 or 1), 
+            -rx*250 * (self.keyRun  and 1.60 or 1.05), 
             -ry*100 * (self.keyJump and 3.00 or 1)
 
-        self.body:applyLinearImpulse(ix * 1.4, iy * .5)
+        self.body:applyLinearImpulse(ix * 1.2, iy * .5)
     end
     
 end

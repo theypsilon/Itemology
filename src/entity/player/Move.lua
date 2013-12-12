@@ -76,6 +76,11 @@ function Player:moveLateral(dt, force, maxVel)
 
         self.body:applyForce(-dt*vx*force*slowdown, 0)
     end
+
+    -- local limitvx = 300
+    -- if abs(vx) > limitvx then 
+    --     self.body:setLinearVelocity(vx > 0 and limitvx or -limitvx, self.vy)
+    -- end
 end
 
 function Player:moveVertical()
