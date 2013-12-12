@@ -41,7 +41,6 @@ function Player.jumpSensor(p, fa, fb, a)
 
     if not self:onGround() and fb.name == 'head' and self.vy >= 0
     and enemy and enemy.hurtBy then
-        self.hitted[enemy] = true
         self.tasks:once('jumpenemy', function() 
             enemy:hurtBy(self) 
             self:reaction(enemy)

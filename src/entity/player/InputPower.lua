@@ -57,12 +57,21 @@ function Player:_setPower()
     Text:debug(self, 'pow_jump')
 end
 
+local function setSingleJump(self, name)
+    self.tasks:set('singlejump', Job.chain(function(c)
+        if self.setJump == self.setDoubleJump then
+            self.setJump = self[name]
+            c:exit()
+        end
+    end))
+end
+
 local setup = {
     djump = function(self) self.doDoubleJump = self.doStandardDoubleJump; self.setJump = self.setDoubleJump end,
     pjump = function(self) self.doDoubleJump = self.doPeachJump         ; self.setJump = self.setDoubleJump end,
     xjump = function(self) self.doDoubleJump = self.doDixieJump         ; self.setJump = self.setDoubleJump end,
     fjump = function(self) self.doDoubleJump = self.doFalconJump        ; self.setJump = self.setDoubleJump end,
-    sjump = function(self) self.setJump = self.setSpaceJump  end,
+    sjump = function(self) setSingleJump(self, 'setSpaceJump')  end,
    nojump = function(self) self.setJump = self.setDoubleJump end
 }
 

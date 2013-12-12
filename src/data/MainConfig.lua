@@ -25,4 +25,6 @@ config.dev.debug_physics = true
 
 config.start = 'stage1'
 
+config.fixedticks = 1 / 60
+
 return config

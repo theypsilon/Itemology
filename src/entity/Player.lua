@@ -88,8 +88,8 @@ function Player:animate()
     self.animation:next()
 end
 
-function Player:hurtBy(enemy)
-    self.damage[enemy] = 1
+function Player:hurtBy(enemy, delay)
+    self.damage[enemy] = self._ticks + (delay and delay or 1)
 end
 
 local healthyMask = Data.fixture.Filters.M_FRIEND
@@ -101,15 +101,19 @@ local PAnim = require 'entity.particle.Animation'
 function Player:applyDamage()
     local dmg = 0
 
-    for enemy,hp in pairs(self.damage) do
-        if not enemy.removed and not self.hitted[enemy] then 
-            dmg = dmg + hp
+    local ticks = self._ticks
+
+    for enemy,expire in pairs(self.damage) do
+        if enemy.removed then
+            self.damage[enemy] = nil
+        elseif ticks >= expire then 
+            dmg = dmg + 1
             self:reaction(enemy, true)
+            self.damage[enemy] = nil
+        else
+            dump(ticks, expire)
         end
     end
-
-    self.hitted = {}
-    self.damage = {}
 
     if dmg > 0 and not self.wounded then
 
@@ -159,7 +163,7 @@ function Player:reaction(enemy, attacker)
             -rx*250 * (self.keyRun  and 1.60 or 1.05), 
             -ry*100 * (self.keyJump and 3.00 or 1)
 
-        self.body:applyLinearImpulse(ix * 1.2, iy * .5)
+        self.body:applyLinearImpulse(ix * 1.1, iy * .5)
     end
     
 end
