@@ -144,7 +144,7 @@ function Player:reaction(enemy, attacker)
     local mx, my = self.pos:get()
 
     local dx, dy = ex - mx, ey - my
-    local max = math.sqrt(dx*dx + dy*dy)
+    local max    = math.sqrt(dx*dx + dy*dy)
     local rx, ry = dx / max, dy / max
 
     if not attacker then

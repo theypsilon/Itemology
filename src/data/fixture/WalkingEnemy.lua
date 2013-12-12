@@ -22,7 +22,7 @@ return {
         },
         ['head']={
                 option = 'rect',
-                args = { -6, -4, 6, 2},
+                args = { -6, -6, 6, 2},
                 sensor = true
         }
     },
