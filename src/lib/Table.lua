@@ -161,6 +161,30 @@ local function empty(t)
     return true
 end
 
+local function each(t, f)
+    if not_table(t) then return nil end
+    for k,v in pairs(t) do f(v, k) end
+    return t
+end
+
+local function add(t, key, value) t[key] = value ; return t end
+
+local function complete(t, key, valort)
+    if type(key) == 'table' then
+        for k, v in pairs(key) do complete(t, k, v) end ; return t
+    end
+
+    assert(type(key) == 'string')
+    if not_table(t) then error 'cant add anything' end
+
+    for k, v in pairs(t) do
+        --if not_table(v) then t[k] = {v}; v = t[k] end
+        if not v[key] then v[key] = valort end
+    end
+
+    return t
+end
+
 local exports = {
     flip            = flip,
     keys            = keys,
@@ -177,7 +201,11 @@ local exports = {
     first           = first,
     first_key       = first_key,
     filter          = filter,
-    empty           = empty
+    empty           = empty,
+    each            = each,
+    map             = map,
+    add             = add,
+    complete        = complete,
 }
 
 require('lib.Import').make_exportable(exports)

@@ -42,7 +42,8 @@ function Player:tick(dt)
 
     self. x, self. y  = self.pos.x, self.pos.y
     self.vx, self.vy  = self.body:getLinearVelocity()
-    self.dx           = -1 * self.dir.left + self.dir.right    
+    self.dx           = -1 * self.dir.left + self.dir.right
+    self.dy           = -1 * self.dir.up + self.dir.down
 
     self:move(dt)
 
@@ -103,7 +104,7 @@ function Player:applyDamage()
 
     local ticks = self._ticks
 
-    for enemy,expire in pairs(self.damage) do
+    for enemy, expire in pairs(self.damage) do
         if enemy.removed then
             self.damage[enemy] = nil
         elseif ticks >= expire then 

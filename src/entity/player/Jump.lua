@@ -169,6 +169,62 @@ function Player:doFalconJump()
     end)
 end
 
+
+function Player:doKirbyJump()
+    if not self:usePower('kjump') then return end
+
+    self.lastwalljump = false 
+
+    self:doStandardDoubleJump(true)
+
+    local gravity = self.body:getGravityScale()
+
+    local step = 0
+    self.tasks:set('djumping', Job.chain(function(c)
+        step = step + 1
+        if not self.keyJump then c:next() end
+        if self:onGround() or step > 200 then c:exit() end
+    end)):after(function(c)
+        step = step + 1
+        if self.keyJump then
+            if c.last <= step then 
+                self:doStandardDoubleJump(true)
+                c.last = step + 20 
+            end
+            c:next(1)
+        end
+        if self:onGround() or step > 200 then c:exit() end
+    end).last = 20
+end
+
+function Player:doTeleportJump()
+    if not self:usePower('tjump') then return end
+
+    self.lastwalljump = false
+
+    local vx, vy, dx, dy = self.vx, self.vy, self.dx, self.dy
+    local vdx, vdy = vx > 0 and 1 or vx < 0 and -1 or dx,
+                     vy > 0 and 1 or vy < 0 and -1 or dy
+
+    local x, y = dx ~= -vdx and dx or 0, dy ~= -vdy and dy or 0
+
+    if y == 1 then y = 0 end
+
+    if x == 0 and y == 0 then y = -1 end
+
+    if x ~= 0 and y ~= 0 then
+        x, y = x * 75, y * 75
+    else
+        x, y = x * 100, y * 100
+    end
+
+    self.pos:set(self.x + x, self.y + y)
+
+    self.tasks:set('djumping', Job.chain(function(c)
+        if self:onGround() then c:next() end
+    end))
+end
+
 local function movePeach(self, dt)
     dt = 1 / (dt * self.moveDef.timeFactor)
 
@@ -229,10 +285,9 @@ function Player:doDixieJump()
     end)
 end
 
-function Player:doStandardDoubleJump()
-    if not self:usePower('djump') then return end
-
-    self.lastwalljump = false
+function Player:doStandardDoubleJump(free)
+    if not free and not self:usePower('djump') then return end
+    if not free then self.lastwalljump = false end
     
     local def = self.moveDef
 

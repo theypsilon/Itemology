@@ -12,6 +12,7 @@ require 'Globals'
 
 local Flow, Scenes, Data, Input, map, resource; import()
 Flow.run(Data.MainConfig, function()
+
     print 'Welcome to Itemology!'
 
     resource.IMAGE_PATH = project .. 'res/img/'

@@ -5,10 +5,12 @@ return {
     default         = 'djump',
     mirror          = false,
     sequences = {
-        djump  = {'coin1','coin2','coin3','coin4','coin5','coin6','coin7','coin8'}, 
-        fjump  = {'coin1','coin2','coin3','coin4','coin5','coin6','coin7','coin8'}, 
-        pjump  = {'coin1','coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
-        xjump  = {'coin1','coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
-        sjump  = {'coin1','coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        djump  = {{'coin1', color='FF0000'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'}, 
+        fjump  = {{'coin1', color='00FF00'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        pjump  = {{'coin1', color='0000FF'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        xjump  = {{'coin1', color='EDEDED'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        tjump  = {{'coin1', color='ED00ED'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        kjump  = {{'coin1', color='00EDFF'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
+        sjump  = {{'coin1', color='FFD700'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
     },
 }

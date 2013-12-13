@@ -46,14 +46,33 @@ function Player:_setInput()
     end)    
 end
 
+local power_type = {
+    djump = 'pow_jump',
+    pjump = 'pow_jump',
+    xjump = 'pow_jump',
+    fjump = 'pow_jump',
+    tjump = 'pow_jump',
+    kjump = 'pow_jump',
+    sjump = 'pow_jump',
+}
+
+local setup = {
+    djump = function(self) self.doDoubleJump = self.doStandardDoubleJump; self.setJump = self.setDoubleJump end,
+    pjump = function(self) self.doDoubleJump = self.doPeachJump         ; self.setJump = self.setDoubleJump end,
+    xjump = function(self) self.doDoubleJump = self.doDixieJump         ; self.setJump = self.setDoubleJump end,
+    fjump = function(self) self.doDoubleJump = self.doFalconJump        ; self.setJump = self.setDoubleJump end,
+    tjump = function(self) self.doDoubleJump = self.doTeleportJump      ; self.setJump = self.setDoubleJump end,
+    kjump = function(self) self.doDoubleJump = self.doKirbyJump         ; self.setJump = self.setDoubleJump end,
+    sjump = function(self) setSingleJump(self, 'setSpaceJump')  end,
+   nojump = function(self) self.setJump = self.setDoubleJump end
+}
+
 function Player:_setPower()
-    self.power = {djump = 0, pjump = 0, fjump = 0, xjump = 0, sjump = 0}
+    self.power = table.map(power_type, function(v, k) return 0, k end)
     self.pow_jump = false
-    Text:debug(self.power, 'djump')
-    Text:debug(self.power, 'pjump')
-    Text:debug(self.power, 'fjump')
-    Text:debug(self.power, 'xjump')
-    Text:debug(self.power, 'sjump')
+    for k,_ in pairs(power_type) do
+        Text:debug(self.power, k)
+    end
     Text:debug(self, 'pow_jump')
 end
 
@@ -65,23 +84,6 @@ local function setSingleJump(self, name)
         end
     end))
 end
-
-local setup = {
-    djump = function(self) self.doDoubleJump = self.doStandardDoubleJump; self.setJump = self.setDoubleJump end,
-    pjump = function(self) self.doDoubleJump = self.doPeachJump         ; self.setJump = self.setDoubleJump end,
-    xjump = function(self) self.doDoubleJump = self.doDixieJump         ; self.setJump = self.setDoubleJump end,
-    fjump = function(self) self.doDoubleJump = self.doFalconJump        ; self.setJump = self.setDoubleJump end,
-    sjump = function(self) setSingleJump(self, 'setSpaceJump')  end,
-   nojump = function(self) self.setJump = self.setDoubleJump end
-}
-
-local power_type = {
-    djump = 'pow_jump',
-    pjump = 'pow_jump',
-    xjump = 'pow_jump',
-    fjump = 'pow_jump',
-    sjump = 'pow_jump',
-}
 
 function Player:findPower(o)
     local ptype = power_type[o.power]
