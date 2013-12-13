@@ -213,9 +213,9 @@ function Player:doTeleportJump()
     if x == 0 and y == 0 then y = -1 end
 
     if x ~= 0 and y ~= 0 then
-        x, y = x * 75, y * 75
+        x, y = x * 65, y * 65
     else
-        x, y = x * 100, y * 100
+        x, y = x * 110, y * 110
     end
 
     self.pos:set(self.x + x, self.y + y)

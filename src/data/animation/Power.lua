@@ -5,7 +5,7 @@ return {
     default         = 'djump',
     mirror          = false,
     sequences = {
-        djump  = {{'coin1', color='FF0000'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'}, 
+        djump  = {{'coin1', scolor={'FF0000',6}, skip = 60, once = 1},{'coin2', skip = 6},'coin3','coin4','coin5','coin6','coin7','coin8'}, 
         fjump  = {{'coin1', color='00FF00'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
         pjump  = {{'coin1', color='0000FF'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},
         xjump  = {{'coin1', color='EDEDED'},'coin2','coin3','coin4','coin5','coin6','coin7','coin8'},

@@ -13,15 +13,18 @@ local function hex2rgb(hex)
             }
 end
 
-local function set_attr(prop, attr)
+local function set_attr(self, attr)
     if not attr then return end
 
-    if attr.color then prop:setColor(unpack(attr.color)) end
+    if attr.color  then self.prop:setColor(unpack(attr.color)) end
+    if attr.scolor then self.prop:seekColor(unpack(attr.scolor)) end
+    if attr.skip   then self.skip = attr.skip end
+    if attr.once   then for k,_ in pairs(attr) do attr[k] = nil end end
 end
 
 local function set_img(self, img)
     if is_table(img) then
-        set_attr(self.prop, img)
+        set_attr(self, img)
         img = img.sprite 
     end
     self.prop:setIndex(self.atlass:get(img).i)
@@ -33,7 +36,7 @@ local function table_next(self)
     if step >= #animation then self.step = 1
                           else self.step = step + 1 end
 
-    if attr then set_attr(self.prop, attr[step]) end
+    if attr then set_attr(self, attr[step]) end
 
     return true
 end
@@ -47,14 +50,31 @@ local function coroutine_next(self, ...)
 end
 
 local function process_attributes(attr)
-    --attr = table.deep_copy(attr)
+    attr = table.deep_copy(attr)
 
     local  sprite = attr.sprite or attr[1]
-    --  attr.sprite = nil
+    attr.sprite = nil
+    attr[1]     = nil
 
-    if attr.color and not is_table(attr.color) then
-        attr.color = hex2rgb(is_string(attr.color) and         attr.color 
-                                                   or tostring(attr.color))
+    local color = attr.color
+    if color and not is_table(color) then
+        attr.color = hex2rgb(is_string(color) and         color 
+                                              or tostring(color))
+    end
+
+    color = attr.scolor
+    if color then
+        if #color < 5 then
+            local rgb = hex2rgb(color[1])
+            if not rgb[4] then rgb[4] = 0 end
+            rgb[5], rgb[6] = color[2], color[3]
+            color = rgb
+        end
+        attr.scolor = color
+    end
+
+    for _,k in pairs{'color', 'scolor'} do
+        local color = attr[k]
     end
 
     return sprite, attr
