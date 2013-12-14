@@ -56,6 +56,15 @@ local power_type = {
     sjump = 'pow_jump',
 }
 
+local function setSingleJump(self, name)
+    self.tasks:set('singlejump', Job.chain(function(c)
+        if self.setJump == self.setDoubleJump then
+            self.setJump = self[name]
+            c:exit()
+        end
+    end))
+end
+
 local setup = {
     djump = function(self) self.doDoubleJump = self.doStandardDoubleJump; self.setJump = self.setDoubleJump end,
     pjump = function(self) self.doDoubleJump = self.doPeachJump         ; self.setJump = self.setDoubleJump end,
@@ -76,21 +85,13 @@ function Player:_setPower()
     Text:debug(self, 'pow_jump')
 end
 
-local function setSingleJump(self, name)
-    self.tasks:set('singlejump', Job.chain(function(c)
-        if self.setJump == self.setDoubleJump then
-            self.setJump = self[name]
-            c:exit()
-        end
-    end))
-end
-
 function Player:findPower(o)
     local ptype = power_type[o.power]
     if ptype and not self[ptype] then 
         self[ptype]   = o.power 
         self:setupPower(o.power)
     end
+    if o.charges == 'huge' or o.charges == 'inf'then o.charges = math.huge end
     self.power[o.power] = o.charges + (o.add and self.power[o.power] or 0)
 end
 

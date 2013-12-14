@@ -20,6 +20,7 @@ local function get_continue(self)
 end
 
 function Chain:next(key, fall) 
+    assert(not key or self.pending[key], 'wrong state: ' .. tostring(key))
     self.finished = true
     self.continue = key and key or get_continue(self)
     self.fall     = fall

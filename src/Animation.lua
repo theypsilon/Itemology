@@ -16,17 +16,16 @@ end
 local function set_attr(self, attr)
     if not attr then return end
 
-    if attr.color  then self.prop:setColor(unpack(attr.color)) end
+    if attr.color  then self.prop: setColor(unpack(attr. color)) end
     if attr.scolor then self.prop:seekColor(unpack(attr.scolor)) end
     if attr.skip   then self.skip = attr.skip end
     if attr.once   then for k,_ in pairs(attr) do attr[k] = nil end end
+
+    return attr.sprite or attr[1]
 end
 
 local function set_img(self, img)
-    if is_table(img) then
-        set_attr(self, img)
-        img = img.sprite 
-    end
+    if is_table(img) then img = set_attr(self, img) end
     self.prop:setIndex(self.atlass:get(img).i)
 end
 

@@ -29,7 +29,13 @@ function Player:_init(level, def, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    self.moveDef = def.move
+    self.moveDef = require 'data.move.Mario'
+    if self.moveDef.update then
+        self.tasks:set('def_update', function()
+            package.loaded  ['data.move.Mario']   = nil
+            self.moveDef = require 'data.move.Mario'
+        end, 40)
+    end
 
     self.prop:setPriority(5000)
 
@@ -38,13 +44,12 @@ end
 
 function Player:tick(dt)
 
-    self.tasks()
-
-    self. x, self. y  = self.pos.x, self.pos.y
+    self. x, self. y  = self.pos:get()
     self.vx, self.vy  = self.body:getLinearVelocity()
     self.dx           = -1 * self.dir.left + self.dir.right
     self.dy           = -1 * self.dir.up + self.dir.down
 
+    self.tasks()
     self:move(dt)
 
     if self.y > self.limit_map_y then 
