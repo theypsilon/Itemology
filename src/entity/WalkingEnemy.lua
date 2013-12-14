@@ -21,7 +21,7 @@ function WalkingEnemy:_init(level, definition, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    self.moveDef = definition.move
+    self.moveDef = definition.motion
     self.dir     = p.properties and p.properties.dir or 1
 end
 

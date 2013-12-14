@@ -50,8 +50,6 @@ function data._autoUpdate(alwaysload)
 end
 
 function data._update()
-    reload_data('data.move.Mario')
-    reload_data('data.move.Goomba')
 end
 
 if data.MainConfig.dev.sanitychecks   then

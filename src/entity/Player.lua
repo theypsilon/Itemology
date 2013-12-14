@@ -29,11 +29,11 @@ function Player:_init(level, def, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    self.moveDef = require 'data.move.Mario'
+    self.moveDef = require 'data.motion.Mario'
     if self.moveDef.update then
         self.tasks:set('def_update', function()
-            package.loaded  ['data.move.Mario']   = nil
-            self.moveDef = require 'data.move.Mario'
+            package.loaded  ['data.motion.Mario']   = nil
+            self.moveDef = require 'data.motion.Mario'
         end, 40)
     end
 
