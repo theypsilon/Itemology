@@ -88,7 +88,7 @@ function Player:moveDoor()
             end)
         else
             local link = self.door.layer.objects[self.door.link]
-            self.pos:set(link.x, link.y)
+            if link then self.pos:set(link.x, link.y) end
         end
         self.dir.up = 0
     end

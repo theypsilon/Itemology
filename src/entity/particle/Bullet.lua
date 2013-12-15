@@ -16,11 +16,11 @@ function Bullet:_init(level, def, p, speed, parent)
 
     self.body.fixtures['area']:setCollisionHandler(function(p, fa, fb, a)
         local impactBody = fb:getBody()
-        if impactBody.structure or 
-            (impactBody.parent and impactBody.parent ~= self.parent) 
-        then
-            self.tick = self.remove
-        end
+        -- if impactBody.structure or 
+        --     (impactBody.parent and impactBody.parent ~= self.parent) 
+        -- then
+        if not impactBody.sensor then self.tick = self.remove end
+        --end
     end, MOAIBox2DArbiter.BEGIN)
 
     self.pos = Position(self.body)

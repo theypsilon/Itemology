@@ -5,7 +5,7 @@ return {
     fixtures = {
         ['area']={
                 option = 'rect',
-                args = {-6, 2, 6, 8},
+                args = {-6, 0, 6, 8},
                 restitution = 0,
                 friction = 0,
                 kills = true

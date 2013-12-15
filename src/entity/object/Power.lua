@@ -21,6 +21,9 @@ return function(d,p)
         },
         x = x,
         y = y,
+
+        fixCategory = Data.fixture.Filters.C_ITEM,
+        fixMask     = Data.fixture.Filters.M_ITEM
     }, prop)
 
     local object = table.copy(p.properties)
@@ -30,6 +33,8 @@ return function(d,p)
     object.body = body
     object.tick = tick
     object.remove = remove
+
+    if object.z then prop:setPriority(object.z) end
 
     return object
 end

@@ -1,4 +1,4 @@
-local Physics; import()
+local Physics, Data; import()
 
 return function(d,p)
     local x, y, w, h = p.x, p.y, p.width, p.height
@@ -14,6 +14,9 @@ return function(d,p)
         },
         x = x,
         y = y,
+
+        fixCategory = Data.fixture.Filters.C_ITEM,
+        fixMask     = Data.fixture.Filters.M_ITEM
     }
 
     local object = table.copy(p.properties)

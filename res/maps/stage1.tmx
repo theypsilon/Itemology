@@ -12,7 +12,7 @@
    <property name="z" value="10000"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztzsERQEAQRcHZrBENGw2i8q8CUObQXfXurwoAAAAAgA6WUbWmbfx98rbn50iz2deZnyvdzb4AgO88bfcFsw==
+   eJzt0MERQFAMRdF81aAaVINqUA2qcreWf2Fkcc/M22UyL4mQJEmSJEmSJGUwl4iFrOXvJm8bfXZy1PZivpDmo3tO9l7krtzfMt+RPtmfB/qMZErWS5KkTB5XYwct
   </data>
  </layer>
  <layer name="background2" width="38" height="52">
@@ -22,12 +22,12 @@
  </layer>
  <layer name="background1" width="38" height="52">
   <data encoding="base64" compression="zlib">
-   eJzt1EsOgjAYReHWdOBS0JHr4JEIe1JXA+wGh7gU7sDEiYH8TcQSzpfeMKNnVOcAAAAAAACwd3lwrtBKrQr/rvmgy4YuG7psorq8jnbwaXVl6jlp58S6ruqptSaxrjXQZUOXzRa7Xj+89649IruOM+/Tbeafg/Zc6Oq0PrLr8qVrfH/bhXuxPRP11CBX
+   eJztzrsJgDAYReEIKRzHOXyMpU6jbqOljuJfCDZquAGR4PngkirJcQ4AAAAAAAB/V3rnKltta/zXNSe6NHRp6NLQpaFLQ5eGLk2KXduL/3a2PrIrz+7vtQ9vzrYl0DXapsiu4qJrPc4h8C/SswMMdx7d
   </data>
  </layer>
  <layer name="platforms" width="38" height="52">
   <data encoding="base64" compression="zlib">
-   eJztlDsOwjAQBTeRgWsQvh2cg38HDceB28ANcp3cgAIQQrwUSCgKEQsmMeaNNM1a8k5hWYQQQgghhBBCCPGfC7xmZiYQqcF6UEWRyBGecjzDBpoGFXU1sTfKsQWHma7IYA7bsAO7sAf75vn9m1BkG9rtWsHlQ9cI+8dwAqdwBudwUdC1Q9M+07UOy1Wz1zXYpcOHrjiwq62uMmGXjl/uKvO9a7qqgF06fOj6l//+UHD2TlfyUc1raLsScbPrzrfb0qY0y0WJjhvQIV37
+   eJztlDsOwjAQBdeWgWsQvh2cg38HDceB28ANuE7uAAghXgokiALSIicx1htpmi28U1grQgghhBBCCCGExM8N3nMzZ0QasGnqKBI5w0uBV9hC06imrjb2JgV24DjXlTjMYRf2YB8O4NB9fn9nRfbWb9cGrl+6Jtg/hTM4hwu4hKsvXQc0HXNdW1utmr2hwS4dMXSdjF99dVUJu3T8c1eV/13TVQfs0hFDF+/9b11pOSlvaLtSCbPrSdltWVOWFaJExwNMNF0H
   </data>
  </layer>
  <objectgroup name="objects" width="38" height="52">
@@ -61,7 +61,7 @@
     <property name="power" value="djump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="528" y="720" width="16" height="16">
+  <object name="jump" type="Object" x="256" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -69,7 +69,7 @@
     <property name="power" value="fjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="560" y="720" width="16" height="16">
+  <object name="jump" type="Object" x="544" y="368" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -77,7 +77,7 @@
     <property name="power" value="pjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="448" y="656" width="16" height="16">
+  <object name="jump" type="Object" x="208" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -91,9 +91,10 @@
     <property name="charges" value="huge"/>
     <property name="class" value="Power"/>
     <property name="power" value="sjump"/>
+    <property name="z" value="0"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="176" y="576" width="16" height="16">
+  <object name="jump" type="Object" x="160" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -109,8 +110,19 @@
     <property name="power" value="kjump"/>
    </properties>
   </object>
+  <object name="shortcut" type="Object" x="560" y="768" width="16" height="16">
+   <properties>
+    <property name="class" value="Door"/>
+    <property name="link" value="upfloor"/>
+   </properties>
+  </object>
+  <object name="upfloor" type="Object" x="544" y="416" width="16" height="16">
+   <properties>
+    <property name="class" value="Door"/>
+   </properties>
+  </object>
  </objectgroup>
- <objectgroup name="regions" width="38" height="52">
+ <objectgroup name="regions" width="38" height="52" visible="0">
   <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>
   <object name="visible" type="Shape" x="0" y="480" width="608" height="352"/>
  </objectgroup>
