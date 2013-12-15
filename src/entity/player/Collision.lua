@@ -17,6 +17,8 @@ function Player:_setListeners()
         sensor:setCollisionHandler(Player.footSensor, begend)
     end
 
+    self.bounce = 0
+
     fix['foot3']:setCollisionHandler(Player.jumpSensor, BEGIN)
 
     self.touch = 0
@@ -42,7 +44,7 @@ function Player.jumpSensor(p, fa, fb, a)
     if not self:onGround() and fb.name == 'head' and self.vy >= 0
     and enemy and enemy.hurtBy then
         self.tasks:once('jumpenemy', function() 
-            if not self.bounce or self.bounce < self._ticks then
+            if self.bounce < self._ticks then
                 enemy:hurtBy(self) 
                 self:reaction(enemy)
                 self.bounce = self._ticks + 2

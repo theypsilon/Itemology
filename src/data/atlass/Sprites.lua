@@ -34,6 +34,7 @@ return {
         coin7   = {x = 96,  y = 64},
         coin8   = {x = 112, y = 64},
 
-        bullet = {x = 0, y = 80},
+        bullet = {x = 0,  y = 80},
+        cursor = {x = 16, y = 80}
     }, {w = 16, h = 16, cp = {0,0}})
 }

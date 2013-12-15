@@ -13,7 +13,7 @@ function Player:_setInitialMove(p)
     --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveVertical = nothing
-    self.moveShoot    = nothing
+    --self.moveShoot    = nothing
 end
 
 function Player:move(dt)
@@ -43,31 +43,6 @@ function Player:calcMainForces(dt)
 
 end
 
-function Player:setRun()
-    if self.keyRun then
-        local _, shooting = self.shooting()
-        self.shooting = shooting or Job.cron(10, nothing, 10)
-    else
-        if self.shooting == nothing then return end
-        local shooting = self.shooting
-        self.shooting  = function()
-            if shooting() then self.shooting = nothing end
-            return nil, shooting
-        end
-    end
-end
-
-function Player:moveShoot()
-    if self.shooting() then
-        local scalar = 400
-        local speed  = {self.lookLeft and -scalar or scalar, 0}
-        self.level:
-        add(
-            Bullet(
-                self.level, Data.animation.Bullet, self, speed, self))
-    end
-end
-
 local function sig(v)
     return v > 0 and 1 or v < 0 and -1 or 0
 end
@@ -86,7 +61,6 @@ function Player:moveLateral(dt, force, maxVel)
         -- if fast, slowdown is weaker
         local def      = self.moveDef
         local slowdown = abs(vx) > maxVel and def.slowRun or def.slowWalk
-        if abs(vx) > maxVel then slowdown = def.slowRun end
 
         self.body:applyForce(-dt*vx*force*slowdown, 0)
     end

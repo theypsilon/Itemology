@@ -25,9 +25,9 @@ function Player:_setInput()
         function() self.keyRun = false; self:setRun() end)
 
     -- shoot
-    Input.bindAction('b3', function()
-
-    end)
+    Input.bindAction('b3', 
+        function() self.special = true;  self:setSpecial() end,
+        function() self.special = false; self:setSpecial() end)
 
     -- select jump
     Input.bindAction('s1', function() self:selectNextJumpPower() end)
@@ -78,6 +78,7 @@ local setup = {
 }
 
 function Player:_setPower()
+    self.setSpecial = self.setYoshiSpecial
     self.power = table.map(power_type, function(v, k) return 0, k end)
     self.pow_jump = false
     for k,_ in pairs(power_type) do

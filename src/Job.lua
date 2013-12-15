@@ -11,7 +11,7 @@ end
 
 function Chain:exit() 
     self.finished = true
-    self.fall     = nil 
+    self.fall     = true 
     self.state    = nil
 end
 
@@ -29,6 +29,16 @@ function Chain:free(key)
     self.state[key] = nil
 end
 
+local function set_last_job(self)
+    if self.finaljob then 
+        self.job      = self.finaljob
+        self.finaljob = nil
+        self.finished = nil
+    else 
+        self.job = nothing 
+    end
+end
+
 function Chain:__call()
     local  ret = self.job(self)
     if self.finished then 
@@ -38,14 +48,15 @@ function Chain:__call()
 
             self.job  = self.state[self.continue]
 
-            if not self.job then self.job = nothing; return end
+            if not self.job then set_last_job(self) else self.finished = nil end
 
-            self.finished = nil
+            if self.finished then return end
+
             if  self.fall then
                 self.fall = nil
                 return self:__call()
             end
-        else self.job = nothing end
+        else set_last_job(self) end
     end
     return ret
 end
@@ -75,6 +86,12 @@ function Chain:after(f, key)
     self.state[key and key or (#self.state + 1)] = f
 
     return self
+end
+
+function Chain:finally(f)
+    assert(is_callable(f))
+    assert(not self.finaljob)
+    self.finaljob = function(c) c:next() return f() end
 end
 
 function Chain.is(o) return getmetatable(o) == Chain end

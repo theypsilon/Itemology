@@ -1,8 +1,8 @@
 local Animation, Physics, Text, Data, Tasks, Update, Job; import()
 local Mob , Position; import 'entity'
-local Move, Jump, Collision, InputPower; import 'entity.player'
+local Move, Jump, Action, Special, Collision, InputPower; import 'entity.player'
 
-local Player = class(Mob, Move, Jump, Collision, InputPower)
+local Player = class(Mob, Move, Jump, Action, Special, Collision, InputPower)
 
 function Player:_init(level, def, p)
 	Mob._init(self, level, p.x, p.y)

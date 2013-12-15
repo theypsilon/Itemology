@@ -13,8 +13,9 @@ return function(level, camera)
     local player = table.first(level.entityByName().Player)
     assert(player)
 
-    local wallJump = player.moveWallJump
+    local wallJump, shoot = player.moveWallJump, player.moveShoot
     player.moveWallJump = nothing
+    player.moveShoot    = nothing
 
     local createJump, jumpCharges = getJumpFactory(level)
 
@@ -47,6 +48,7 @@ return function(level, camera)
 
         if not visible:contains(player) then 
             player.moveWallJump = wallJump
+            player.moveShoot    = shoot
             c:next() 
         end
     end):after(function(c)
