@@ -52,11 +52,7 @@ function Player:tick(dt)
     self.tasks()
     self:move(dt)
 
-    if self.y > self.limit_map_y then 
-        local spawn = self.level.map('objects')('start')
-        self.pos:set(spawn.x, spawn.y)
-        self.body:setLinearVelocity(0, 0)
-    end
+    if self.y > self.limit_map_y then self:remove() end
 
     self:applyDamage()
 

@@ -5,7 +5,7 @@ local abs = math.abs
 
 local Player = {}
 
-function Player:setRun()
+function Player:setAction()
     if self.keyRun then
         local _, shooting = self.shooting()
         self.shooting = shooting or Job.cron(10, nothing, 10)
