@@ -163,7 +163,10 @@ function Player:reaction(enemy, attacker)
                 or ry > .25 and -210
                 or              -190
 
-        self.body:setLinearVelocity(0, iy * (self.keyJump and 1.4 or 1))
+        local px = self.vx * self.dx
+        local ix = px > 0 and self.vx or px < 0 and 0 or self.vx / 2
+
+        self.body:setLinearVelocity(ix, iy * (self.keyJump and 1.4 or 1))
     else
         local ix, iy = 
             -rx*250 * (self.keyRun  and 1.60 or 1.05), 

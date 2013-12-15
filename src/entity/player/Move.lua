@@ -43,6 +43,20 @@ function Player:calcMainForces(dt)
 
 end
 
+function Player:setRun()
+    if self.keyRun then
+        local _, shooting = self.shooting()
+        self.shooting = shooting or Job.cron(10, nothing, 10)
+    else
+        if self.shooting == nothing then return end
+        local shooting = self.shooting
+        self.shooting  = function()
+            if shooting() then self.shooting = nothing end
+            return nil, shooting
+        end
+    end
+end
+
 function Player:moveShoot()
     if self.shooting() then
         local scalar = 400

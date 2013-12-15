@@ -137,6 +137,8 @@ function Player:doJump(step)
     self.body:applyLinearImpulse(0, -jump[step])
 end
 
+-- DOUBLE JUMP
+
 function Player:doFalconJump()
     if not self:usePower('fjump') then return end
 
@@ -170,18 +172,21 @@ function Player:doFalconJump()
 
     local function try_cancel(c)
         if self.keyJump == (cancel %2 == 1) then cancel = cancel + 1 end
-        if cancel == cancelled then c:fallthrough(5) end
+        if cancel == cancelled then c:fallthrough(4) end
     end
 
     self.tasks:set('djumping', Job.interval(function(c)
         x, y = x + self.dx, y + self.dy
         try_cancel(c)
     end, 0, charge_t)):after(function(c)
-        if abs(x) < charge_m and abs(y) < charge_m then return c:next(5) end
-        self.body:setLinearVelocity(x * charge_f, y * charge_f)
+        if abs(x) < charge_m and abs(y) < charge_m then return c:next(4) end
+        x, y = x * charge_f, y * charge_f
         cancel = 0
         c:next()
-    end):after(Job.interval(try_cancel, 0, fly_t)):after(function(c)
+    end):after(Job.interval(function(c)
+        self.body:setLinearVelocity(x, y)
+        try_cancel(c)
+    end, 0, fly_t)):after(function(c)
         self.move = nil
         self.body:setGravityScale(gravity)
         c:next()
@@ -189,7 +194,7 @@ function Player:doFalconJump()
 end
 
 
-function Player:doKirbyJump()
+function Player:doKirbyJump(    )
     if not self:usePower('kjump') then return end
 
     self.lastwalljump = false 

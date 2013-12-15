@@ -50,7 +50,7 @@ function Tasks:__call(...)
     local cbs = self.callbacks
     for k, v in pairs(cbs) do 
         v(...)
-        if is_object(cbs[k]) and cbs[k].finished then cbs[k] = nil end
+        if is_table(v) and v.finished then cbs[k] = nil end
     end 
 end
 

@@ -112,6 +112,6 @@
  </objectgroup>
  <objectgroup name="regions" width="38" height="52">
   <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>
-  <object name="upfloor" type="Shape" x="448" y="464" width="32" height="16"/>
+  <object name="visible" type="Shape" x="0" y="480" width="608" height="352"/>
  </objectgroup>
 </map>

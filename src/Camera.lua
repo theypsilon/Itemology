@@ -25,10 +25,10 @@ function Camera:_init(target, area, padding)
         self:setTarget(target)
         self.area    = area or { 
             x = 0, y = 0, 
-            w = Graphics.getWidth () <  self._end.x and
-                Graphics.getWidth () or self._end.x, 
-            h = Graphics.getHeight() <  self._end.y and
-                Graphics.getHeight() or self._end.y,
+            w = Graphics.getWidth () <  self._limit.w and
+                Graphics.getWidth () or self._limit.w, 
+            h = Graphics.getHeight() <  self._limit.h and
+                Graphics.getHeight() or self._limit.h,
         }
     end
 
@@ -45,12 +45,12 @@ end
 
 function Camera:setTarget(target)
     validateTarget(target)
-    self._target                 = target
-    self._map                    = target.map
-    self._end                  = {}
-    self._end.x, self._end.y = target.map:getBorder()
-    self._end.x, self._end.y = self._end.x - 48, self._end.y - 16;
-    self._begin = {x=0, y=0}
+
+    local endx, endy = target.map:getBorder()
+
+    self._target             = target
+    self._map                = target.map
+    self._limit =  {x = 0, y = 0, w = endx, h = endy}
     (target.prop.layer or Layer.main):setCamera(self.cam)
 end
 
@@ -69,6 +69,9 @@ function Camera:draw()
     self.cam:setLoc(x, y, self.z)
 end
 
+local end_char = {x = 'w', y = 'h'}
+local end_fix  = {x = -48, y = -24}
+
 local abs = math.abs
 function Camera:_calcCorner(index, length)
     local padding = self.padding[index]
@@ -84,8 +87,8 @@ function Camera:_calcCorner(index, length)
     self[index] = loc
 
     local corner = loc - length/2
-    local ending = self._end  [index]
-    local begin  = self._begin[index]
+    local ending = self._limit[end_char[index]] + end_fix[index]
+    local begin  = self._limit[index]
 
     if corner + length > ending then corner = ending - length end 
     if corner < begin           then corner = begin           end

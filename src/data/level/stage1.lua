@@ -1,4 +1,4 @@
-local Tasks, Data; import()
+local Job, Data; import()
 
 local function getJumpFactory(level)
     local jump = level.map('objects').objects['jump']
@@ -14,22 +14,23 @@ return function(level, camera)
     assert(player)
 
     local wallJump = player.moveWallJump
-    --player.moveWallJump = nothing
+    player.moveWallJump = nothing
 
     local createJump, jumpCharges = getJumpFactory(level)
 
-    local _, limit = level.map:getBorder()
-
     local cheat   = level.map('regions'):getRegion('cheat'  )
-    local upfloor = level.map('regions'):getRegion('upfloor').y
+    local visible = level.map('regions'):getRegion('visible')
 
-    limit = limit - 32
+    local limit = camera._limit
 
-    camera._end.y   = limit
-    camera._begin.y = 480
+    camera._limit = table.copy(visible)
+    camera._limit.h = camera._limit.h - 8
+
+    visible.y = visible.y - 16
 
     local djump, trick = true, true
-    return function()
+    
+    local function main()
         if player.power.djump >= jumpCharges then djump = false end
 
         if player.power.djump == 0 or (cheat:contains(player) and trick) then
@@ -39,13 +40,33 @@ return function(level, camera)
             end
             trick = player.power.djump == 0
         end
-
-        if player.y < upfloor and camera._begin.y > 0 then
-            player.moveWallJump = wallJump
-            camera._begin.y = camera._begin.y - 5
-            camera._end.y   = camera._end.y > (limit - 344) and camera._end.y - 5 or limit - 344
-        elseif player.y > upfloor and camera._end.y < limit then
-            camera._end.y = camera._end.y >= limit and limit or camera._end.y + 10
-        end
     end
+
+    return Job.chain(function(c)
+        main()
+
+        if not visible:contains(player) then 
+            player.moveWallJump = wallJump
+            c:next() 
+        end
+    end):after(function(c)
+        main()
+
+        camera._limit.y = camera._limit.y - 5
+        camera._limit.h = camera._limit.h - 5
+
+        if camera._limit.h <= visible.y + 16 then 
+            camera._limit = limit
+            camera._limit.h = visible.y + 16
+            c:next() 
+        end
+    end):after(function(c)
+        if     visible:contains(player)      then c:next() end
+    end):after(function(c)
+        main()
+
+        camera._limit.h = camera._limit.h + 10
+
+        if camera._limit.h >= visible.h - 8  then c:next() end
+    end):after(main)
 end

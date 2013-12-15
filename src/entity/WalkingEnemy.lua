@@ -76,12 +76,15 @@ function WalkingEnemy:move(dt, vx, vy)
 
     dt = dt * def.timeFactor
 
-    if (abs(vx) < 5 or not self:onGround(vx)) then
-        self.dir = self.dir * -1 
-    end
-
     -- horizontal walk
-    self.body:setLinearVelocity(self.dir*def.velocity,vy)
+    if self:onGround() then
+        if (abs(vx) < 5 or not self:morePath(vx)) then
+            self.dir = self.dir * -1 
+        end
+        self.body:setLinearVelocity(self.dir*def.velocity,vy)
+    else
+        self.body:setLinearVelocity(0                    ,vy)
+    end
 
     -- falling down
     if def.addGravity + vy > def.maxVyFall 
@@ -89,8 +92,12 @@ function WalkingEnemy:move(dt, vx, vy)
     else self.body:applyLinearImpulse(0, def.addGravity) end
 end
 
-function WalkingEnemy:onGround(vx)
+function WalkingEnemy:morePath(vx)
     return self[vx > 0 and 'gRight' or 'gLeft'] ~= 0
+end
+
+function WalkingEnemy:onGround()
+    return self.gRight ~= 0 or self.gLeft ~= 0
 end
 
 function WalkingEnemy:animate(vx, vy)

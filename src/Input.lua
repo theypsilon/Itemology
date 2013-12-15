@@ -5,6 +5,7 @@ function input.initialState()
 	state = {
 		keyboardBinding   = {},
 		keyboardCallbacks = {[true] = {}, [false] = {}},
+		keyboardStatus    = {},
 		toBind = {}
 	}
 end
@@ -40,6 +41,17 @@ function input.bindAction( action, callback1, callback2 )
 	end
 end
 
+function input.checkAction( action )
+	if is_table(action) then
+		local  ret = {}
+		for _, v in pairs(action) do ret[v] = input.checkAction(v) end
+		return ret
+	end
+
+	local  keyCode =   state.keyboardBinding[action]
+	return keyCode and state.keyboardStatus[keyCode] or false
+end
+
 function input.bindActionToKeyCode( action, keyCode )
 	assert(is_string(action) or is_number(action))
 	local oldKeyCode = state.keyboardBinding[action]
@@ -69,6 +81,7 @@ local function onKeyboardEvent ( keyCode, down )
 	if    callback ~= nil then 
 		  callback()
 	elseif down then print(keyCode) end
+	state.keyboardStatus[keyCode] = down and true or nil
 end
 
 MOAIInputMgr.device.keyboard   :setCallback ( onKeyboardEvent)

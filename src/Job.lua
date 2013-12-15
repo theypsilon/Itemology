@@ -3,40 +3,40 @@ local Job = {}
 local Chain = class()
 function Chain:_init(f, key) 
     assert(is_callable(f))
-    key          = key and key or 1
-    self.job     = f
-    self.pending = {[key] = f} 
-    self.cur     = is_number(key) and key or 0
+    key        = key and key or 1
+    self.job   = f
+    self.state = {[key] = f} 
+    self.cur   = is_number(key) and key or 0
 end
 
 function Chain:exit() 
     self.finished = true
     self.fall     = nil 
-    self.pending  = nil
-end
-
-local function get_continue(self)
-    return self.cur + 1
+    self.state    = nil
 end
 
 function Chain:next(key, fall) 
-    assert(not key or self.pending[key], 'wrong state: ' .. tostring(key))
+    assert(not key or self.state[key], 'wrong state: ' .. tostring(key))
     self.finished = true
-    self.continue = key and key or get_continue(self)
+    self.continue = key and key or (self.cur + 1)
     self.fall     = fall
 end
 
-function Chain:fallthrough(key) self:next(key, true) end
-function Chain:free(key)     self.pending[key] = nil end
+function Chain:fallthrough(key) self:next (key, true) end
+
+function Chain:free(key) 
+    if is_table(key) then for _, k in pairs(key) do self:free(k) end return end
+    self.state[key] = nil
+end
 
 function Chain:__call()
     local  ret = self.job(self)
     if self.finished then 
-        if self.pending then
+        if self.state then
             
             if is_number(self.continue) then self.cur = self.continue end
 
-            self.job  = self.pending[self.continue]
+            self.job  = self.state[self.continue]
 
             if not self.job then self.job = nothing; return end
 
@@ -50,31 +50,34 @@ function Chain:__call()
     return ret
 end
 
-local function merge(self, c, key)
-    if c.job then self.pending[key and key or (#self.pending + 1)] = c.job end
+local function merge(self, c)
+    assert(c.state)
 
-    if c.pending then
-        for k,v in pairs(c.pending) do 
-            if is_number(k) then k = #self.pending + 1 end
-            assert(is_nil(self.pending[k]), 'cant merge two chains. key: '..k)
-            self.pending[k] = v
-        end
+    for k,v in pairs(c.state) do 
+        if is_number(k) then k = #self.state + 1 end
+        assert(is_nil(self.state[k]), 'cant merge two chains. key: '..k)
+        assert(is_callable(v))
+        self.state[k] = v
     end
 
     return self
 end
 
-function Chain:after  (f, key)
-    self.pending = self.pending or {}
-    if is_object(f) and f._name == 'Chain' then return merge(self, f, key) end
+function Chain:with (key, f)
+    assert(is_string(key), 'wrong key')
+    return self:after(f, key)
+end
+
+function Chain:after(f, key)
+    if is_table(f) and f.state then return merge(self, f) end
 
     assert(is_callable(f))
-    self.pending[key and key or (#self.pending + 1)] = f
+    self.state[key and key or (#self.state + 1)] = f
 
     return self
 end
 
-function Chain.is(o) return o._name == 'Chain' end
+function Chain.is(o) return getmetatable(o) == Chain end
 
 Job.chain = Chain
 

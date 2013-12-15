@@ -5,7 +5,10 @@ local Player = {}
 function Player:_setInput()
 
     -- walk
-    self.dir = {left = 0, right = 0, up = 0, down = 0}
+    self.dir = table.map(
+        Input.checkAction{'left', 'right', 'up', 'down'}, 
+            function(v) return v and 1 or 0 end)
+
     for k,_ in pairs(self.dir) do
         Input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
     end
@@ -16,19 +19,10 @@ function Player:_setInput()
         function() self.keyJump = false end)
 
     -- run
-    Input.bindAction('b1', function() 
-        self.keyRun = true 
-        local _, shooting = self.shooting()
-        self.shooting = shooting or Job.cron(10, nothing, 10)
-    end, function() 
-        self.keyRun = false
-        if self.shooting == nothing then return end
-        local shooting = self.shooting
-        self.shooting  = function()
-            if shooting() then self.shooting = nothing end
-            return nil, shooting
-        end
-    end)
+    self.keyRun = Input.checkAction('b1')
+    Input.bindAction('b1', 
+        function() self.keyRun = true;  self:setRun() end, 
+        function() self.keyRun = false; self:setRun() end)
 
     -- shoot
     Input.bindAction('b3', function()
@@ -65,13 +59,20 @@ local function setSingleJump(self, name)
     end))
 end
 
+local function setupDoubleJump(self, jump_function)
+    if  self.setJump == self.setSingleJump then 
+        self.setJump  = self.setDoubleJump  end
+
+    self.doDoubleJump = self[jump_function]
+end
+
 local setup = {
-    djump = function(self) self.doDoubleJump = self.doStandardDoubleJump; self.setJump = self.setDoubleJump end,
-    pjump = function(self) self.doDoubleJump = self.doPeachJump         ; self.setJump = self.setDoubleJump end,
-    xjump = function(self) self.doDoubleJump = self.doDixieJump         ; self.setJump = self.setDoubleJump end,
-    fjump = function(self) self.doDoubleJump = self.doFalconJump        ; self.setJump = self.setDoubleJump end,
-    tjump = function(self) self.doDoubleJump = self.doTeleportJump      ; self.setJump = self.setDoubleJump end,
-    kjump = function(self) self.doDoubleJump = self.doKirbyJump         ; self.setJump = self.setDoubleJump end,
+    djump = function(self) setupDoubleJump(self, 'doStandardDoubleJump') end,
+    pjump = function(self) setupDoubleJump(self, 'doPeachJump'         ) end,
+    xjump = function(self) setupDoubleJump(self, 'doDixieJump'         ) end,
+    fjump = function(self) setupDoubleJump(self, 'doFalconJump'        ) end,
+    tjump = function(self) setupDoubleJump(self, 'doTeleportJump'      ) end,
+    kjump = function(self) setupDoubleJump(self, 'doKirbyJump'         ) end,
     sjump = function(self) setSingleJump(self, 'setSpaceJump')  end,
    nojump = function(self) self.setJump = self.setDoubleJump end
 }
