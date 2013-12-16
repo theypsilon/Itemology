@@ -39,8 +39,8 @@ local function set_last_job(self)
     end
 end
 
-function Chain:__call()
-    local  ret = self.job(self)
+-- this method is not intended to be use inside a job
+function Chain:update()
     if self.finished then 
         if self.state then
             
@@ -58,6 +58,11 @@ function Chain:__call()
             end
         else set_last_job(self) end
     end
+end
+
+function Chain:__call()
+    local  ret = self.job(self)
+    self:update()
     return ret
 end
 

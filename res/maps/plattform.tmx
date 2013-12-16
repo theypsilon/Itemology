@@ -65,5 +65,26 @@
    </properties>
   </object>
   <object name="goomba" type="Goomba" x="752" y="128" width="13" height="15"/>
+  <object name="teleport" type="Object" x="240" y="336" width="16" height="16">
+   <properties>
+    <property name="charges" value="inf"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="tjump"/>
+   </properties>
+  </object>
+  <object name="teleport" type="Object" x="1520" y="144" width="16" height="16">
+   <properties>
+    <property name="charges" value="inf"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="xjump"/>
+   </properties>
+  </object>
+  <object name="teleport" type="Object" x="960" y="240" width="16" height="16">
+   <properties>
+    <property name="charges" value="inf"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="kjump"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -121,6 +121,13 @@
     <property name="class" value="Door"/>
    </properties>
   </object>
+  <object name="spawn" type="Spawn" x="64" y="400" width="16" height="16">
+   <properties>
+    <property name="class" value="Goomba"/>
+    <property name="rate" value="60"/>
+    <property name="total" value="20"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="regions" width="38" height="52" visible="0">
   <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>

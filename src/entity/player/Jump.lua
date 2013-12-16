@@ -9,28 +9,46 @@ function Player:setDoubleJump()
         self.walltouch or
         not self:onGround() then return end
 
-    local jump
     self.tasks:set('jumping', Job.interval(function(c)
         if not self.keyJump then return c:next() end
         self:doJump(c.ticks + 1)
     end, 0, #self.moveDef.jumpImp)):after(function(c)
-        self.setJump = function() jump = true end
+        self.setJump = function() c.jump = true end
         c:fallthrough()
     end):after(function(c)
 
-        if self:onGround() then return c:fallthrough() end
+        if self:onGround() then return c:exit() end
 
-        if self:moveWallJump(true) then jump = nil end
+        if self:moveWallJump(true) then c.jump = nil end
 
-        if jump then self:doDoubleJump(); c:next() end
+        if c.jump then self:doDoubleJump(); c:next() end
 
     end):after(function(c)
-        if self:onGround() then 
-            self.setJump = self.setDoubleJump
-            return c:next() 
-        end
+        if self:onGround() then return c:exit() end
         self:moveWallJump(true)
     end)
+
+    :with('rejump', function(c)
+        if self:onGround() then return c:exit() end
+        if self:moveWallJump(true) then c.jump = nil end
+        if c.jump then self:doDoubleJump(); c:next(4) end
+    end)
+
+    :finally(function() self.setJump = self.setDoubleJump end)
+end
+
+function Player:reDoubleJump()
+    local jumping = self.tasks.callbacks.jumping
+    
+    if jumping and jumping.cur > 3 then
+        local djump = self.tasks.callbacks.djumping
+        if djump then
+            djump:exit()
+            djump:update()
+        end
+        jumping.jump = nil
+        jumping:next('rejump')
+    end
 end
 
 function Player:setSingleJump()
@@ -301,14 +319,14 @@ function Player:doDixieJump()
     self.tasks:set('djumping', Job.chain(function(c)
         if not self.keyJump then c:next() end
         if self:onGround() then c:fallthrough() end
-
         if self.vy > v then self.body:setLinearVelocity(self.vx, v ) end
-    end)):after(function(c)
+    end))
+
+    :finally(function()
         if self.move == movePeach then
             self.move = nil
             self.body:setGravityScale(gravity)
         end
-        if self:onGround()               then return c:next() end
     end)
 end
 
