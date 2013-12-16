@@ -52,7 +52,7 @@ end
 
 local debugList = {}
 
-function Text:debug(object, index, string, deactivate)
+function Text:debug(object, index, string, deactivate, filter)
 
     if deactivate then 
         debugList[string or index .. ' = '] = nil
@@ -66,14 +66,20 @@ function Text:debug(object, index, string, deactivate)
     local text = self:print('', nil, nil, nil, nil, nil, Layer.Debug)
 
     if debugList[string] then Layer.Debug:removeProp(debugList[string].t) end
-    debugList[string] = {t=text, k=index, o=object}
+    debugList[string] = {t=text, k=index, o=object, f=filter}
 
     gTasks:set('textDebug', function()
-        local i = 0
+        local i = -1
         for s,v in pairs(debugList) do 
-            v.t:setString(s .. tostring(v.o[v.k]))
+            local value = v.o[v.k]
+            if v.f and not v.f(value) then
+                value = ''
+            else
+                i = i + 1
+                value = s .. tostring(value)
+            end
+            v.t:setString(value)
             v.t:setLoc(400, i*20)
-            i = i + 1
         end
     end)
 end

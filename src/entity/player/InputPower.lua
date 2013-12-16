@@ -94,8 +94,12 @@ function Player:_setPower()
                                 function(v) return v[1] == 'pow_jump' end), 
                                     function(v, k) return 0, k end)
     self.pow_jump = false
-    for k,_ in pairs(power_type) do
-        Text:debug(self.power, k)
+    for k,v in pairs(power_type) do
+        if v[1] == 'pow_jump' then 
+            Text:debug(self.power, k, nil, nil, function(v)
+                return v ~= 0 and v ~= nil
+            end)
+        end
     end
     Text:debug(self, 'pow_jump')
 end

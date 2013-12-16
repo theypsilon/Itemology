@@ -22,8 +22,8 @@ function scene:load(start, hp)
             if link and link.x and link.y then
                 player.pos:set(link.x, link.y)
             end
-        elseif start.x and start.y then 
-            player.pos:set(start.x, start.y)
+        elseif start.initx and start.inity then
+            player.pos:set(start.initx, start.inity)
         end
     end
 
