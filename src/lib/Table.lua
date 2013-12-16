@@ -108,7 +108,7 @@ end
 local function map( tab , fn )
     local ret = {}
     for ik, iv in pairs(tab) do
-        local fv, fk = fn(iv)
+        local fv, fk = fn(iv, ik)
         ret[fk and fk or ik] = fv
     end
     return ret

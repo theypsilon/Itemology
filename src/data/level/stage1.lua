@@ -14,9 +14,9 @@ return function(level, camera)
     assert(player)
 
     local wallJump, shoot, special = 
-        player.moveWallJump, player.moveShoot, player.setSpecial
+        player.moveWallJump, player.setAction, player.setSpecial
     player.moveWallJump = nothing
-    player.moveShoot    = nothing
+    player.setAction    = nothing
     player.setSpecial   = nothing
 
     local createJump, jumpCharges = getJumpFactory(level)
@@ -25,6 +25,9 @@ return function(level, camera)
     local visible = level.map('regions'):getRegion('visible')
 
     local limit = camera._limit
+
+    limit.x = limit.x + 16
+    limit.w = limit.w - 16
 
     camera._limit = table.copy(visible)
     camera._limit.h = camera._limit.h - 8
@@ -50,7 +53,7 @@ return function(level, camera)
 
         if not visible:contains(player) then 
             player.moveWallJump = wallJump
-            player.moveShoot    = shoot
+            player.setAction    = shoot
             player.setSpecial   = special
             c:next() 
         end

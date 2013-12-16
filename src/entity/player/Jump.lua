@@ -42,9 +42,14 @@ function Player:reDoubleJump()
     
     if jumping and jumping.cur > 3 then
         local djump = self.tasks.callbacks.djumping
+        local wjump = self.tasks.callbacks.walljumping
         if djump then
             djump:exit()
             djump:update()
+        end
+        if wjump then
+            wjump:exit()
+            wjump:update()
         end
         jumping.jump = nil
         jumping:next('rejump')
@@ -84,13 +89,14 @@ function Player:setSpaceJump()
         if not self.keyJump then return c:next() end
         self:doJump(c.ticks + 1)
     end, 0, #self.moveDef.jumpImp)) :after(function(c)
-        if self:onGround()  then 
-            self.moveVertical = nil
-            self.body:setGravityScale(gravity)
-            return c:next() 
-        end
+        if self:onGround()  then return c:next() end
         if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
         self:moveWallJump(true)
+    end)
+
+    :finally(function()
+        self.moveVertical = nil
+        self.body:setGravityScale(gravity)
     end)
 end
 
@@ -99,10 +105,8 @@ local function prepare_touch(touch)
 end
 
 function Player:moveWallJump(fromJumping)
-    if self:onGround() then self.lastwalljump = false end
-
+    if self.tasks.callbacks.walljumping then return end
     if not fromJumping and self.tasks.callbacks.jumping then return end
-    if                 self.tasks.callbacks.walljumping then return end
 
     local vy, dx = self.vy, self.dx
 
@@ -138,10 +142,12 @@ function Player:moveWallJump(fromJumping)
             end
 
             if self.vy > ws then self.body:setLinearVelocity(self.vx, ws) end
-        end)):after(function(c)
+        end))
+
+        :finally(function()
             if self.setJump ~= self.jumpBackup then self.setJump = prevSetJump end
-            c:next()
         end)
+
         return true
     end
 end
@@ -204,10 +210,11 @@ function Player:doFalconJump()
     end):after(Job.interval(function(c)
         self.body:setLinearVelocity(x, y)
         try_cancel(c)
-    end, 0, fly_t)):after(function(c)
+    end, 0, fly_t))
+
+    :finally(function()
         self.move = nil
         self.body:setGravityScale(gravity)
-        c:next()
     end)
 end
 
@@ -219,14 +226,17 @@ function Player:doKirbyJump(    )
 
     self:doStandardDoubleJump(true)
 
-    local time, cadence = self.moveDef.kjumpFullTime, 
-                          self.moveDef.kjumpCadenceTime
+    local time, cadence, maxFallSp = self.moveDef.kjumpFullTime,
+                                     self.moveDef.kjumpCadenceTime,
+                                     self.moveDef.kjumpFallSpeedLimit
 
     local step = 0
     self.tasks:set('djumping', Job.chain(function(c)
         step = step + 1
         if not self.keyJump then c:next() end
         if self:onGround() or step > time then c:exit() end
+        if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
+        if self.keyRun then c:exit() end
     end)):after(function(c)
         step = step + 1
         if self.keyJump then
@@ -234,9 +244,11 @@ function Player:doKirbyJump(    )
                 self:doStandardDoubleJump(true)
                 c.last = step + cadence 
             end
-            c:next(1)
+            return c:next(1)
         end
+        if self.keyRun then c:exit() end
         if self:onGround() or step > time then c:exit() end
+        if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
     end).last = cadence
 end
 
@@ -259,7 +271,17 @@ function Player:doTeleportJump()
         self.moveDef.tjumpDiagonalFactor or
         self.moveDef.tjumpStraightFactor
 
-    self.pos:set(self.x + (x * factor), self.y + (y * factor))
+    local tx, ty = self.x + (x * factor), self.y + (y * factor)
+    
+    local hit, hx, hy = Physics.world:getRayCast(
+        self.x + vdx * 10, 
+        self.y + vdy * 10, 
+        tx, ty
+    )
+
+    if hit then tx, ty = hx - vdx * 10, hy - vdy * 10 end
+
+    self.pos:set(tx, ty)
 
     self.tasks:set('djumping', Job.chain(function(c)
         if self:onGround() then c:next() end

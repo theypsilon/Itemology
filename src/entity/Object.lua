@@ -1,12 +1,12 @@
-local function Object(level, definition, p, layer)
+local function Object(level, definition, p, layer, k)
 
     local class  = p.properties.class or p.properties.object
     local loader = require('entity.object.' .. class)
-    local o      = loader (definition, p)
+    local o      = loader (definition, p, k)
 
     if o.body then 
         o.layer = layer
-        o._name = 'Object'
+        if not o._name then o._name = 'Object' end
         o.body.parent = o
     end
 

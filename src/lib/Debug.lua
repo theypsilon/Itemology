@@ -16,16 +16,26 @@ local function internal_dump(object, level)
     return object
 end
 
-local function dump(...)
+local function export_var(...)
     local args = table.pack(...)
     if args.n == 1 and type(args[1]) == 'function' then
-        args = {dumpf(args[1], true)}
+        return dumpf(args[1], true)
     elseif args.n == 0 then 
-        args = {'<no params>'} 
+        return '<no params>'
     else
-        for i = 1, args.n do args[i] = internal_dump(args[i]) end
+        local str = ''
+        for i = 1, args.n do 
+            local v = internal_dump(args[i])
+            v = is_string(args[i]) and ("'" .. v .. "'") or tostring(v) 
+            str = str .. v .. '    ' 
+        end
+        return str
     end
-    print('dump:', unpack(args))
+end
+
+local function dump(...)
+    local str = export_var(...)
+    print('dump:', str)
 end
 
 local function dumpi(object, level)
@@ -58,6 +68,8 @@ local exports = {
 
     dumpf           = dumpf,
     dump_function   = dumpf,
+
+    export_var      = export_var,
 }
 
 require('lib.Import').make_exportable(exports)

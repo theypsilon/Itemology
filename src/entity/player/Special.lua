@@ -20,10 +20,10 @@ function Player:setYoshiSpecial()
 
     local look = self.lookLeft == true and -1 or 1
 
-    local jump, wjump, shoot = self.setJump, self.moveWallJump, self.moveShoot
-    self.setJump      = self.setSingleJump
-    self.moveWallJump = nothing
-    self.moveShoot    = nothing
+    local jump, wjump, shoot = self.setJump, self.moveFalling, self.setAction
+    self.setJump     = self.setSingleJump
+    self.moveFalling = nothing
+    self.setAction   = nothing
 
     local bShoot = 0
 
@@ -53,9 +53,9 @@ function Player:setYoshiSpecial()
 
         c:next()
     end):finally(function()
-        self.setJump      = jump
-        self.moveWallJump = wjump
-        self.moveShoot    = shoot
+        self.setJump     = jump
+        self.moveFalling = wjump
+        self.setAction   = shoot
         prop:clear() 
     end)
 end

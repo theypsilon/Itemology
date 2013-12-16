@@ -21,7 +21,7 @@ if not config.dev.sanitychecks then
     config.dev.reloaddata     = true
 end
 
-config.dev.debug_physics = true
+config.dev.debug_physics = false
 
 config.start = 'stage1'
 

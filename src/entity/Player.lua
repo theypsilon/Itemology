@@ -47,9 +47,10 @@ function Player:tick(dt)
     self. x, self. y  = self.pos:get()
     self.vx, self.vy  = self.body:getLinearVelocity()
     self.dx           = -1 * self.dir.left + self.dir.right
-    self.dy           = -1 * self.dir.up + self.dir.down
+    self.dy           = -1 * self.dir.up   + self.dir.down
 
     self.tasks()
+    self:monitorTasks()
     self:move(dt)
 
     if self.y > self.limit_map_y then self:remove() end
@@ -59,6 +60,15 @@ function Player:tick(dt)
     self:animate()
 
 	Mob.tick(self)
+end
+
+function Player:monitorTasks()
+    local i = 0
+    Text:console(table.map(self.tasks.callbacks, function(v, k)
+        i = i + 1
+        return {k, v.cur}, i
+    end))
+    --dump(table.keys(self.tasks.callbacks))
 end
 
 local abs = math.abs

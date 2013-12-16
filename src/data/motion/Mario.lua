@@ -1,5 +1,5 @@
 return {
-    update              = true,
+    --update              = true,
 
     -- MOTION
 
@@ -42,6 +42,7 @@ return {
 
     kjumpCadenceTime    = 20,
     kjumpFullTime       = 200,
+    kjumpFallSpeedLimit = 30,
 
     tjumpDiagonalFactor = 65,
     tjumpStraightFactor = 110,

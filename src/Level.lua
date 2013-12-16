@@ -142,7 +142,7 @@ function Level:initEntities(layer)
     for k,v in pairs(layer.objects) do
         if v.x and v.y and v.type then
             local def = Data.entity[v.type]
-            local e   = require(def.class)(self, def, v, layer)
+            local e   = require(def.class)(self, def, v, layer, k)
             if e then 
                 self:add(e) 
             end

@@ -6,26 +6,50 @@ local abs     = math.abs
 local Player = {}
 
 function Player:_setInitialMove(p)
-    self.shooting     = nothing
     self.jumpBackup   = self.setDoubleJump
     self.setJump      = self.setDoubleJump
     self.doDoubleJump = self.doPeachJump
-    --self.moveWallJump = nothing
     --self.moveLateral  = nothing
     --self.moveVertical = nothing
-    --self.moveShoot    = nothing
 end
 
 function Player:move(dt)
     dt = 1 / (dt * self.moveDef.timeFactor)
 
-    self:moveShoot      (  )
     self:moveDoor       (  )
-    self:moveWallJump   (  )
+    self:moveFalling    (  )
     self:moveLateral    (dt, self:calcMainForces(dt))
     self:moveVertical   (dt)
+end
 
+function Player:moveFalling(dt)
+    if self:onGround() then self.lastwalljump = nil; return end
     
+    local jumping = self.tasks.callbacks.jumping
+
+    if jumping then return end
+
+    self.moveFalling = nothing
+
+    local prevJump = self.setJump
+
+    self.tasks:set('falling', Job.chain(function(c)
+        self.setJump = function() c.jump = true end
+        c:fallthrough()
+    end)):after(function(c)
+        if self:onGround() then return c:exit() end
+
+        self:moveWallJump()
+        if c.jump then self:doDoubleJump(); c:next() end
+    end):after(function(c)
+        if self:onGround() then return c:exit() end
+        self:moveWallJump()
+    end)
+
+    :finally(function() 
+        self.moveFalling = nil
+        self.setJump     = prevJump
+    end)
 end
 
 function Player:calcMainForces(dt)
@@ -99,7 +123,6 @@ local function move_on_wallhack(self)
     local vel = self.keyRun and 15 or 5
     self.pos:set(self.x + dx*vel, self.y + dy*vel)
     self.body:setLinearVelocity(0, 0)
-    self:moveShoot()
 end
 
 function Player:wallhack_on(freeze_world)

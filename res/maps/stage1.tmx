@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="38" height="52" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" width="40" height="52" tilewidth="16" tileheight="16">
  <properties>
   <property name="script" value="stage1"/>
   <property name="time" value="200"/>
@@ -7,53 +7,53 @@
  <tileset firstgid="1" name="maybemario" tilewidth="16" tileheight="16">
   <image source="maybemario.png" width="640" height="640"/>
  </tileset>
- <layer name="overlap" width="38" height="52">
+ <layer name="overlap" width="40" height="52">
   <properties>
    <property name="z" value="10000"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt0MERQFAMRdF81aAaVINqUA2qcreWf2Fkcc/M22UyL4mQJEmSJEmSJGUwl4iFrOXvJm8bfXZy1PZivpDmo3tO9l7krtzfMt+RPtmfB/qMZErWS5KkTB5XYwct
+   eJzt0MENgzAQBEA71YRUk1ANUA2hGkhVbAH58ECAmJH2d7L3rhQAAAAAALiGrpbSJ0M9usl/Y3p9k2lrv8zX5LHzXnPeX5Lfxn+emW+S10nv/k6vT9KetB8A3MUKflAHLQ==
   </data>
  </layer>
- <layer name="background2" width="38" height="52">
+ <layer name="background2" width="40" height="52">
   <data encoding="base64" compression="zlib">
-   eJzt0EEKwjAURdHfoLiNthSRovtoHRWhuEndo0/oQEomvwT5lHvgTTJILjEDAAAAAADA3tSVWZNZW5W5/5XM3mk/XYPeHzO7b+iqtaZQ11enhnOB/xm0cXUWoSuHLh+6fLxdB3Ucl0XquqrjtixMlxqSdgrWdVFDrz21OVDXpIbHT0eUrjW6fOjyidr1bz1z7QO1IzJO
+   eJzt0MEKgkAUheHroPQaKhIh9R7aKoLwJfMdO4GLkFk5A17j/+BsZnH5GTMAAAAAAADg+OrCrImsLfLcfwezOfxv36COMbL7hr5aazL3fXVqOWf4r0EbV2+e+mLoS0Nfmq19pXqqZR77ruq5LXPXp5agnZz2XdTSa5P2ctj3UMvzp8db3xp9aTfoS7vhvW8vvdMdoe8DjjcyTg==
   </data>
  </layer>
- <layer name="background1" width="38" height="52">
+ <layer name="background1" width="40" height="52">
   <data encoding="base64" compression="zlib">
-   eJztzrsJgDAYReEIKRzHOXyMpU6jbqOljuJfCDZquAGR4PngkirJcQ4AAAAAAAB/V3rnKltta/zXNSe6NHRp6NLQpaFLQ5eGLk2KXduL/3a2PrIrz+7vtQ9vzrYl0DXapsiu4qJrPc4h8C/SswMMdx7d
+   eJztzksOQDAURuEr6cByrMNjWVgNdlNDluIOzFCNmxCcL/nTAU2PCAAAAAAAAPA/uRMpdKWuck/XbNFnQ58NfTb02dBnQ58NfTZv7ptveL/RtYHvob40Ob5XR7ztdePJP71uuNiX7fRN69lF9OE7FizlHt0=
   </data>
  </layer>
- <layer name="platforms" width="38" height="52">
+ <layer name="platforms" width="40" height="52">
   <data encoding="base64" compression="zlib">
-   eJztlDsOwjAQBdeWgWsQvh2cg38HDceB28ANuE7uAAghXgokiALSIicx1htpmi28U1grQgghhBBCCCGExM8N3nMzZ0QasGnqKBI5w0uBV9hC06imrjb2JgV24DjXlTjMYRf2YB8O4NB9fn9nRfbWb9cGrl+6Jtg/hTM4hwu4hKsvXQc0HXNdW1utmr2hwS4dMXSdjF99dVUJu3T8c1eV/13TVQfs0hFDF+/9b11pOSlvaLtSCbPrSdltWVOWFaJExwNMNF0H
+   eJztlcsNgkAURYGgtiF+d1qH/51uLEcLoA/twHboQY0xXmKIEwIGeXye5J7kbCbzObOYjG9bavHtt1phnwz2yWCfDPbJYJ+Mf+jTDPtksE9G2Ld39L7jqEljWwj7ZLAvP+ab1dhnkrXvAZ+xMRdrW7Bd4h2z9F3hLcE77GD9pOa+LuZ4CfbgNNbnuRiHfTiAQziCYzd9/wP+iaNTTt8Obo09ZuiYwwVcwhVcw82XvhPazil94R9Xpb+cG83TRvwe2mCfjDx9F7tYi+6rEvbJaFJfle8iT18dsE9GE/v4f3yQ9AXFpiSSty+wdPdFlN1oNjlKJXJenSx6Rw==
   </data>
  </layer>
- <objectgroup name="objects" width="38" height="52">
-  <object name="start" type="Player" x="368" y="768" width="16" height="16"/>
-  <object name="goomba" type="Goomba" x="288" y="688" width="16" height="16">
+ <objectgroup name="objects" width="40" height="52">
+  <object name="start" type="Player" x="384" y="768" width="16" height="16"/>
+  <object name="goomba" type="Goomba" x="304" y="688" width="16" height="16">
    <properties>
     <property name="dir" value="-1"/>
    </properties>
   </object>
-  <object name="goomba" type="Goomba" x="368" y="608" width="16" height="16">
+  <object name="goomba" type="Goomba" x="384" y="608" width="16" height="16">
    <properties>
     <property name="dir" value="1"/>
    </properties>
   </object>
-  <object name="goomba" type="Goomba" x="240" y="608" width="16" height="16">
+  <object name="goomba" type="Goomba" x="256" y="608" width="16" height="16">
    <properties>
     <property name="dir" value="1"/>
    </properties>
   </object>
-  <object name="end" type="Object" x="456" y="521" width="16" height="16">
+  <object name="end" type="Object" x="472" y="521" width="16" height="16">
    <properties>
     <property name="class" value="Door"/>
     <property name="level" value="plattform"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="112" y="720" width="16" height="16">
+  <object name="jump" type="Object" x="128" y="720" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="3"/>
@@ -61,7 +61,7 @@
     <property name="power" value="djump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="256" y="352" width="16" height="16">
+  <object name="jump" type="Object" x="272" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -69,7 +69,7 @@
     <property name="power" value="fjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="544" y="368" width="16" height="16">
+  <object name="jump" type="Object" x="560" y="368" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -77,7 +77,7 @@
     <property name="power" value="pjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="208" y="352" width="16" height="16">
+  <object name="jump" type="Object" x="224" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -85,7 +85,7 @@
     <property name="power" value="xjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="560" y="608" width="16" height="16">
+  <object name="jump" type="Object" x="576" y="608" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -94,7 +94,7 @@
     <property name="z" value="0"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="160" y="352" width="16" height="16">
+  <object name="jump" type="Object" x="176" y="352" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -102,7 +102,7 @@
     <property name="power" value="tjump"/>
    </properties>
   </object>
-  <object name="jump" type="Object" x="368" y="384" width="16" height="16">
+  <object name="jump" type="Object" x="384" y="384" width="16" height="16">
    <properties>
     <property name="add" value="true"/>
     <property name="charges" value="huge"/>
@@ -110,27 +110,41 @@
     <property name="power" value="kjump"/>
    </properties>
   </object>
-  <object name="shortcut" type="Object" x="560" y="768" width="16" height="16">
+  <object name="shortcut" type="Object" x="576" y="768" width="16" height="16">
    <properties>
     <property name="class" value="Door"/>
     <property name="link" value="upfloor"/>
    </properties>
   </object>
-  <object name="upfloor" type="Object" x="544" y="416" width="16" height="16">
+  <object name="upfloor" type="Object" x="560" y="416" width="16" height="16">
    <properties>
     <property name="class" value="Door"/>
    </properties>
   </object>
-  <object name="spawn" type="Spawn" x="64" y="400" width="16" height="16">
+  <object name="spawn" type="Spawn" x="80" y="400" width="16" height="16">
    <properties>
     <property name="class" value="Goomba"/>
     <property name="rate" value="60"/>
     <property name="total" value="20"/>
    </properties>
   </object>
+  <object name="portal1" type="Object" x="624" y="384">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal2"/>
+   </properties>
+   <polyline points="0,0 0,80"/>
+  </object>
+  <object name="portal2" type="Object" x="16" y="208">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal1"/>
+   </properties>
+   <polyline points="0,0 0,80"/>
+  </object>
  </objectgroup>
- <objectgroup name="regions" width="38" height="52" visible="0">
-  <object name="cheat" type="Shape" x="128" y="560" width="32" height="64"/>
-  <object name="visible" type="Shape" x="0" y="480" width="608" height="352"/>
+ <objectgroup name="regions" width="40" height="52" visible="0">
+  <object name="cheat" type="Shape" x="144" y="560" width="32" height="64"/>
+  <object name="visible" type="Shape" x="16" y="480" width="608" height="352"/>
  </objectgroup>
 </map>

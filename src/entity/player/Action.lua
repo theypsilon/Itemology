@@ -7,20 +7,17 @@ local Player = {}
 
 function Player:setAction()
     if self.keyRun then
-        local _, shooting = self.shooting()
-        self.shooting = shooting or Job.cron(10, nothing, 10)
-    else
-        if self.shooting == nothing then return end
-        local shooting = self.shooting
-        self.shooting  = function()
-            if shooting() then self.shooting = nothing end
-            return nil, shooting
-        end
-    end
-end
 
-function Player:moveShoot()
-    if self.shooting() then self:triggerBullet{self.lookLeft and -1 or 1, 0} end
+        if self.tasks.callbacks.action then return end
+
+        self.tasks:set('action', Job.chain(Job.cron(10, function(c)
+            if self.keyRun then 
+                self:triggerBullet{self.lookLeft and -1 or 1, 0}
+            else 
+                c:exit()
+            end
+        end, 10)))
+    end
 end
 
 function Player:triggerBullet(dir)

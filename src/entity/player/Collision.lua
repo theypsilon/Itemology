@@ -65,7 +65,9 @@ end
 function Player.area(p, fa, fb, a)
     local  contact = fb:getBody().parent
     if not contact then return end
-    Player.contact[contact._name](fa:getBody().parent, contact, p, a, fb)
+    pcall(function()
+        Player.contact[contact._name](fa:getBody().parent, contact, p, a, fb)
+    end)
 end
 
 Player.contact = {}
