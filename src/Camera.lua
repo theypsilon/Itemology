@@ -21,7 +21,9 @@ function Camera:_init(target, area, padding)
     self.cam = MOAICamera.new()
     local f = Data.MainConfig.screen.width / Data.MainConfig.world.width
 
-    if target then 
+    self.padding = padding or { x = 0, y = 0 }
+
+    if target then
         self:setTarget(target)
         self.area    = area or { 
             x = 0, y = 0, 
@@ -33,8 +35,6 @@ function Camera:_init(target, area, padding)
     end
 
     self.z = f * z
-
-    self.padding = padding or { x = 0, y = 0 }
 end
 
 local function validateTarget(target)
@@ -47,9 +47,6 @@ function Camera:setTarget(target)
     validateTarget(target)
 
     local endx, endy = target.map:getBorder()
-
-    self._last_x = self:_calcCorner('x', area.w) - area.x
-    self._last_y = self:_calcCorner('y', area.h) - area.y
 
     self._target             = target
     self._map                = target.map
@@ -69,9 +66,15 @@ function Camera:draw()
     local x = self:_calcCorner('x', area.w) - area.x
     local y = self:_calcCorner('y', area.h) - area.y
 
-    local dx, dy = x - self._last_x, y - self._last_y
-    if math.abs(dx) > 5 then x = self._last_x + (dx > 0 and 5 or -5) end
-    if math.abs(dy) > 5 then y = self._last_y + (dy > 0 and 5 or -5) end
+    if self._last_x and self._last_y then
+        local dx, dy = x - self._last_x, y - self._last_y
+
+        if math.abs(dx) > 16 then x = self._last_x + (dx > 0 and 16 or -16) end
+        if math.abs(dy) > 16 then y = self._last_y + (dy > 0 and 16 or -16) end
+    end
+
+    self._last_x = x
+    self._last_y = y
 
     self.cam:setLoc(x, y, self.z)
 end
