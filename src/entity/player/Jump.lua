@@ -272,10 +272,10 @@ function Player:doTeleportJump()
         self.moveDef.tjumpStraightFactor
 
     local tx, ty = self.x + (x * factor), self.y + (y * factor)
-    
+
     local hit, hx, hy = Physics.world:getRayCast(
         self.x + vdx * 10, 
-        self.y + vdy * 10, 
+        self.y + vdy * 20, 
         tx, ty
     )
 
