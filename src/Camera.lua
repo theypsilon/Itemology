@@ -48,6 +48,9 @@ function Camera:setTarget(target)
 
     local endx, endy = target.map:getBorder()
 
+    self._last_x = self:_calcCorner('x', area.w) - area.x
+    self._last_y = self:_calcCorner('y', area.h) - area.y
+
     self._target             = target
     self._map                = target.map
     self._limit =  {x = 0, y = 0, w = endx, h = endy}
@@ -65,6 +68,10 @@ function Camera:draw()
 
     local x = self:_calcCorner('x', area.w) - area.x
     local y = self:_calcCorner('y', area.h) - area.y
+
+    local dx, dy = x - self._last_x, y - self._last_y
+    if math.abs(dx) > 5 then x = self._last_x + (dx > 0 and 5 or -5) end
+    if math.abs(dy) > 5 then y = self._last_y + (dy > 0 and 5 or -5) end
 
     self.cam:setLoc(x, y, self.z)
 end
