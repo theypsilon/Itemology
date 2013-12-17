@@ -29,14 +29,16 @@ function Player:getDoubleJumpStateMachine()
 
     :with('rejump', function(c) 
         jump = Job.bistate()
-        c:fallthrough(3)
+        c:fallthrough(2)
     end)
 end
 
 function Player:reDoubleJump()
-    local jumping = self.tasks.callbacks.jumping
+    local jumping = 
+        self.tasks.callbacks.jumping or
+        self.tasks.callbacks.falling
     
-    if jumping and jumping.cur > 3 then
+    if jumping and jumping.cur > 2 then
         local djump = self.tasks.callbacks.djumping
         local wjump = self.tasks.callbacks.walljumping
         if djump then
@@ -267,7 +269,7 @@ function Player:doTeleportJump()
     local hit, hx, hy, fix = Physics.world:getRayCast(self.x, self.y, tx, ty)
     self.body:setActive(true )
 
-    if hit then tx, ty = hx - vdx * 10, hy - vdy * 10 end
+    if hit then tx, ty = hx - vdx * 10, hy - vdy * 20 end
 
     self.pos:set(tx, ty)
 

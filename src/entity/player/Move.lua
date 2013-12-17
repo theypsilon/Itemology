@@ -32,7 +32,7 @@ function Player:moveFalling(dt)
     if occupied then return end
 
     local jump = self:getDoubleJumpStateMachine()
-    jump:next(3)
+    jump:next(2)
 
     self.tasks:set('falling', jump)
 end
