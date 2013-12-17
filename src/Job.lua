@@ -163,4 +163,13 @@ function Job.interval(f, initial, final, key)
     return run
 end
 
+function Job.bistate(semicycles, forever)
+    local i, semicycles = 0, semicycles or 2
+    assert(is_positive(semicycles), tostring(semicycles))
+    return function(state) --assert(is_boolean(state), type(state))
+        if state == (i %2 == 1) then i = i + 1 end
+        if i == semicycles then i = forever and 0 or i return true end
+    end
+end
+
 return Job

@@ -5,11 +5,46 @@
  </tileset>
  <layer name="platforms" width="24" height="51">
   <data encoding="base64" compression="zlib">
-   eJzt1sEJwDAIBVAhXcARSpbKQtm79BAiVm3TXEL7PwiJyjtL1MM0FuxfexzM4MOHD/9Pfh70y4RfjLnureTvk761Dx/+an4mO/Dhw++pQUVzL55/Z+l35CdRbHhnb1PV0v4pKBnvfpCuvk8qPb+D3t4/8OHD/6Z/AO6gNtY=
+   eJzt1sEJwCAMheGAXSAzdCkXcm/pQRqspml7KfI/CGgi39WInFF5Ft5fe+rM8PHx8fHnvfzBz4HeSv7oPT7+3/wdHx//NsUpbx5N1OrPXpIpHXhHb+uqpd2TUzaz/cG6/X5SJP4Pv91/8PHx1/Qr1mIxhA==
   </data>
  </layer>
  <objectgroup name="objects" width="24" height="51">
   <object name="start" type="Player" x="160" y="576" width="16" height="16"/>
   <object x="352" y="592" height="16"/>
+  <object name="portal1" type="Object" x="64" y="816">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal2"/>
+   </properties>
+   <polyline points="-64,0 320,0"/>
+  </object>
+  <object name="portal2" type="Object" x="64" y="0">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal1"/>
+   </properties>
+   <polyline points="-64,0 320,0"/>
+  </object>
+  <object name="portal4" type="Object" x="64" y="112">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal3"/>
+   </properties>
+   <polyline points="320,704 320,-112"/>
+  </object>
+  <object name="portal3" type="Object" x="-320" y="112">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal4"/>
+   </properties>
+   <polyline points="320,704 320,-112"/>
+  </object>
+  <object name="kirby" type="Object" x="336" y="544" width="16" height="16">
+   <properties>
+    <property name="charges" value="inf"/>
+    <property name="class" value="Power"/>
+    <property name="power" value="kjump"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -60,17 +60,6 @@ local function setSingleJump(self, name)
     end))
 end
 
-local setup = {
-    djump = function(self) setupJump(self, 'doStandardDoubleJump') end,
-    pjump = function(self) setupJump(self, 'doPeachJump'         ) end,
-    xjump = function(self) setupJump(self, 'doDixieJump'         ) end,
-    fjump = function(self) setupJump(self, 'doFalconJump'        ) end,
-    tjump = function(self) setupJump(self, 'doTeleportJump'      ) end,
-    kjump = function(self) setupJump(self, 'doKirbyJump'         ) end,
-    sjump = function(self) setSingleJump(self, 'setSpaceJump')  end,
-   nojump = function(self) self.setJump = self.setDoubleJump end
-}
-
 local function setupJump(self, type)
     if not table.empty(table.filter(power_type, 
         function(v) return self[v[3]] == self.setJump end)) 

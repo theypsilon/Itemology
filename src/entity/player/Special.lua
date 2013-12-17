@@ -1,4 +1,4 @@
-local Tasks, Scenes, Text, Data, Job, Physics; import()
+local Tasks, Animation, Scenes, Text, Data, Job, Physics; import()
 local Bullet; import 'entity.particle'
 
 local abs = math.abs
@@ -12,7 +12,9 @@ function Player:setYoshiSpecial()
         self.tasks.callbacks.walljumping or
         self.tasks.callbacks.djumping then return end
 
-    local prop = self.animation.atlass:get('cursor'):newProp()
+    local a = Animation(Data.animation.Cursor)
+
+    local prop = a.prop
 
     local dist = 50
 
@@ -46,6 +48,7 @@ function Player:setYoshiSpecial()
 
         local radians = rad(angle)
         prop:setLoc(x + look * cos(radians) * dist, y - sin(radians) * dist)
+        a:next()
     end)):after(function(c)
         local radians = rad(angle)
 

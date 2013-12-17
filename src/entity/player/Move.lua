@@ -25,31 +25,16 @@ end
 function Player:moveFalling(dt)
     if self:onGround() then self.lastwalljump = nil; return end
     
-    local jumping = self.tasks.callbacks.jumping
+    local occupied = 
+        self.tasks.callbacks.jumping or 
+        self.tasks.callbacks.falling
 
-    if jumping then return end
+    if occupied then return end
 
-    self.moveFalling = nothing
+    local jump = self:getDoubleJumpStateMachine()
+    jump:next(3)
 
-    local prevJump = self.setJump
-
-    self.tasks:set('falling', Job.chain(function(c)
-        self.setJump = function() c.jump = true end
-        c:fallthrough()
-    end)):after(function(c)
-        if self:onGround() then return c:exit() end
-
-        self:moveWallJump()
-        if c.jump then self:doDoubleJump(); c:next() end
-    end):after(function(c)
-        if self:onGround() then return c:exit() end
-        self:moveWallJump()
-    end)
-
-    :finally(function() 
-        self.moveFalling = nil
-        self.setJump     = prevJump
-    end)
+    self.tasks:set('falling', jump)
 end
 
 function Player:calcMainForces(dt)

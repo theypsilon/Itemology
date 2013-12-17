@@ -9,32 +9,28 @@ function Player:setDoubleJump()
         self.walltouch or
         not self:onGround() then return end
 
-    self.tasks:set('jumping', Job.interval(function(c)
+    self.tasks:set('jumping', self:getDoubleJumpStateMachine())
+end
+
+function Player:getDoubleJumpStateMachine()
+    local jump = Job.bistate()
+
+    return Job.interval(function(c)
         if not self.keyJump then return c:next() end
         self:doJump(c.ticks + 1)
-    end, 0, #self.moveDef.jumpImp)):after(function(c)
-        self.setJump = function() c.jump = true end
-        c:fallthrough()
+    end, 0, #self.moveDef.jumpImp):after(function(c)
+        if self:onGround()         then         return  c:exit() end
+        if self:moveWallJump(true) then jump    = Job.bistate(4) end
+        if jump(self.keyJump) then self:doDoubleJump(); c:next() end
     end):after(function(c)
-
-        if self:onGround() then return c:exit() end
-
-        if self:moveWallJump(true) then c.jump = nil end
-
-        if c.jump then self:doDoubleJump(); c:next() end
-
-    end):after(function(c)
-        if self:onGround() then return c:exit() end
-        self:moveWallJump(true)
+        if self:onGround()  then  return c:exit() end
+        if self:moveWallJump(true) then c:next(3) end
     end)
 
-    :with('rejump', function(c)
-        if self:onGround() then return c:exit() end
-        if self:moveWallJump(true) then c.jump = nil end
-        if c.jump then self:doDoubleJump(); c:next(4) end
+    :with('rejump', function(c) 
+        jump = Job.bistate()
+        c:fallthrough(3)
     end)
-
-    :finally(function() self.setJump = self.setDoubleJump end)
 end
 
 function Player:reDoubleJump()
@@ -122,16 +118,14 @@ function Player:moveWallJump(fromJumping)
 
         local ws = self.moveDef.wallSlidingSpeed
 
-        local jump
-        local function setWallJump() jump = true end
-        self.setJump = setWallJump
+        local jump = Job.bistate()
 
         self.tasks:set('walljumping', Job.chain(function(c)
             local touch = prepare_touch(self.touch)
 
             if touch ~= initial_touch or self:onGround() then return c:next() end
 
-            if jump then
+            if jump(self.keyJump) then
                 local def = self.moveDef
                 self.body:setLinearVelocity(
                     -touch * ( def.wjumpVxPlus + abs(dx) * def.wjumpVxBase ),
@@ -143,10 +137,6 @@ function Player:moveWallJump(fromJumping)
 
             if self.vy > ws then self.body:setLinearVelocity(self.vx, ws) end
         end))
-
-        :finally(function()
-            if self.setJump ~= self.jumpBackup then self.setJump = prevSetJump end
-        end)
 
         return true
     end
