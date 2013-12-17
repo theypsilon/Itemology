@@ -56,12 +56,7 @@ end
 
 function Camera:draw()
     if not self._target then return end
-    local map = self._map
-    local area          = self.area
-
-    if not map then
-        error('this is a scrolled camera, target needs a tiled map')
-    end
+    local area = self.area
 
     local x = self:_calcCorner('x', area.w) - area.x
     local y = self:_calcCorner('y', area.h) - area.y

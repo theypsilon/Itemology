@@ -273,11 +273,9 @@ function Player:doTeleportJump()
 
     local tx, ty = self.x + (x * factor), self.y + (y * factor)
 
-    local hit, hx, hy = Physics.world:getRayCast(
-        self.x + vdx * 10, 
-        self.y + vdy * 20, 
-        tx, ty
-    )
+    self.body:setActive(false)
+    local hit, hx, hy, fix = Physics.world:getRayCast(self.x, self.y, tx, ty)
+    self.body:setActive(true )
 
     if hit then tx, ty = hx - vdx * 10, hy - vdy * 10 end
 
