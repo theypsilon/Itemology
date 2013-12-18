@@ -31,6 +31,7 @@ function Player:moveFalling()
 
     local jump = self:getDoubleJumpStateMachine()
     jump:next(2)
+    jump:update()
 
     self.tasks:set('falling', jump)
 end
