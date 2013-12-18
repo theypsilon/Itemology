@@ -185,6 +185,20 @@ local function complete(t, key, valort)
     return t
 end
 
+local function explode(div,str) -- credit: http://richard.warburton.it
+    if (div == '') then return false end
+
+    local pos, arr = 0, {}
+
+    for st, sp in function() return string.find(str, div, pos, true) end do
+        arr[#arr + 1] = string.sub(str, pos, st - 1)
+        pos = sp + 1
+    end
+
+    arr[#arr + 1] = string.sub(str, pos)
+    return arr
+end
+
 local exports = {
     flip            = flip,
     keys            = keys,
@@ -206,6 +220,7 @@ local exports = {
     map             = map,
     add             = add,
     complete        = complete,
+    explode         = explode,
 }
 
 require('lib.Import').make_exportable(exports)

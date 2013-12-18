@@ -1,23 +1,9 @@
 local Physics, Data; import()
 
-local function explode(div,str) -- credit: http://richard.warburton.it
-    if (div == '') then return false end
-
-    local pos, arr = 0, {}
-
-    for st, sp in function() return string.find(str, div, pos, true) end do
-        arr[#arr + 1] = string.sub(str, pos, st - 1)
-        pos = sp + 1
-    end
-
-    arr[#arr + 1] = string.sub(str, pos)
-    return arr
-end
-
 return function(d,p,k)
     local dot = table.map(
-        explode(' ', p[1].points), function(v) return table.map(
-            explode(',', v), function(v) return tonumber(v) 
+        table.explode(' ', p[1].points), function(v) return table.map(
+            table.explode(',', v), function(v) return tonumber(v) 
         end) 
     end)
 
