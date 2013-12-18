@@ -1,6 +1,8 @@
 return {
     --update              = true,
 
+    hp                  = math.huge,
+
     -- MOTION
 
     ogHorForce          = 10,  -- on ground horizontal force

@@ -22,9 +22,9 @@ function Player:_init(level, def, p)
     self.pos = Position(self.body)
     self.pos:set(p.x, p.y)
 
-    self.hp = 3
-    self.damage = {}
-    Text:debug(self, 'hp')
+    self.prop:setPriority(5000)
+
+    level.player = self
 
     local _
     _, self.limit_map_y = level.map:getBorder()
@@ -37,9 +37,9 @@ function Player:_init(level, def, p)
         end, 40)
     end
 
-    self.prop:setPriority(5000)
-
-    level.player = self
+    self.hp = self.moveDef.hp
+    self.damage = {}
+    Text:debug(self, 'hp')
 end
 
 function Player:tick(dt)
