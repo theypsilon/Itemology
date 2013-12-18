@@ -1,7 +1,7 @@
 return {
     --update              = true,
 
-    hp                  = math.huge,
+    hp                  = 3,
 
     -- MOTION
 
