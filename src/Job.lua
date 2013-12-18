@@ -9,28 +9,6 @@ function Chain:_init(f, key)
     self.cur   = is_number(key) and key or 0
 end
 
-function Chain:exit() 
-    self.finished = true
-    self.fall     = true 
-    self.state    = nil
-    if not self.running then self:update() end
-end
-
-function Chain:next(key, fall) 
-    assert(not key or self.state[key], 'wrong state: ' .. tostring(key))
-    self.finished = true
-    self.continue = key and key or (self.cur + 1)
-    self.fall     = fall
-    if not self.running then self:update() end
-end
-
-function Chain:fallthrough(key) return self:next(key, true) end
-
-function Chain:free(key) 
-    if is_table(key) then for _, k in pairs(key) do self:free(k) end return end
-    self.state[key] = nil
-end
-
 local function set_last_job(self)
     if self.finaljob then 
         self.job      = self.finaljob
@@ -41,8 +19,7 @@ local function set_last_job(self)
     end
 end
 
--- this method is not intended to be use inside a job
-function Chain:update()
+local function update_chain(self)
     if self.finished then 
         if self.state then
             
@@ -62,11 +39,33 @@ function Chain:update()
     end
 end
 
+function Chain:exit() 
+    self.finished = true
+    self.fall     = true 
+    self.state    = nil
+    if not self.running then update_chain(self) end
+end
+
+function Chain:next(key, fall) 
+    assert(not key or self.state[key], 'wrong state: ' .. tostring(key))
+    self.finished = true
+    self.continue = key and key or (self.cur + 1)
+    self.fall     = fall
+    if not self.running then update_chain(self) end
+end
+
+function Chain:fallthrough(key) return self:next(key, true) end
+
+function Chain:free(key) 
+    if is_table(key) then for _, k in pairs(key) do self:free(k) end return end
+    self.state[key] = nil
+end
+
 function Chain:__call()
     self.running = true
     local  ret   = self.job(self)
     self.running = nil
-    self:update()
+    update_chain(self)
     return ret
 end
 
