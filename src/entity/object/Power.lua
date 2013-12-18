@@ -8,23 +8,8 @@ return function(d,p)
     local animation = Animation(Data.animation.Power)
     animation:setAnimation(p.properties.power)
 
-    local prop  = animation.prop
-    local body, fix = Physics:registerBody({
-        id = 'Mob',
-        option = 'static',
-        fixtures = {
-            ['area']={
-                    option = 'rect',
-                    args   = {-w/2, -h/2, w/2, h/2},
-                    sensor = true
-            },
-        },
-        x = x,
-        y = y,
-
-        fixCategory = Data.fixture.Filters.C_ITEM,
-        fixMask     = Data.fixture.Filters.M_ITEM
-    }, prop)
+    local prop = animation.prop
+    local body = Physics:makeItemBody(x, y, 'rect', {-w/2, -h/2, w/2, h/2}, prop)
 
     local object = table.copy(p.properties)
     object.x, object.y = x, y

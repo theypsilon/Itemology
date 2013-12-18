@@ -1,3 +1,5 @@
+local Data; import()
+
 local Physics = {}
 function Physics:init(def)
     if not self.started then
@@ -100,6 +102,27 @@ function Physics.registerFixtures(fixtures, body, category, mask, group)
     if density then body:resetMassData() end
 
     return outFixtures
+end
+
+function Physics:makeItemBody(x, y, option, params, prop)
+    assert(is_number(x) and is_number(y), tostring(x) .. ':' .. tostring(y))
+    assert(is_string(option), option)
+    assert(is_array(params), var_export(params))
+    return Physics:registerBody({
+        option = 'static',
+        fixtures = {
+            ['area']={
+                    option = option,
+                    args   = params,
+                    sensor = true
+            },
+        },
+        x = x,
+        y = y,
+
+        fixCategory = Data.fixture.Filters.C_ITEM,
+        fixMask     = Data.fixture.Filters.M_ITEM
+    }, prop)
 end
 
 function Physics:clear()

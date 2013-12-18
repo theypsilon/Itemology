@@ -1,6 +1,5 @@
 local f = require 'data.fixture.Filters'
 return {
-    id = 'Mob',
     option = 'dynamic',
     fixtures = {
         ['area']={

@@ -85,7 +85,7 @@ function Text:debug(object, index, string, deactivate, filter)
 end
 
 function Text:console(var, update)
-    local str = export_var(var)
+    local str = var_export(var)
     if self.lastconsole == str and not update then return end
 
     self.lastconsole = str

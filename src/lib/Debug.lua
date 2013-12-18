@@ -16,7 +16,7 @@ local function internal_dump(object, level)
     return object
 end
 
-local function export_var(...)
+local function var_export(...)
     local args = table.pack(...)
     if args.n == 1 and type(args[1]) == 'function' then
         return dumpf(args[1], true)
@@ -34,7 +34,7 @@ local function export_var(...)
 end
 
 local function dump(...)
-    local str = export_var(...)
+    local str = var_export(...)
     print('dump:', str)
 end
 
@@ -69,7 +69,7 @@ local exports = {
     dumpf           = dumpf,
     dump_function   = dumpf,
 
-    export_var      = export_var,
+    var_export      = var_export,
 }
 
 require('lib.Import').make_exportable(exports)

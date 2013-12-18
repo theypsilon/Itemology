@@ -8,23 +8,7 @@ return function(d,p,k)
     end)
 
     local x, y, w, h = dot[1][1], dot[1][2], dot[2][1], dot[2][2]
-    local body, fix = Physics:registerBody {
-        id = 'Mob',
-        option = 'static',
-        fixtures = {
-            ['area']={
-                    option = 'rect',
-                    args   = {x, y, w, h},
-                    sensor = true
-            },
-        },
-        x = p.x,
-        y = p.y,
-
-        fixCategory = Data.fixture.Filters.C_ITEM,
-        fixMask     = Data.fixture.Filters.M_ITEM
-    }
-
+    local body   = Physics:makeItemBody(p.x, p.y, 'rect', {x, y, w, h})
     local object = table.copy(p.properties)
     object.body  = body
     object._name = k

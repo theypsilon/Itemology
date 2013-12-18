@@ -33,6 +33,13 @@ local function is_object(o)
     return is_table(o) or is_userdata(o)
 end
 
+local function is_array(t)
+    if not is_table(t) then return false end
+    local i = 0
+    for _,_ in pairs(t) do i = i + 1 end
+    return i == #t
+end
+
 local function is_path(s)
     if not is_string(s) then return false end
      local path = s:match('(.-)([^\\/]-%.?([^%.\\/]*))$')
@@ -83,6 +90,7 @@ local exports = {
     is_table    = is_table   ,
     is_userdata = is_userdata,
     is_object   = is_object  ,
+    is_array    = is_array   ,
     is_thread   = is_thread  ,
     is_callable = is_callable,
     is_integer  = is_integer ,
