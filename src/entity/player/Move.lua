@@ -13,16 +13,14 @@ function Player:_setInitialMove(p)
     --self.moveVertical = nothing
 end
 
-function Player:move(dt)
-    dt = 1 / (dt * self.moveDef.timeFactor)
-
-    self:moveDoor       (  )
-    self:moveFalling    (  )
-    self:moveLateral    (dt, self:calcMainForces(dt))
-    self:moveVertical   (dt)
+function Player:move ()
+    self:moveDoor    ()
+    self:moveFalling ()
+    self:moveLateral (self:calcMainForces())
+    self:moveVertical()
 end
 
-function Player:moveFalling(dt)
+function Player:moveFalling()
     if self:onGround() then self.lastwalljump = nil; return end
     
     local occupied = 
@@ -37,7 +35,7 @@ function Player:moveFalling(dt)
     self.tasks:set('falling', jump)
 end
 
-function Player:calcMainForces(dt)
+function Player:calcMainForces()
     local vx  = self.vx
     local def = self.moveDef
     local og  = self:onGround()
@@ -56,8 +54,8 @@ local function sig(v)
     return v > 0 and 1 or v < 0 and -1 or 0
 end
 
-function Player:moveLateral(dt, force, maxVel)
-    local vx, dx = self.vx, self.dx
+function Player:moveLateral(force, maxVel)
+    local vx, dx, dt = self.vx, self.dx, self.dt
     -- horizontal walk/run
     if dx ~= 0 then
         local vel = maxVel - abs(vx)

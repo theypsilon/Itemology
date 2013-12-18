@@ -37,7 +37,10 @@ function Player:setYoshiSpecial()
 
         angle = angle + dir
         
-        if self.dir.down == 1 or self.removed or self.wounded then return c:exit() end
+        if  self.dir.down == 1 or 
+            self.removed       or 
+            self:isWounded() then return c:exit() end
+
         --if self.keyRun        then angle =  0 end
         if self.dir.up   == 1 then angle = 90 end
 

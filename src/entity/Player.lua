@@ -48,10 +48,11 @@ function Player:tick(dt)
     self.vx, self.vy  = self.body:getLinearVelocity()
     self.dx           = -1 * self.dir.left + self.dir.right
     self.dy           = -1 * self.dir.up   + self.dir.down
+    self.dt           = 1 / (dt * self.moveDef.timeFactor)
 
     self.tasks()
     self:monitorTasks()
-    self:move(dt)
+    self:move()
 
     if self.y > self.limit_map_y then self:remove() end
 
@@ -127,7 +128,7 @@ function Player:applyDamage()
         end
     end
 
-    if dmg > 0 and not self.wounded then
+    if dmg > 0 and not self:isWounded() then
 
         self.hp = self.hp - dmg
         if self.hp <= 0 then 
@@ -138,21 +139,21 @@ function Player:applyDamage()
         self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
         self:maskFixtures{area = woundedMask}
 
-        self.wounded = true
         local layer  = self.level.map('platforms').layer
 
         self.tasks:set('wounded', Job.interval(function(c)
             local  n = c.ticks % 10
             if     n == 0 then layer:removeProp(self.prop)
             elseif n == 5 then layer:insertProp(self.prop) end
-        end, 0, 100)):after(function(c) 
-            self:maskFixtures(healthyMask)
-            self.wounded = nil
-            c:next() 
-        end)
-        
+        end, 0, 100))
+
+        :finally(function() self:maskFixtures(healthyMask) end)
     end
 
+end
+
+function Player:isWounded()
+    return self.tasks.callbacks.wounded ~= nil
 end
 
 function Player:reaction(enemy, attacker)

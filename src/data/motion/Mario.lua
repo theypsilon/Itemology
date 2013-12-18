@@ -20,9 +20,9 @@ return {
     jumpImp             = {250, 0, 0, 0, 50, 50, 50}, -- progressive jump impulse
 
     wjumpVxBase         = 150, -- wall jump lateral base velocity
-    wjumpVxPlus         = 100, -- wall jump additional velocity if move keys are pressed
+    wjumpVxPlus         = 25, -- wall jump additional velocity if move keys are pressed
 
-    wjumpUp             = 300, -- wall jump up velocity
+    wjumpUp             = 350, -- wall jump up velocity
     wallSlidingSpeed    = 75,  -- falling velocity when sliding against a wall
 
     djumpUp             = 350, -- double jump up velocity

@@ -4,6 +4,19 @@ local abs = math.abs
 
 local Player = {}
 
+function Player:setSingleJump()
+    if  self.tasks.callbacks.jumping or 
+        self.walltouch or
+        not self:onGround() then return end
+
+    self.tasks:set('jumping', getSingleJumpStateMachine())
+    
+    :after(function(c)
+        if self:onGround()  then return c:next() end
+        self:moveWallJump(true)
+    end)
+end
+
 function Player:setDoubleJump()
     if  self.tasks.callbacks.jumping or 
         self.walltouch or
@@ -12,60 +25,65 @@ function Player:setDoubleJump()
     self.tasks:set('jumping', self:getDoubleJumpStateMachine())
 end
 
-function Player:getDoubleJumpStateMachine()
-    local jump = Job.bistate()
-
+function Player:getSingleJumpStateMachine()
     return Job.interval(function(c)
         if not self.keyJump then return c:next() end
         self:doJump(c.ticks + 1)
-    end, 0, #self.moveDef.jumpImp):after(function(c)
-        if self:onGround()         then         return  c:exit() end
-        if self:moveWallJump(true) then jump    = Job.bistate(4) end
-        if jump(self.keyJump) then self:doDoubleJump(); c:next() end
-    end):after(function(c)
-        if self:onGround()  then  return c:exit() end
-        if self:moveWallJump(true) then c:next(3) end
+    end, 0, #self.moveDef.jumpImp)
+end
+
+function Player:getDoubleJumpStateMachine(djumping)
+    local jump, djump = Job.bistate(), djumping == true
+
+    return self:getSingleJumpStateMachine()
+
+    :after(function(c)
+        if self:onGround() then return c:exit() end
+
+        if self:moveWallJump(true) then 
+            jump = Job.bistate(4) 
+            djump = false
+        end
+
+        if jump(self.keyJump) and not djump then 
+            self:doDoubleJump()
+            self.lastwalljump = nil
+            djump = true
+        end
     end)
 
-    :with('rejump', function(c) 
-        jump = Job.bistate()
+    :with('rejump', function(c)
+        jump, djump = Job.bistate(), false
         c:fallthrough(2)
     end)
 end
 
 function Player:reDoubleJump()
+    local wjump = self.tasks.callbacks.walljumping
+
+    if wjump then
+        wjump:exit()
+        wjump:update()
+    end
+
     local jumping = 
         self.tasks.callbacks.jumping or
         self.tasks.callbacks.falling
     
-    if jumping and jumping.cur > 2 then
+    if jumping and jumping.cur == 2 and jumping.state.rejump then
         local djump = self.tasks.callbacks.djumping
-        local wjump = self.tasks.callbacks.walljumping
+        
         if djump then
             djump:exit()
             djump:update()
         end
-        if wjump then
-            wjump:exit()
-            wjump:update()
-        end
-        jumping.jump = nil
         jumping:next('rejump')
     end
 end
 
-function Player:setSingleJump()
-    if  self.tasks.callbacks.jumping or 
-        self.walltouch or
-        not self:onGround() then return end
-
-    self.tasks:set('jumping', Job.interval(function(c)
-        if not self.keyJump then return c:next() end
-        self:doJump(c.ticks + 1)
-    end, 0, #self.moveDef.jumpImp)) :after(function(c)
-        if self:onGround()  then return c:next() end
-        self:moveWallJump(true)
-    end)
+function Player:doJump(step)
+    local jump = self.moveDef.jumpImp
+    self.body:applyLinearImpulse(0, -jump[step])
 end
 
 function Player:setSpaceJump()
@@ -103,8 +121,12 @@ local function prepare_touch(touch)
 end
 
 function Player:moveWallJump(fromJumping)
-    if self.tasks.callbacks.walljumping then return end
-    if not fromJumping and self.tasks.callbacks.jumping then return end
+    local occupied = 
+        self.tasks.callbacks.walljumping or
+        self.tasks.callbacks.djumping    or
+        (not fromJumping and self.tasks.callbacks.jumping)
+
+    if occupied then return end
 
     local vy, dx = self.vy, self.dx
 
@@ -148,17 +170,10 @@ function Player:onGround()
     return self.groundCount ~= 0
 end
 
-function Player:doJump(step)
-    local jump = self.moveDef.jumpImp
-    self.body:applyLinearImpulse(0, -jump[step])
-end
-
 -- DOUBLE JUMP
 
 function Player:doFalconJump()
     if not self:usePower('fjump') then return end
-
-    self.lastwalljump = false
 
     local vx, vy = self.body:getLinearVelocity()
     local dx, dy = vx > 0 and 1 or -1, vy > 0 and 1 or -1
@@ -212,9 +227,7 @@ end
 
 
 function Player:doKirbyJump(    )
-    if not self:usePower('kjump') then return end
-
-    self.lastwalljump = false 
+    if not self:usePower('kjump') then return end 
 
     self:doStandardDoubleJump(true)
 
@@ -247,11 +260,10 @@ end
 function Player:doTeleportJump()
     if not self:usePower('tjump') then return end
 
-    self.lastwalljump = false
-
     local vx, vy, dx, dy = self.vx, self.vy, self.dx, self.dy
-    local vdx, vdy = vx > 0 and 1 or vx < 0 and -1 or dx,
-                     vy > 0 and 1 or vy < 0 and -1 or dy
+
+    local vdx, vdy = vx > 50 and 1 or vx < -50 and -1 or dx,
+                     vy > 50 and 1 or vy < -50 and -1 or dy
 
     local x, y = dx ~= -vdx and dx or 0, dy ~= -vdy and dy or 0
 
@@ -259,7 +271,7 @@ function Player:doTeleportJump()
 
     if x == 0 and y == 0 then y = -1 end
 
-    local factor = x ~= 0 and y ~= 0    and
+    local factor = (x ~= 0 and y ~= 0)   and
         self.moveDef.tjumpDiagonalFactor or
         self.moveDef.tjumpStraightFactor
 
@@ -269,25 +281,18 @@ function Player:doTeleportJump()
     local hit, hx, hy, fix = Physics.world:getRayCast(self.x, self.y, tx, ty)
     self.body:setActive(true )
 
-    if hit then tx, ty = hx - vdx * 10, hy - vdy * 20 end
+    if hit then tx, ty = hx - (x*10), hy - (y*10) end
 
     self.pos:set(tx, ty)
-
-    self.tasks:set('djumping', Job.chain(function(c)
-        if self:onGround() then c:next() end
-    end))
+    self.body:setLinearVelocity(vx, 0)
 end
 
-local function movePeach(self, dt)
-    dt = 1 / (dt * self.moveDef.timeFactor)
-
-    self:moveLateral(dt, self:calcMainForces(dt))    
+local function movePeach(self)
+    self:moveLateral(self:calcMainForces())    
 end
 
 function Player:doPeachJump()
     if not self:usePower('pjump') then return end
-
-    self.lastwalljump = false
 
     local gravity = self.body:getGravityScale()
 
@@ -318,8 +323,6 @@ end
 function Player:doDixieJump()
     if not self:usePower('xjump') then return end
 
-    self.lastwalljump = false
-
     local gravity = self.body:getGravityScale()
 
     self.body:setGravityScale(self.moveDef.xjumpGravity * gravity)
@@ -329,8 +332,10 @@ function Player:doDixieJump()
     local v = self.moveDef.xjumpFallSpeedLimit
 
     self.tasks:set('djumping', Job.chain(function(c)
-        if not self.keyJump then c:next() end
-        if self:onGround() then c:fallthrough() end
+        if not self.keyJump  or 
+            self:onGround () or 
+            self:isWounded() then c:exit() end
+
         if self.vy > v then self.body:setLinearVelocity(self.vx, v ) end
     end))
 
@@ -344,7 +349,6 @@ end
 
 function Player:doStandardDoubleJump(free)
     if not free and not self:usePower('djump') then return end
-    if not free then self.lastwalljump = false end
     
     local def = self.moveDef
 

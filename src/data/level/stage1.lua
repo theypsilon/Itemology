@@ -15,7 +15,7 @@ return function(level, camera)
 
     local wallJump, shoot, special = 
         player.moveWallJump, player.setAction, player.setSpecial
-    --player.moveWallJump = nothing
+    player.moveWallJump = nothing
     player.setAction    = nothing
     player.setSpecial   = nothing
 
