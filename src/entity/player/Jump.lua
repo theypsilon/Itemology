@@ -61,10 +61,7 @@ end
 function Player:reDoubleJump()
     local wjump = self.tasks.callbacks.walljumping
 
-    if wjump then
-        wjump:exit()
-        wjump:update()
-    end
+    if wjump then wjump:exit() end
 
     local jumping = 
         self.tasks.callbacks.jumping or
@@ -73,10 +70,7 @@ function Player:reDoubleJump()
     if jumping and jumping.cur == 2 and jumping.state.rejump then
         local djump = self.tasks.callbacks.djumping
         
-        if djump then
-            djump:exit()
-            djump:update()
-        end
+        if djump then djump:exit() end
         jumping:next('rejump')
     end
 end

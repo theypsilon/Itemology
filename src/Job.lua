@@ -13,6 +13,7 @@ function Chain:exit()
     self.finished = true
     self.fall     = true 
     self.state    = nil
+    if not self.running then self:update() end
 end
 
 function Chain:next(key, fall) 
@@ -20,9 +21,10 @@ function Chain:next(key, fall)
     self.finished = true
     self.continue = key and key or (self.cur + 1)
     self.fall     = fall
+    if not self.running then self:update() end
 end
 
-function Chain:fallthrough(key) self:next (key, true) end
+function Chain:fallthrough(key) return self:next(key, true) end
 
 function Chain:free(key) 
     if is_table(key) then for _, k in pairs(key) do self:free(k) end return end
@@ -61,7 +63,9 @@ function Chain:update()
 end
 
 function Chain:__call()
-    local  ret = self.job(self)
+    self.running = true
+    local  ret   = self.job(self)
+    self.running = nil
     self:update()
     return ret
 end
