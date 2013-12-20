@@ -5,8 +5,7 @@ local abs = math.abs
 local Player = {}
 
 function Player:setSingleJump()
-    if  self.tasks.callbacks.jumping or 
-        self.walltouch or
+    if  self.tasks.callbacks.jumping or
         not self:onGround() then return end
 
     self.tasks:set('jumping', getSingleJumpStateMachine())
@@ -19,7 +18,6 @@ end
 
 function Player:setDoubleJump()
     if  self.tasks.callbacks.jumping or 
-        self.walltouch or
         not self:onGround() then return end
 
     self.tasks:set('jumping', self:getDoubleJumpStateMachine())
@@ -46,8 +44,7 @@ function Player:getDoubleJumpStateMachine(djumping)
         end
 
         if jump(self.keyJump) and not djump then 
-            self:doDoubleJump()
-            self.lastwalljump = nil
+            if self:doDoubleJump() then self.lastwalljump = nil end
             djump = true
         end
     end)
@@ -84,7 +81,6 @@ function Player:setSpaceJump()
     if not self:usePower('sjump') then return end
 
     if  self.tasks.callbacks.jumping or 
-        self.walltouch or
         not self:onGround() then return end
 
     local def = self.moveDef
@@ -131,9 +127,6 @@ function Player:moveWallJump(fromJumping)
         self.lastwalljump ~= initial_touch and
         not self:onGround()
     then
-
-        local prevSetJump = self.setJump 
-
         local ws = self.moveDef.wallSlidingSpeed
 
         local jump = Job.bistate()
@@ -217,6 +210,8 @@ function Player:doFalconJump()
         self.move = nil
         self.body:setGravityScale(gravity)
     end)
+
+    return true
 end
 
 
@@ -249,6 +244,8 @@ function Player:doKirbyJump(    )
         if self:onGround() or step > time then c:exit() end
         if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
     end).last = cadence
+
+    return true
 end
 
 function Player:doTeleportJump()
@@ -279,6 +276,8 @@ function Player:doTeleportJump()
 
     self.pos:set(tx, ty)
     self.body:setLinearVelocity(vx, 0)
+
+    return true
 end
 
 local function movePeach(self)
@@ -312,6 +311,8 @@ function Player:doPeachJump()
             c:next(1)  
         end
     end)
+
+    return true
 end
 
 function Player:doDixieJump()
@@ -339,6 +340,8 @@ function Player:doDixieJump()
             self.body:setGravityScale(gravity)
         end
     end)
+
+    return true
 end
 
 function Player:doStandardDoubleJump(free)
@@ -350,6 +353,8 @@ function Player:doStandardDoubleJump(free)
     local vx = self.dx*abs(vx)
     if vx > def.djumpMaxVx then vx = def.djumpMaxVx end
     self.body:setLinearVelocity(vx, -def.djumpUp)
+
+    return true
 end
 
 return Player

@@ -6,9 +6,6 @@ local abs     = math.abs
 local Player = {}
 
 function Player:_setInitialMove(p)
-    self.jumpBackup   = self.setDoubleJump
-    self.setJump      = self.setDoubleJump
-    self.doDoubleJump = self.doPeachJump
     --self.moveLateral  = nothing
     --self.moveVertical = nothing
 end

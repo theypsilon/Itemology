@@ -9,35 +9,7 @@ function Chain:_init(f, key)
     self.cur   = is_number(key) and key or 0
 end
 
-local function set_last_job(self)
-    if self.finaljob then 
-        self.job      = self.finaljob
-        self.finaljob = nil
-        self.finished = nil
-    else 
-        self.job = nothing 
-    end
-end
-
-local function update_chain(self)
-    if self.finished then 
-        if self.state then
-            
-            if is_number(self.continue) then self.cur = self.continue end
-
-            self.job  = self.state[self.continue]
-
-            if not self.job then set_last_job(self) else self.finished = nil end
-
-            if self.finished then return end
-
-            if  self.fall then
-                self.fall = nil
-                return self:__call()
-            end
-        else set_last_job(self) end
-    end
-end
+local update_chain
 
 function Chain:exit() 
     self.finished = true
@@ -69,7 +41,48 @@ function Chain:__call()
     return ret
 end
 
-local function merge(self, c)
+local function set_last_job(self)
+    if self.finaljob then 
+        self.job      = self.finaljob
+        self.finaljob = nil
+        self.finished = nil
+    else 
+        self.job = nothing 
+    end
+end
+
+function update_chain(self)
+    if self.finished then 
+        if self.state then
+            
+            if is_number(self.continue) then self.cur = self.continue end
+
+            self.job  = self.state[self.continue]
+
+            if not self.job then set_last_job(self) else self.finished = nil end
+
+            if self.finished then return end
+
+            if  self.fall then
+                self.fall = nil
+                return self:__call()
+            end
+        else set_last_job(self) end
+    end
+end
+
+local merge
+
+function Chain:after(f, key)
+    if is_table(f) and f.state then return merge(self, f) end
+
+    assert(is_callable(f))
+    self.state[key and key or (#self.state + 1)] = f
+
+    return self
+end
+
+function merge(self, c)
     assert(c.state)
 
     for k,v in pairs(c.state) do 
@@ -85,15 +98,6 @@ end
 function Chain:with (key, f)
     assert(is_string(key), 'wrong key')
     return self:after(f, key)
-end
-
-function Chain:after(f, key)
-    if is_table(f) and f.state then return merge(self, f) end
-
-    assert(is_callable(f))
-    self.state[key and key or (#self.state + 1)] = f
-
-    return self
 end
 
 function Chain:finally(f)
@@ -166,12 +170,12 @@ function Job.interval(f, initial, final, key)
     return run
 end
 
-function Job.bistate(semicycles, forever)
+function Job.bistate(semicycles)
     local i, semicycles = 0, semicycles or 2
     assert(is_positive(semicycles), tostring(semicycles))
     return function(state) --assert(is_boolean(state), type(state))
         if state == (i %2 == 1) then i = i + 1 end
-        if i == semicycles then i = forever and 0 or i return true end
+        return i == semicycles
     end
 end
 

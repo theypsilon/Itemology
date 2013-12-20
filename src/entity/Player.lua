@@ -37,7 +37,7 @@ function Player:_init(level, def, p)
         end, 40)
     end
 
-    self.hp = self.moveDef.hp
+    self.hp = self.moveDef.hitpoints
     self.damage = {}
     Text:debug(self, 'hp')
 end

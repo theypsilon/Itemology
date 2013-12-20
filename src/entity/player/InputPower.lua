@@ -40,6 +40,17 @@ function Player:_setInput()
     end)    
 end
 
+function Player:usePower(key)
+    local  use = self.power[key]
+    if not use or use == 0 then  return false end
+    if use > 0 then 
+        use = use - 1
+        self.power[key] = use
+        if use == 0 then self:selectNextJumpPower() end
+    end
+    return true
+end
+
 local power_type = {
     djump  = {'pow_jump', 'd', 'doStandardDoubleJump'},
     pjump  = {'pow_jump', 'd', 'doPeachJump'},
@@ -51,38 +62,17 @@ local power_type = {
     nojump = {'none'    , 's', 'setDoubleJump'}
 }
 
-local function setSingleJump(self, name)
-    self.tasks:set('singlejump', Job.chain(function(c)
-        if self.setJump == self.setDoubleJump then
-            self.setJump = self[name]
-            c:exit()
-        end
-    end))
-end
-
-local function setupJump(self, type)
-    if not table.empty(table.filter(power_type, 
-        function(v) return self[v[3]] == self.setJump end)) 
-    then
-        self.setJump = self.setDoubleJump
-    end
-
-    local jump_cat = power_type[type][2]
-
-    if jump_cat == 'd' then
-        self.doDoubleJump = self[power_type[type][3]]
-    elseif jump_cat == 's' then
-        self.setJump = self[power_type[type][3]]
-    end
-
-end
+local setupJump
 
 function Player:_setPower()
+    setupJump(self, 'nojump')
     self.setSpecial = self.setYoshiSpecial
     self.power = table.map( table.filter(power_type, 
                                 function(v) return v[1] == 'pow_jump' end), 
                                     function(v, k) return 0, k end)
-    self.pow_jump = false
+
+    self.pow_jump, self.pow_action, self.pow_special = false, false, false
+
     for k,v in pairs(power_type) do
         if v[1] == 'pow_jump' then 
             Text:debug(self.power, k, nil, nil, function(v)
@@ -91,6 +81,13 @@ function Player:_setPower()
         end
     end
     Text:debug(self, 'pow_jump')
+end
+
+function Player:setupPower(power)
+    local power_nature = power_type[power][1]
+    if power_nature == 'pow_jump' then
+        setupJump(self, power)
+    end
 end
 
 function Player:findPower(o)
@@ -103,8 +100,22 @@ function Player:findPower(o)
     self.power[o.power] = o.charges + (o.add and self.power[o.power] or 0)
 end
 
-function Player:setupPower(power)
-    setupJump(self, power)
+function setupJump(self, ptype)
+
+    ptype = power_type[ptype]
+
+    local jump_cat, func_name = ptype[2], ptype[3]
+
+    if      jump_cat == 'd'  then
+
+        self.setJump = self.setDoubleJump
+        self.doDoubleJump = self[func_name]
+
+    elseif  jump_cat == 's'  then
+
+        self.setJump = self[func_name]
+
+    else error 'what do we have here??' end
 end
 
 function Player:selectNextJumpPower()
@@ -133,17 +144,6 @@ function Player:selectNextJumpPower()
     local key = cur and table.flip(powers)[cur] or 1
     self.pow_jump = key == #powers and powers[1] or powers[key + 1]
     self:setupPower(self.pow_jump)
-end
-
-function Player:usePower(key)
-    local  use = self.power[key]
-    if not use or use == 0 then  return false end
-    if use > 0 then 
-        use = use - 1
-        self.power[key] = use
-        if use == 0 then self:selectNextJumpPower() end
-    end
-    return true
 end
 
 return Player

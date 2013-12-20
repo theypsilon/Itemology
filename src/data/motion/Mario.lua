@@ -1,7 +1,7 @@
 return {
     --update              = true,
 
-    hp                  = 3,
+    hitpoints           = 3,
 
     -- MOTION
 
