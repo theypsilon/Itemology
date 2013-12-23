@@ -190,14 +190,14 @@ function Player:doFalconJump()
 
     local function try_cancel(c)
         if self.keyJump == (cancel %2 == 1) then cancel = cancel + 1 end
-        if cancel == cancelled then c:fallthrough(4) end
+        if cancel == cancelled then c:fallthrough(3) end
     end
 
     self.tasks:set('djumping', Job.interval(function(c)
         x, y = x + self.dx, y + self.dy
         try_cancel(c)
     end, 0, charge_t)):after(function(c)
-        if abs(x) < charge_m and abs(y) < charge_m then return c:next(4) end
+        if abs(x) < charge_m and abs(y) < charge_m then return c:next(3) end
         x, y = x * charge_f, y * charge_f
         cancel = 0
         c:next()

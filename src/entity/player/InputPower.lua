@@ -59,7 +59,7 @@ local power_type = {
     tjump  = {'pow_jump', 'd', 'doTeleportJump'},
     kjump  = {'pow_jump', 'd', 'doKirbyJump'},
     sjump  = {'pow_jump', 's', 'setSpaceJump'},
-    nojump = {'none'    , 's', 'setDoubleJump'}
+    nojump = {'none'    , 'd', 'doStandardDoubleJump'}
 }
 
 local setupJump

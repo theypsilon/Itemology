@@ -54,7 +54,7 @@ function Player:tick(dt)
     self:monitorTasks()
     self:move()
 
-    if self.y > self.limit_map_y then self:remove() end
+    if self.y > self.limit_map_y + 100 then self:remove() end
 
     self:applyDamage()
 

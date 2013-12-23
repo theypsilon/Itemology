@@ -21,9 +21,9 @@ if not config.dev.sanitychecks then
     config.dev.reloaddata     = true
 end
 
-config.dev.debug_physics = false
+config.dev.debug_physics = true
 
-config.start = 'stage1'
+config.start = 'stage3'
 
 config.fixedticks = 1 / 60
 
