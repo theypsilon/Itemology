@@ -29,12 +29,13 @@ local function onEnd(self, e)
        (dir * self.travelling[e] < 0 and     self.requesting[e]) 
     then
         local exit = e.level.entityByName()[self.link][1]
-        local x, y = e.x - self.x, e.y - self.y
+        local x, y
+        local offset = self.vertical and (e.y - self.y) or (e.x - self.x)
         if self.vertical then
             x = exit.x
-            y = exit.y + y
+            y = exit.y + offset
         else
-            x = exit.x + x
+            x = exit.x + offset
             y = exit.y
         end
         e.body:setTransform(x, y)
