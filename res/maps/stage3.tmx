@@ -46,5 +46,19 @@
    </properties>
    <polyline points="0,0 0,816"/>
   </object>
+  <object name="portal5" type="Object" x="144" y="608">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal6"/>
+   </properties>
+   <polyline points="0,0 -48,0"/>
+  </object>
+  <object name="portal6" type="Object" x="96" y="560">
+   <properties>
+    <property name="class" value="Portal"/>
+    <property name="link" value="portal5"/>
+   </properties>
+   <polyline points="0,0 0,48"/>
+  </object>
  </objectgroup>
 </map>
