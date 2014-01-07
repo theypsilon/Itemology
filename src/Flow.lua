@@ -70,25 +70,26 @@ function flow.run(config, starter)
 	flow.thread = MOAIThread.new ()
 	flow.thread:run ( 
 		function ()
-			local lastTime, curTime, fixed = MOAISim.getElapsedTime(), nil, config.fixedticks
-
-			local time_tick = is_positive(fixed) and 
-				function()
-					return fixed
-				end or function()
-					curTime  = MOAISim.getElapsedTime()
-					local dt = curTime - lastTime
-					lastTime = curTime
-					return dt
-				end
+			local lastTime, now, unprocessed, fixed = 
+				MOAISim.getElapsedTime(), 
+				nil, nil, config.fixedticks
 
 			while true do
-			  
-				coroutine.yield ()		
+
+				coroutine.yield()
 
 				if scene then
-					scene:update( time_tick() )
-					--for _,v in pairs(Layer) do v:clearTemp() end
+					now = MOAISim.getElapsedTime()
+
+					unprocessed = (now - lastTime) / fixed
+					
+					while unprocessed >= 1 do
+						scene:update( fixed )
+						unprocessed  = unprocessed - 1
+					end
+
+					lastTime = now
+
 					scene:draw()
 				end
 			end				

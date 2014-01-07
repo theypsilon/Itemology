@@ -104,6 +104,7 @@ function Chain:finally(f)
     assert(is_callable(f))
     assert(not self.finaljob)
     self.finaljob = function(c) c:next() return f() end
+    return self
 end
 
 function Chain.is(o) return getmetatable(o) == Chain end

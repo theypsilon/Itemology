@@ -17,7 +17,8 @@ local function onTick(self)
 end
 
 local function onBegin(self, e)
-    local dir = get_component(self.vertical, e)
+    local dir = (self.dir and not self.requesting[e]) 
+        and self.dir or get_component(self.vertical, e)
     self.travelling[e] = dir > 0 and 1 or -1
 end
 
@@ -29,9 +30,15 @@ local function onEnd(self, e)
        (dir * self.travelling[e] < 0 and     self.requesting[e]) 
     then
         local exit = e.level.entityByName()[self.link][1]
-        local x, y
+
         local offset = self.vertical and (e.y - self.y) or (e.x - self.x)
-        if self.vertical then
+        if exit.vertical ~= self.vertical then
+            offset = -offset
+            local vx, vy = e.body:getLinearVelocity()
+            e.body:setLinearVelocity(vy, vx)
+        end
+        local x, y
+        if exit.vertical then
             x = exit.x
             y = exit.y + offset
         else
@@ -39,7 +46,10 @@ local function onEnd(self, e)
             y = exit.y
         end
         e.body:setTransform(x, y)
-        exit.requesting[e] = true
+
+        if not self.requesting[true] then
+            exit.requesting[e] = true
+        end
     end
 
     self.requesting[e] = nil
@@ -72,6 +82,13 @@ return function(d,p,k)
     self.processing = {}
     self.travelling = {}
     self.requesting = {}
+
+    if self.dir then 
+        self.dir = self.dir == 'right' and 1 or self.dir == 'left' and -1 or
+                   self.dir == 'down'  and 1 or self.dir == 'up'   and -1 or
+                   tonumber(self.dir)
+        assert(self.dir == 1 or self.dir == -1, self.dir)
+    end
 
     body.fixtures.area:setCollisionHandler(function(p, fa, fb, a)
         if fb.name ~= 'area' then return end

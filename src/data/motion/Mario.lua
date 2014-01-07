@@ -1,5 +1,5 @@
 return {
-    --update              = true,
+    update              = true,
 
     hitpoints           = 3,
 
@@ -42,16 +42,23 @@ return {
     fjumpMinChargeValue = 10,
     fjumpChargeFactor   = 1.3,
 
-    kjumpCadenceTime    = 20,
+    kjumpCadenceTime    = 15,
     kjumpFullTime       = 200,
     kjumpFallSpeedLimit = 30,
 
     tjumpDiagonalFactor = 65,
     tjumpStraightFactor = 110,
+    tjumpFreezing       = math.huge,
 
     pjumpGravity        = 0,
     pjumpFlyTime        = 60,
+    pjumpRepeat         = math.huge,
 
-    xjumpGravity        = 0.3,
-    xjumpFallSpeedLimit = 30,
+    xjumpJumpSpeed      =  305,
+    xjumpJumpTime       =    3,
+    xjumpJumpVertLimit  =   30,
+    xjumpRejumpVyLimit  = math.huge,
+    xjumpRejumpFalling  = false,
+    xjumpGravity        =  0.3,
+    xjumpFallSpeedLimit =   30,
 }

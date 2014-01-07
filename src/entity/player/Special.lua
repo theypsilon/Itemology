@@ -55,7 +55,7 @@ function Player:setYoshiSpecial()
     end)):after(function(c)
         local radians = rad(angle)
 
-        self:triggerBullet{look * cos(radians), -sin(radians)}
+        self:doSpecialShot(look * cos(radians), -sin(radians))
 
         c:next()
     end):finally(function()
@@ -64,6 +64,10 @@ function Player:setYoshiSpecial()
         self.setAction   = shoot
         prop:clear() 
     end)
+end
+
+function Player:doSpecialShot(dirx, diry)
+    self:triggerBullet{dirx, diry}
 end
 
 return Player

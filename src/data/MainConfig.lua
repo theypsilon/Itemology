@@ -15,15 +15,10 @@ config.screen.fsaa       = 0     -- The number of FSAA-buffers (number)
 config.world.width       = 568
 config.world.height      = 320
 
-config.dev.sanitychecks   = timeStart % 10 == 0
-if not config.dev.sanitychecks then
-    config.dev.autoreloaddata = false
-    config.dev.reloaddata     = true
-end
+config.dev.sanitychecks  = timeStart % 10 == 0
+config.dev.debug_physics = false
 
-config.dev.debug_physics = true
-
-config.start = 'stage3'
+config.start = 'stage1'
 
 config.fixedticks = 1 / 60
 

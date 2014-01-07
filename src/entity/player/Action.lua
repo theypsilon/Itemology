@@ -20,8 +20,8 @@ function Player:setAction()
     end
 end
 
-function Player:triggerBullet(dir)
-    local scalar = 400
+function Player:triggerBullet(dir, scalar)
+    scalar = scalar or 400
     local speed = {dir[1] * scalar, dir[2] * scalar}
 
     self.level: add(

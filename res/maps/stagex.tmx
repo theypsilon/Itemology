@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="16" tileheight="16">
+ <properties>
+  <property name="script" value="stagex"/>
+ </properties>
+ <tileset firstgid="1" name="plattform3" tilewidth="16" tileheight="16">
+  <image source="plattform3.png" width="256" height="256"/>
+ </tileset>
+ <layer name="platforms" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt10EKgCAQBVDB+9+5RasWUUwj/eI9cCMIOp8RHQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgN9/eAAfyyFLJYxbG2foV81/29Cx/qkUCeWS5U8+ru4c++iOLPLJ0vK/oU82DNSp/CXkAAABArw2f+wC+
+  </data>
+ </layer>
+ <objectgroup name="objects" width="100" height="100">
+  <object name="start" type="Player" x="64" y="1408"/>
+  <object name="enemy" type="Goomba" x="320" y="1296" width="16" height="16"/>
+ </objectgroup>
+</map>

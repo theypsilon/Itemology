@@ -29,6 +29,10 @@ function Player:_setInput()
         function() self.special = true;  self:setSpecial() end,
         function() self.special = false; self:setSpecial() end)
 
+    -- plus
+    Input.bindAction('b4', function() self.keyPlus = true  end,
+                           function() self.keyPlus = false end)
+
     -- select jump
     Input.bindAction('s1', function() self:selectNextJumpPower() end)
 

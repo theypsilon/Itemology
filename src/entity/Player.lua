@@ -67,7 +67,7 @@ function Player:monitorTasks()
     local i = 0
     Text:console(table.map(self.tasks.callbacks, function(v, k)
         i = i + 1
-        return {k, v.cur}, i
+        return {k, is_object(v) and v.cur}, i
     end))
     --dump(table.keys(self.tasks.callbacks))
 end

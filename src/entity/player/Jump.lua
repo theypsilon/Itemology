@@ -2,6 +2,8 @@ local Tasks, Scenes, Text, Data, Job, Physics; import()
 
 local abs = math.abs
 
+local function sig(value) return value < 0 and -1 or 1 end
+
 local Player = {}
 
 function Player:setSingleJump()
@@ -60,9 +62,7 @@ function Player:reDoubleJump()
 
     if wjump then wjump:exit() end
 
-    local jumping = 
-        self.tasks.callbacks.jumping or
-        self.tasks.callbacks.falling
+    local jumping = self:convertFallingToJumping()
     
     if jumping and jumping.cur == 2 and jumping.state.rejump then
         local djump = self.tasks.callbacks.djumping
@@ -70,6 +70,16 @@ function Player:reDoubleJump()
         if djump then djump:exit() end
         jumping:next('rejump')
     end
+end
+
+function Player:convertFallingToJumping()
+    local jumping = self.tasks.callbacks.jumping
+
+    if not jumping and self.tasks.callbacks.falling then 
+        jumping = self.tasks:set('jumping', self.tasks:unset('falling'))
+    end
+
+    return jumping
 end
 
 function Player:doJump(step)
@@ -137,6 +147,8 @@ function Player:moveWallJump(fromJumping)
             if touch ~= initial_touch or self:onGround() then return c:next() end
 
             if jump(self.keyJump) then
+                --self:convertFallingToJumping()
+
                 local def = self.moveDef
                 self.body:setLinearVelocity(
                     -touch * ( def.wjumpVxPlus + abs(dx) * def.wjumpVxBase ),
@@ -277,6 +289,26 @@ function Player:doTeleportJump()
     self.pos:set(tx, ty)
     self.body:setLinearVelocity(vx, 0)
 
+    local freezing = self.moveDef.tjumpFreezing
+
+    if freezing > 0 then
+        local gravity = self.body:getGravityScale()
+
+        self.body:setGravityScale(0)
+        self.moveVertical = nothing
+
+        self.tasks:set('djumping', Job.chain(function(c)
+            if not self.keyJump or freezing <= 0 then c:exit() end
+            self.pos:set(tx, ty)
+            freezing = freezing - 1
+        end))
+
+        :finally(function()
+            self.body:setGravityScale(gravity)
+            self.moveVertical = nil
+        end)
+    end
+
     return true
 end
 
@@ -294,6 +326,7 @@ function Player:doPeachJump()
     self.move = movePeach
 
     local fly = self.moveDef.pjumpFlyTime
+    local rep = self.moveDef.pjumpRepeat
 
     self.tasks:set('djumping', Job.interval(function(c)
         if not self.keyJump then c:next() end
@@ -303,11 +336,12 @@ function Player:doPeachJump()
             self.body:setGravityScale(gravity)
         end
         if self:onGround()               then return c:next() end
-        if self.keyJump and c.ticks < (fly - 1) then
+        if self.keyJump and c.ticks < (fly - 1) and rep > 0 then
             gravity = self.body:getGravityScale()
             self.body:setGravityScale(0)
             self.body:setLinearVelocity(self.vx, 0)
             self.move = movePeach
+            rep = rep - 1
             c:next(1)  
         end
     end)
@@ -320,19 +354,33 @@ function Player:doDixieJump()
 
     local gravity = self.body:getGravityScale()
 
-    self.body:setGravityScale(self.moveDef.xjumpGravity * gravity)
     self.body:setLinearVelocity(self.vx, 0)
     self.move = movePeach
 
     local v = self.moveDef.xjumpFallSpeedLimit
+    local speed, vxLimit = self.moveDef.xjumpJumpSpeed, 
+                           self.moveDef.xjumpJumpVertLimit
 
-    self.tasks:set('djumping', Job.chain(function(c)
+    local state = 
+
+    self.tasks:set('djumping', Job.interval(function()
+        local vx = abs(self.vx) < vxLimit and self.vx or sig(self.vx)*vxLimit
+        self.body:setLinearVelocity(vx, -speed)
+    end, 0, self.moveDef.xjumpJumpTime)):after(function(c)
+        if self:onGround() or self:isWounded() then c:exit() end
+        if abs(self.vx) > vxLimit then
+            self.body:setLinearVelocity(vxLimit * sig(self.vx), self.vy)
+        end
+        if self.vy > v then 
+            self.body:setGravityScale(self.moveDef.xjumpGravity * gravity)
+            c:fallthrough () end
+    end):after(function(c)
         if not self.keyJump  or 
             self:onGround () or 
             self:isWounded() then c:exit() end
 
         if self.vy > v then self.body:setLinearVelocity(self.vx, v ) end
-    end))
+    end)
 
     :finally(function()
         if self.move == movePeach then
@@ -340,6 +388,10 @@ function Player:doDixieJump()
             self.body:setGravityScale(gravity)
         end
     end)
+
+    if (self.vy > self.moveDef.xjumpRejumpVyLimit) or 
+       (not self.moveDef.xjumpRejumpFalling and self.tasks.callbacks.falling)
+    then state:next(3) end
 
     return true
 end
