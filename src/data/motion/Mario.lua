@@ -19,7 +19,7 @@ return {
 
     -- JUMPS
 
-    jumpImp             = {250, 0, 0, 0, 50, 50, 50}, -- progressive jump impulse
+    jumpImp             = {250, 00, 20, 20, 40, 20, 20, 20}, -- progressive jump impulse
 
     wjumpVxBase         = 150, -- wall jump lateral base velocity
     wjumpVxPlus         = 25, -- wall jump additional velocity if move keys are pressed

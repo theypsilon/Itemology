@@ -2,7 +2,7 @@ local Animation, Physics, Data; import()
 local Entity, Position; import 'entity'
 
 local Bullet = class(Entity)
-function Bullet:_init(level, def, p, speed, parent)
+function Bullet:_init(level, def, p, speed, parent, onhit)
     Entity._init(self, level, p.x, p.y)
     self.lx, self.ly = level.map:getBorder()
 
@@ -14,17 +14,21 @@ function Bullet:_init(level, def, p, speed, parent)
 
     self.parent = parent
 
-    self.body.fixtures['area']:setCollisionHandler(function(p, fa, fb, a)
-        local impactBody = fb:getBody()
-        -- if impactBody.structure or 
-        --     (impactBody.parent and impactBody.parent ~= self.parent) 
-        -- then
-        if not impactBody.sensor then self.tick = self.remove end
-        --end
-    end, MOAIBox2DArbiter.BEGIN)
+    self.body.fixtures['area']:setCollisionHandler(
+        Bullet.onHit(onhit), MOAIBox2DArbiter.POST_SOLVE)
 
     self.pos = Position(self.body)
     self.pos:set(p.x, p.y)
+end
+
+function Bullet.onHit(onhit)
+    onhit = onhit or function(_, impact) return is_nil(impact.sensor) end
+    assert(is_function(onhit), 'onhit has to call a function')
+    return function(p, fa, fb, a)
+        local self = fa:getBody().parent
+        local impact = fb:getBody()
+        if onhit(self, impact, a) then self.tick = self.remove end
+    end
 end
 
 function Bullet:tick()

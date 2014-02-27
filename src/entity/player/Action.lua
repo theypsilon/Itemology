@@ -20,13 +20,20 @@ function Player:setAction()
     end
 end
 
-function Player:triggerBullet(dir, scalar)
+function Player:triggerBullet(dir, scalar, onhit)
     scalar = scalar or 400
     local speed = {dir[1] * scalar, dir[2] * scalar}
 
     self.level: add(
                     Bullet(
-                        self.level, Data.animation.Bullet, self, speed, self))
+                        self.level, 
+                        Data.animation.Bullet, 
+                        self, 
+                        speed, 
+                        self, 
+                        onhit
+                    )
+    )
 end
 
 return Player
