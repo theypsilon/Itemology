@@ -10,6 +10,8 @@ local function calculate_current_dirpath()
     return src
 end
 
+if jit then print(jit.version) end
+
 project = calculate_current_dirpath()
 
 require(project .. 'src.Itemology')
