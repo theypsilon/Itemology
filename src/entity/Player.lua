@@ -19,9 +19,7 @@ function Player:_init(level, def, p)
 
     self.tasks = Tasks()
 
-    self.pos = Position(self.body)
-    self.pos:set(p.x, p.y)
-
+    self.body:setTransform(p.x, p.y)
     self.prop:setPriority(5000)
 
     self.player = true
@@ -46,7 +44,7 @@ end
 
 function Player:tick(dt)
 
-    self. x, self. y  = self.pos:get()
+    self.pos.x, self.pos.y  = self.body:getPosition()
     self.vx, self.vy  = self.body:getLinearVelocity()
     self.dx           = -1 * self.dir.left + self.dir.right
     self.dy           = -1 * self.dir.up   + self.dir.down
@@ -56,7 +54,7 @@ function Player:tick(dt)
     self:monitorTasks()
     self:move()
 
-    if self.y > self.limit_map_y + 100 then self:remove() end
+    if self.pos.y > self.limit_map_y + 100 then self:remove() end
 
     self:applyDamage()
 
@@ -154,8 +152,8 @@ function Player:isWounded()
 end
 
 function Player:reaction(enemy, attacker)
-    local ex, ey = enemy.x, enemy.y
-    local mx, my = self.pos:get()
+    local ex, ey = enemy.pos.x, enemy.pos.y
+    local mx, my =  self.pos.x,  self.pos.y
 
     local dx, dy = ex - mx, ey - my
     local max    = math.sqrt(dx*dx + dy*dy)

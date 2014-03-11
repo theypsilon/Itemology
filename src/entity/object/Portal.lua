@@ -31,7 +31,8 @@ local function onEnd(self, e)
     then
         local exit = e.level.entityByName()[self.link][1]
 
-        local offset = self.vertical and (e.y - self.y) or (e.x - self.x)
+        local offset = self.vertical and 
+            (e.pos.y - self.pos.y) or (e.pos.x - self.pos.x)
         if exit.vertical ~= self.vertical then
             offset = -offset
             local vx, vy = e.body:getLinearVelocity()
@@ -39,11 +40,11 @@ local function onEnd(self, e)
         end
         local x, y
         if exit.vertical then
-            x = exit.x
-            y = exit.y + offset
+            x = exit.pos.x
+            y = exit.pos.y + offset
         else
-            x = exit.x + offset
-            y = exit.y
+            x = exit.pos.x + offset
+            y = exit.pos.y
         end
         e.body:setTransform(x, y)
 
@@ -99,6 +100,6 @@ return function(d,p,k)
 
     self.tick = onTick
 
-    self.x, self.y = p.x, p.y
+    self.pos = {x = p.x, y = p.y}
     return self
 end

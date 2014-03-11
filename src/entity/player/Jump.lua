@@ -278,15 +278,19 @@ function Player:doTeleportJump()
         self.moveDef.tjumpDiagonalFactor or
         self.moveDef.tjumpStraightFactor
 
-    local tx, ty = self.x + (x * factor), self.y + (y * factor)
+    local tx, ty = self.pos.x + (x * factor), self.pos.y + (y * factor)
 
     self.body:setActive(false)
-    local hit, hx, hy, fix = Physics.world:getRayCast(self.x, self.y, tx, ty)
+    local hit, hx, hy, fix = Physics.world:getRayCast(
+        self.pos.x, 
+        self.pos.y, 
+        tx, ty
+    )
     self.body:setActive(true )
 
     if hit then tx, ty = hx - (x*10), hy - (y*10) end
 
-    self.pos:set(tx, ty)
+    self.body:setTransform(tx, ty)
     self.body:setLinearVelocity(vx, 0)
 
     local freezing = self.moveDef.tjumpFreezing
@@ -299,7 +303,7 @@ function Player:doTeleportJump()
 
         self.tasks:set('djumping', Job.chain(function(c)
             if not self.keyJump or freezing <= 0 then c:exit() end
-            self.pos:set(tx, ty)
+            self.body:setTransform(tx, ty)
             freezing = freezing - 1
         end))
 

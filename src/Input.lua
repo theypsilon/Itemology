@@ -77,6 +77,8 @@ function input.bindActionToKeyCode( action, keyCode )
 end
 
 local function onKeyboardEvent ( keyCode, down )
+	if state.keyboardStatus[keyCode] == down then return end
+	
 	local callback  = state.keyboardCallbacks[down][keyCode]
 	if    callback ~= nil then 
 		  callback()

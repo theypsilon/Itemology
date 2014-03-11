@@ -10,6 +10,8 @@ local function Object(level, definition, p, layer, k)
         o.body.parent = o
     end
 
+    if not o.pos then o.pos = {x = o.x, y = o.y} end
+
     o.isobject = true
 
     if not o.tick then o.tick = nothing end

@@ -7,12 +7,7 @@ end
 function Entity:_init(level, x, y)
     validate(level, x, y)
 
-	self.x = x or 0
-	self.y = y or 0
-    self.size = {x = 0, y = 0}
-    self.last = {x = 0, y = 0}
-    self.zindex = 0
-    self.currSp = nil
+	self.pos = {x = x, y = y}
 	self._ticks = 0
     self.level  = level
     self.map    = level.map
@@ -25,8 +20,6 @@ end
 function Entity:remove()
     if self.hurt then self.hurt = function() end end
     self.removed = true
-
-    print(self._name)
 end
 
 function Entity:draw()	

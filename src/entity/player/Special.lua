@@ -33,7 +33,7 @@ function Player:setYoshiSpecial()
 
     local angle, dir = -20, 1.8
     self.tasks:set('special', Job.chain(function(c)
-        local x, y = self.x, self.y
+        local x, y = self.pos.x, self.pos.y
 
         angle = angle + dir
         
@@ -72,7 +72,7 @@ function Player:doSpecialShot(dirx, diry)
     self:triggerBullet({dirx, diry}, nil, function(bullet, impact, a)
         if impact.structure then
             local nx, ny = a:getContactNormal()
-            local x ,  y = bullet.pos:get()
+            local x ,  y = bullet.pos.x, bullet.pos.y
 
             local hit, hx, hy = Physics.world:getRayCast(
                 x, y, 

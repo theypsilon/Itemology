@@ -29,7 +29,7 @@ return function(level, camera)
     limit.x = limit.x + 16
     limit.w = limit.w - 16
 
-    camera._limit = table.copy(visible)
+    camera._limit   = table.copy(visible)
     camera._limit.h = camera._limit.h - 8
 
     visible.y = visible.y - 16
@@ -51,7 +51,7 @@ return function(level, camera)
     return Job.chain(function(c)
         main()
 
-        if not visible:contains(player) then 
+        if not visible:contains(player) then
             player.moveWallJump = wallJump
             player.setAction    = shoot
             player.setSpecial   = special

@@ -17,7 +17,7 @@ function ParticleAnimation:tick()
     Entity.tick(self)
     local changed, alive = self.animation:next()
     if not alive then self:remove() end
-    self.x, self.y = self.prop:getLoc()
+    self.pos.x, self.pos.y = self.prop:getLoc()
 end
 
 return ParticleAnimation

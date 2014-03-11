@@ -31,7 +31,7 @@ function Spawn:tick()
         self.offset = self.offset - 1
         if self.offset < 0 then self.offset = nil end
     elseif self._ticks % self.rate == 0 and self.num > 0 then
-        self.level:add(self.entity(self.level, self.definition, {x = self.x, y = self.y}))
+        self.level:add(self.entity(self.level, self.definition, self.pos))
         self.num = self.num - 1
     end
 

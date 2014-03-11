@@ -4,7 +4,11 @@ local Mob, Position; import 'entity'
 local WalkingEnemy = class(Mob)
 
 function WalkingEnemy:_init(level, definition, p)
-    Mob._init(self, level, p.x, p.y)
+    local pos = p.x and p or p.pos
+
+    if not pos then pos = {x = 100, y = 400} end
+
+    Mob._init(self, level, pos.x, pos.y)
 
     self.animation = Animation(definition.animation)
     self.prop      = self.animation.prop
@@ -13,12 +17,11 @@ function WalkingEnemy:_init(level, definition, p)
 
     self:_setListeners()
 
-    self.pos = Position(self.body)
-    self.pos:set(p.x, p.y)
+    self.body:setTransform(pos.x, pos.y)
 
     self.walkingenemy = true
 
-    self.initial_x, self.initial_y = p.x, p.y
+    self.initial_x, self.initial_y = pos.x, pos.y
 
     local _
     _, self.limit_map_y = level.map:getBorder()
@@ -54,15 +57,15 @@ end
 local abs = math.abs
 
 function WalkingEnemy:tick(dt)
-
+    self.pos.x, self.pos.y = self.body:getPosition()
     self.vx, self.vy  = self.body:getLinearVelocity()
 
     self:move(dt)
 
-    self.x, self.y = self.pos:get()
+    self.pos.x, self.pos.y = self.body:getPosition()
 
-    if self.y > self.limit_map_y then
-        self.pos:set(self.initial_x, self.initial_y)
+    if self.pos.y > self.limit_map_y then
+        self.body:setTransform(self.initial_x, self.initial_y)
         self.body:setLinearVelocity(0, 0)
     end
 
@@ -118,7 +121,7 @@ end
 function WalkingEnemy:hurtBy(rival)
     if rival._name == 'Player' then
         local P = require 'entity.particle.Animation'
-        self.level:add(P(self.level, Data.animation.Goomba, 'die', self))
+        self.level:add(P(self.level, Data.animation.Goomba, 'die', self.pos))
         self:remove()
     end
 end

@@ -17,8 +17,7 @@ function Bullet:_init(level, def, p, speed, parent, onhit)
     self.body.fixtures['area']:setCollisionHandler(
         Bullet.onHit(onhit), MOAIBox2DArbiter.POST_SOLVE)
 
-    self.pos = Position(self.body)
-    self.pos:set(p.x, p.y)
+    self.body:setTransform(p.x, p.y)
 end
 
 function Bullet.onHit(onhit)
@@ -36,11 +35,11 @@ function Bullet:tick()
     self.animation:next()
     self.body:setLinearVelocity(self.speed[1], self.speed[2])
 
-    local x, y = self.pos:get()
+    local x, y = self.body:getPosition()
     if x > self.lx or y > self.ly or x < 0 or y < 0 then
         self:remove()
     end
-    self.x, self.y = x, y
+    self.pos.x, self.pos.y = x, y
 end
 
 return Bullet

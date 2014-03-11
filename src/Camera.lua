@@ -80,7 +80,7 @@ local end_fix  = {x = -48, y = -24}
 local abs = math.abs
 function Camera:_calcCorner(index, length)
     local padding = self.padding[index]
-    local tloc    = self._target[index]
+    local tloc    = self._target.pos and self._target.pos[index] or self._target[index]
     local  loc    = self[index] or tloc
     local diff    = loc - tloc
 

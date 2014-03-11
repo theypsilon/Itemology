@@ -28,7 +28,7 @@ function Player:triggerBullet(dir, scalar, onhit)
                     Bullet(
                         self.level, 
                         Data.animation.Bullet, 
-                        self, 
+                        self.pos, 
                         speed, 
                         self, 
                         onhit

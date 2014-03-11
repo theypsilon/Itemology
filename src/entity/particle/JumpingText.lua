@@ -17,8 +17,12 @@ function JumpingText:_init(level, msg, x, y)
     self.text = Text:print(msg, x, y, style, nil, nil, Layer.main)
     self.text:setPriority(1000)
 
-    self.xa, self.ya, self.za = (rand()*2 -1)*0.3, (rand()*2 -1)*0.2, rand()*0.7 + 2
-    self.z = 2
+    self.jumping_values = {
+        xa = (rand()*2 -1)*0.3,
+        ya = (rand()*2 -1)*0.2,
+        za = rand()*0.7 + 2,
+        z  = 2
+    }
 end
 
 function JumpingText:tick()
@@ -26,15 +30,19 @@ function JumpingText:tick()
 
     if self._ticks > 60 then self:remove() end
 
-    self.x, self.y, self.z = self.x + self.xa, self.y + self.ya, self.z + self.za
-    if self.z < 0 then
-        self.z = 0
-        self.za = self.za * -.5
-        self.xa = self.xa *  .6
-        self.ya = self.ya *  .6
+    local val = self.jumping_values
+    local pos = self.pos
+
+    pos.x, pos.y, val.z = pos.x + val.xa, pos.y + val.ya, val.z + val.za
+    
+    if val.z < 0 then
+        val.z = 0
+        val.za = val.za * -.5
+        val.xa = val.xa *  .6
+        val.ya = val.ya *  .6
     end
-    self.za = self.za - .15
-    self.text:setLoc(self.x, self.y - self.z)
+    val.za = val.za - .15
+    self.text:setLoc(pos.x, pos.y - val.z)
 end
 
 function JumpingText:remove()

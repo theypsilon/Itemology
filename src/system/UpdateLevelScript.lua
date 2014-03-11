@@ -6,5 +6,7 @@ return SystemFactory.create(
 	
 	{'script', 'map'},
 
-	function(self, e) e.script() end
+	function(self, e) 
+		e.script() 
+	end
 )

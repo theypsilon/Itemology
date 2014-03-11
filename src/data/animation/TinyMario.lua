@@ -15,7 +15,7 @@ return {
         skid  = {'skid'},
         die   = function(animation, entity)
             local  body = require('Physics'):registerBody({option = 'dynamic'}, animation.prop)
-            local     e = entity.y
+            local     e = entity.pos.y
             local _,  l = entity.level.map:getBorder()
             local _,  y = body:getPosition()
             y = y + e

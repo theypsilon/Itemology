@@ -4,7 +4,7 @@ local UpdatePlayer = class(System)
 local Mob = require 'entity.Mob'
 
 function UpdatePlayer:requires()
-	return {'player'}
+	return {'player', 'dir'}
 end
 
 function UpdatePlayer:update(player, dt)

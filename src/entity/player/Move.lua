@@ -92,7 +92,7 @@ function Player:moveDoor()
             end)
         else
             local link = self.door.layer.objects[self.door.link]
-            if link then self.pos:set(link.x, link.y) end
+            if link then self.body:setTransform(link.x, link.y) end
         end
         self.dir.up = 0
     end
@@ -101,7 +101,7 @@ end
 local function move_on_wallhack(self)
     local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
     local vel = self.keyRun and 15 or 5
-    self.pos:set(self.pos.x + dx*vel, self.pos.y + dy*vel)
+    self.body:setTransform(self.pos.x + dx*vel, self.pos.y + dy*vel)
     self.body:setLinearVelocity(0, 0)
 end
 

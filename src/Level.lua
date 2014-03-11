@@ -52,14 +52,14 @@ function Level:add(entity)
     if entity.clear then error 'what are you doing bro' end
     if not entity.clear then entity.clear = clear_entity end
     self.entities[entity] = true
-    self:insertEntity(entity, self.map:toXYO(entity.x, entity.y))
+    self:insertEntity(entity, self.map:toXYO(entity.pos.x, entity.pos.y))
     self.entityByName = lazyLoadEntityByName(self)
     manager:add_entity(entity)
 end
 
 function Level:remove(entity)
     self.entities[entity] = nil
-    self:removeEntity(entity, self.map:toXYO(entity.x, entity.y))
+    self:removeEntity(entity, self.map:toXYO(entity.pos.x, entity.pos.y))
     self.entityByName = lazyLoadEntityByName(self)
     manager:remove_entity(entity)
 end
@@ -98,7 +98,8 @@ end
 
 function Level:tick(dt, xo, yo, x1, y1)
     for e,_ in pairs(self.entities) do
-        local ixo, iyo = self.map:toXYO(e.x, e.y)
+        local pos = e.pos
+        local ixo, iyo = self.map:toXYO(pos.x, pos.y)
         e:tick(dt)
         assert(type(ixo) == 'number')
         assert(type(iyo) == 'number')
@@ -108,7 +109,7 @@ function Level:tick(dt, xo, yo, x1, y1)
             self.entities[e] = nil
             self:removeEntity(e, ixo, iyo)
         else
-            local fxo, fyo = self.map:toXYO(e.x, e.y)
+            local fxo, fyo = self.map:toXYO(pos.x, pos.y)
             assert(type(fxo) == 'number')
             assert(type(fyo) == 'number')
             if fxo ~= ixo or fyo ~= iyo then
@@ -145,7 +146,7 @@ function Level:initEntities(layer)
         if v.x and v.y and v.type then
             local def = Data.entity[v.type]
             local e   = require(def.class)(self, def, v, layer, k)
-            if e then 
+            if e then
                 self:add(e) 
             end
         end

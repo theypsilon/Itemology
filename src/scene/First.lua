@@ -32,6 +32,7 @@ function scene:load(start, hp)
     local cameras   = {}
 
     manager:add_entity(player)
+    manager:add_entity(level)
     for e, _ in pairs(level.entities) do
         manager:add_entity(e)
     end
@@ -40,10 +41,10 @@ function scene:load(start, hp)
         if start.link then
             local link = level.map('objects')(start.link)
             if link and link.x and link.y then
-                player.pos:set(link.x, link.y)
+                player.body:setTransform(link.x, link.y)
             end
         elseif start.initx and start.inity then
-            player.pos:set(start.initx, start.inity)
+            player.body:setTransform(start.initx, start.inity)
         end
     end
 
