@@ -1,5 +1,5 @@
 local function gen_is_type(thetype)
-    return function(var) return type(var) == thetype end
+    return function(k, v) return type(v or k) == thetype end
 end
 
 local is_nil      = gen_is_type('nil')

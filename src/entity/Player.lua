@@ -24,6 +24,8 @@ function Player:_init(level, def, p)
 
     self.prop:setPriority(5000)
 
+    self.player = true
+
     level.player = self
 
     local _
@@ -64,12 +66,9 @@ function Player:tick(dt)
 end
 
 function Player:monitorTasks()
-    local i = 0
-    Text:console(table.map(self.tasks.callbacks, function(v, k)
-        i = i + 1
-        return {k, is_object(v) and v.cur}, i
-    end))
-    --dump(table.keys(self.tasks.callbacks))
+    Text:console( iter(self.tasks.callbacks)
+        :map(function(k, v) return {k, is_object(v) and v.cur} end)
+        :totable())
 end
 
 local abs = math.abs
@@ -123,8 +122,6 @@ function Player:applyDamage()
             dmg = dmg + 1
             self:reaction(enemy, true)
             self.damage[enemy] = nil
-        else
-            dump(ticks, expire)
         end
     end
 
@@ -133,10 +130,10 @@ function Player:applyDamage()
         self.hp = self.hp - dmg
         if self.hp <= 0 then 
             self.level:add(
-                PAnim(self.level, Data.animation.TinyMario, 'die', self))
-            self:remove() 
+                PAnim(self.level, Data.animation.TinyMario, 'die', self.pos))
+            self:remove()
         end
-        self.level:add(PText(self.level, tostring(-dmg), self.x, self.y))
+        self.level:add(PText(self.level, tostring(-dmg), self.pos.x, self.pos.y))
         self:maskFixtures{area = woundedMask}
 
         local layer  = self.level.map('platforms').layer

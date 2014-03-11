@@ -58,8 +58,6 @@ end
 
 return function(d,p,k)
 
-    --die(d,p,k)
-
     local x, y, w, h
     if p[1] then
         local dot = table.map(

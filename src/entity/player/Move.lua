@@ -101,7 +101,7 @@ end
 local function move_on_wallhack(self)
     local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
     local vel = self.keyRun and 15 or 5
-    self.pos:set(self.x + dx*vel, self.y + dy*vel)
+    self.pos:set(self.pos.x + dx*vel, self.pos.y + dy*vel)
     self.body:setLinearVelocity(0, 0)
 end
 

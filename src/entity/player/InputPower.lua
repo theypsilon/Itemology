@@ -5,9 +5,8 @@ local Player = {}
 function Player:_setInput()
 
     -- walk
-    self.dir = table.map(
-        Input.checkAction{'left', 'right', 'up', 'down'}, 
-            function(v) return v and 1 or 0 end)
+    self.dir = iter(Input.checkAction{'left', 'right', 'up', 'down'})
+        :map(function(k, v) return k, v and 1 or 0 end):tomap()
 
     for k,_ in pairs(self.dir) do
         Input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
@@ -71,9 +70,10 @@ local setupJump
 function Player:_setPower()
     setupJump(self, 'nojump')
     self.setSpecial = self.setYoshiSpecial
-    self.power = table.map( table.filter(power_type, 
-                                function(v) return v[1] == 'pow_jump' end), 
-                                    function(v, k) return 0, k end)
+    self.power = iter(power_type)
+        :filter(function(k, v) return v[1] == 'pow_jump' end)
+        :map(function(k, v) return k, 0 end)
+        :tomap()
 
     self.pow_jump, self.pow_action, self.pow_special = false, false, false
 
@@ -123,13 +123,13 @@ function setupJump(self, ptype)
 end
 
 function Player:selectNextJumpPower()
-    local powers = table.keys(
-                        table.filter(self.power, 
-                            function(v) return v > 0 end))
+    local powers = iter(self.power)
+        :filter(function(k, v) return v > 0 end)
+        :totable()
 
     if power_type[self.pow_jump] and power_type[self.pow_jump][2] == 's' then
-        local singles = table.filter(power_type, 
-            function(v) return v[1] == 'pow_jump' and v[2] == 's' end)
+        local singles = iter(power_type)
+        :filter(function(k, v) return v[1] == 'pow_jump' and v[2] == 's' end)
 
         if table.count(powers) == table.count(singles) then
             self.pow_jump = false

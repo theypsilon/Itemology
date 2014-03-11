@@ -112,9 +112,8 @@ function Animation:_init(definition, prop, skip, default)
 
     if default then self:setAnimation(default) end
 
-    local img = table.first(
-                    table.first(
-                        table.filter(definition.sequences, is_table)))
+    local img = values(definition.sequences):filter(is_table):head()[1]
+
     assert(img)
     atlass:get(is_table(img) and (img.sprite or img[1]) or img):newProp(self.prop)
 end

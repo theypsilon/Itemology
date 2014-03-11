@@ -12,6 +12,8 @@ function JumpingText:_init(level, msg, x, y)
     style:setScale(0.1)
     style:setColor(1,.2,.2)
 
+    self.animation = true
+
     self.text = Text:print(msg, x, y, style, nil, nil, Layer.main)
     self.text:setPriority(1000)
 

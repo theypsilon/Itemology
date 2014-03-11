@@ -54,12 +54,14 @@ function Level:add(entity)
     self.entities[entity] = true
     self:insertEntity(entity, self.map:toXYO(entity.x, entity.y))
     self.entityByName = lazyLoadEntityByName(self)
+    manager:add_entity(entity)
 end
 
 function Level:remove(entity)
     self.entities[entity] = nil
     self:removeEntity(entity, self.map:toXYO(entity.x, entity.y))
     self.entityByName = lazyLoadEntityByName(self)
+    manager:remove_entity(entity)
 end
 
 function Level:getEntities(xo, yo, x1, y1)

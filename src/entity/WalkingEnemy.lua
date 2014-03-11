@@ -16,6 +16,8 @@ function WalkingEnemy:_init(level, definition, p)
     self.pos = Position(self.body)
     self.pos:set(p.x, p.y)
 
+    self.walkingenemy = true
+
     self.initial_x, self.initial_y = p.x, p.y
 
     local _
@@ -53,9 +55,9 @@ local abs = math.abs
 
 function WalkingEnemy:tick(dt)
 
-    local vx, vy  = self.body:getLinearVelocity()
+    self.vx, self.vy  = self.body:getLinearVelocity()
 
-    self:move(dt, vx, vy)
+    self:move(dt)
 
     self.x, self.y = self.pos:get()
 
@@ -64,13 +66,13 @@ function WalkingEnemy:tick(dt)
         self.body:setLinearVelocity(0, 0)
     end
 
-    self:animate(vx, vy)
+    self:animate()
 
     Mob.tick(self)
 end
 
-function WalkingEnemy:move(dt, vx, vy)
-    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
+function WalkingEnemy:move(dt)
+    local vx, vy = self.vx, self.vy
 
     local def = self.moveDef 
 

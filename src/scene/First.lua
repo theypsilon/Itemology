@@ -1,4 +1,5 @@
 local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Flow, Text, Data; import()
+local EntityManager = require 'system.EntityManager'
 
 scene = {}
 
@@ -7,6 +8,20 @@ function scene:load(start, hp)
     Physics:init(Data.world.First)
 
     if Data.MainConfig.dev.debug_physics then Layer.main:setBox2DWorld (Physics.world) end
+
+    local manager = EntityManager()
+    manager:add_system('UpdateVelocity')
+    manager:add_system('UpdateLevelPosition')
+    manager:add_system('RemoveEntities')
+    manager:add_system('UpdateLevelScript')
+    manager:add_system('UpdatePlayer')
+    manager:add_system('UpdateWalkingEnemy')
+    manager:add_system('UpdateObject')
+    manager:add_system('Animate')
+    manager:add_system('UpdateCamera')
+
+    self.manager = manager
+    global{manager = manager}
     
     local level     = Level (start and start.level or Data.MainConfig.start)
           level:initEntities ('objects'  )
@@ -15,6 +30,11 @@ function scene:load(start, hp)
 
     local player    = level.player
     local cameras   = {}
+
+    manager:add_entity(player)
+    for e, _ in pairs(level.entities) do
+        manager:add_entity(e)
+    end
 
     if start then
         if start.link then
@@ -32,6 +52,8 @@ function scene:load(start, hp)
     local cam = Camera(player)
     cameras[cam] = true
     level:initProperties(cam)
+
+    manager:add_entity(cam)
     
     self.cameras, self.level, self.player = cameras, level, player
 
@@ -60,6 +82,9 @@ function scene:update(dt)
     --for camera,_ in pairs(self.cameras) do
         self.level:tick(dt)
     --end
+
+    --self.manager:update(dt)
+
     if self.player.removed then
         Text:print('Game Over', 240, 140)
             --:setAlignment(MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY)

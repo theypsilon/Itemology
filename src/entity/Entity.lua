@@ -25,6 +25,8 @@ end
 function Entity:remove()
     if self.hurt then self.hurt = function() end end
     self.removed = true
+
+    print(self._name)
 end
 
 function Entity:draw()	

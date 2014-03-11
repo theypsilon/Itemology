@@ -2,6 +2,10 @@
 
 require 'lib.Import'()
 
+-- require 3rd party libs
+
+require 'lib.fun'   ()
+
 -- own lua libs
 
 require 'lib.Strict'()
