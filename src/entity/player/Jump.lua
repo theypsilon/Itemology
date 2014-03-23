@@ -27,7 +27,7 @@ end
 
 function Player:getSingleJumpStateMachine()
     return Job.interval(function(c)
-        if not self.keyJump then return c:next() end
+        if not self.action.jump then return c:next() end
         self:doJump(c.ticks + 1)
     end, 0, #self.moveDef.jumpImp)
 end
@@ -45,7 +45,7 @@ function Player:getDoubleJumpStateMachine(djumping)
             djump = false
         end
 
-        if jump(self.keyJump) and not djump then 
+        if jump(self.action.jump) and not djump then 
             if self:doDoubleJump() then self.lastwalljump = nil end
             djump = true
         end
@@ -102,7 +102,7 @@ function Player:setSpaceJump()
     local maxFallSp = self.moveDef.sjumpMaxFallSpeed
 
     self.tasks:set('jumping', Job.interval(function(c)
-        if not self.keyJump then return c:next() end
+        if not self.action.jump then return c:next() end
         self:doJump(c.ticks + 1)
     end, 0, #self.moveDef.jumpImp)) :after(function(c)
         if self:onGround()  then return c:next() end
@@ -146,7 +146,7 @@ function Player:moveWallJump(fromJumping)
 
             if touch ~= initial_touch or self:onGround() then return c:next() end
 
-            if jump(self.keyJump) then
+            if jump(self.action.jump) then
                 --self:convertFallingToJumping()
 
                 local def = self.moveDef
@@ -201,7 +201,7 @@ function Player:doFalconJump()
     local x, y, cancel = 0, 0, 0
 
     local function try_cancel(c)
-        if self.keyJump == (cancel %2 == 1) then cancel = cancel + 1 end
+        if self.action.jump == (cancel %2 == 1) then cancel = cancel + 1 end
         if cancel == cancelled then c:fallthrough(3) end
     end
 
@@ -239,20 +239,20 @@ function Player:doKirbyJump(    )
     local step = 0
     self.tasks:set('djumping', Job.chain(function(c)
         step = step + 1
-        if not self.keyJump then c:next() end
+        if not self.action.jump then c:next() end
         if self:onGround() or step > time then c:exit() end
         if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
-        if self.keyRun then c:exit() end
+        if self.action.run then c:exit() end
     end)):after(function(c)
         step = step + 1
-        if self.keyJump then
+        if self.action.jump then
             if c.last <= step then 
                 self:doStandardDoubleJump(true)
                 c.last = step + cadence 
             end
             return c:next(1)
         end
-        if self.keyRun then c:exit() end
+        if self.action.run then c:exit() end
         if self:onGround() or step > time then c:exit() end
         if self.vy > maxFallSp then self.body:setLinearVelocity(self.vx, maxFallSp) end
     end).last = cadence
@@ -302,7 +302,7 @@ function Player:doTeleportJump()
         self.moveVertical = nothing
 
         self.tasks:set('djumping', Job.chain(function(c)
-            if not self.keyJump or freezing <= 0 then c:exit() end
+            if not self.action.jump or freezing <= 0 then c:exit() end
             self.body:setTransform(tx, ty)
             freezing = freezing - 1
         end))
@@ -333,14 +333,14 @@ function Player:doPeachJump()
     local rep = self.moveDef.pjumpRepeat
 
     self.tasks:set('djumping', Job.interval(function(c)
-        if not self.keyJump then c:next() end
+        if not self.action.jump then c:next() end
     end, 0, fly)):after(function(c)
         if self.move == movePeach then
             self.move = nil
             self.body:setGravityScale(gravity)
         end
         if self:onGround()               then return c:next() end
-        if self.keyJump and c.ticks < (fly - 1) and rep > 0 then
+        if self.action.jump and c.ticks < (fly - 1) and rep > 0 then
             gravity = self.body:getGravityScale()
             self.body:setGravityScale(0)
             self.body:setLinearVelocity(self.vx, 0)
@@ -379,7 +379,7 @@ function Player:doDixieJump()
             self.body:setGravityScale(self.moveDef.xjumpGravity * gravity)
             c:fallthrough () end
     end):after(function(c)
-        if not self.keyJump  or 
+        if not self.action.jump  or 
             self:onGround () or 
             self:isWounded() then c:exit() end
 

@@ -28,7 +28,7 @@ end
 function JumpingText:tick()
     Entity.tick(self)
 
-    if self._ticks > 60 then self:remove() end
+    if self.ticks > 60 then self:remove() end
 
     local val = self.jumping_values
     local pos = self.pos

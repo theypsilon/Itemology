@@ -5,39 +5,62 @@ function input.initialState()
 	state = {
 		keyboardBinding   = {},
 		keyboardCallbacks = {[true] = {}, [false] = {}},
+		keyboardTables    = {},
 		keyboardStatus    = {},
 		toBind = {}
 	}
 end
 input.initialState()
 
-function input.bindAction( action, callback1, callback2 )
+local function bindActionCallback( keyCode, callback1, callback2 )
+	local callbacks = state.keyboardCallbacks
+
+	assert(is_nil(callback2) or is_callable(callback2),
+		  'is_nil(callback2) or is_callable(callback2)')
+
+	assert(is_callable(callback1), 'is_callable(callback1)')
+	callbacks[true ][keyCode] = callback1
+	callbacks[false][keyCode] = callback2
+end
+
+local function bindActionBoolean( keyCode, a, b )
+	state.keyboardCallbacks[a][keyCode] = b
+end
+
+local function bindActionTable( keyCode, table, key )
+	assert(is_nil(table) or is_table(table),
+		  'is_nil(table) or is_table(table)')
+
+	state.keyboardTables[keyCode] = {table, key}
+end
+
+local function toKeyCode( action )
+	return string.byte(action)
+end
+
+function input.bindAction( action, arg, ... )
 	if is_table(action) then 
 		for _,suba in pairs(action) do 
-			input.bindAction(suba, callback1, callback2 )
+			input.bindAction(suba, arg, ... )
 		end
 		return
 	end
 
 	assert(is_string(action) or is_number(action))
-	local keyCode   = state.keyboardBinding[action]
-	local callbacks = state.keyboardCallbacks
+	local  keyCode  = state.keyboardBinding[action] or toKeyCode(action)
+	assert(keyCode ~= nil, 'oldKeyCode   ~= nil')
 
 	if keyCode == nil then 
-		state.toBind[action] = {callback1, callback2}
+		state.toBind[action] = {arg, ...}
 		return
 	end
 
-	assert(keyCode   ~= nil, 'keyCode   ~= nil')
-	assert(is_nil(callback2) or is_callable(callback2),
-		  'is_nil(callback2) or is_callable(callback2)')
-
-	if is_boolean(callback1) then
-		callbacks[callback1][keyCode] = callback2
+	if is_boolean(arg) then
+		bindActionBoolean (keyCode, arg, ...)
+	elseif is_callable(arg) then
+		bindActionCallback(keyCode, arg, ...)
 	else
-		assert(is_callable(callback1), 'is_callable(callback1)')
-		callbacks[true ][keyCode] = callback1
-		callbacks[false][keyCode] = callback2
+		bindActionTable   (keyCode, arg, ...)
 	end
 end
 
@@ -79,10 +102,17 @@ end
 local function onKeyboardEvent ( keyCode, down )
 	if state.keyboardStatus[keyCode] == down then return end
 	
+	local table  = state.keyboardTables[keyCode]
+	if    table ~= nil then
+		table[1][table[2]] = down
+	end
+
 	local callback  = state.keyboardCallbacks[down][keyCode]
 	if    callback ~= nil then 
 		  callback()
-	elseif down then print(keyCode) end
+	end
+
+	if callback == nil and table == nil and down then print(keyCode) end
 	state.keyboardStatus[keyCode] = down and true or nil
 end
 

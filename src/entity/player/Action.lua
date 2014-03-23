@@ -6,12 +6,12 @@ local abs = math.abs
 local Player = {}
 
 function Player:setAction()
-    if self.keyRun then
+    if self.action.run then
 
         if self.tasks.callbacks.action then return end
 
         self.tasks:set('action', Job.chain(Job.cron(10, function(c)
-            if self.keyRun then 
+            if self.action.run then 
                 self:triggerBullet{self.lookLeft and -1 or 1, 0}
             else 
                 c:exit()

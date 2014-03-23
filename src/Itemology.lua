@@ -18,7 +18,7 @@ Flow.run(Data.MainConfig, function()
     resource.IMAGE_PATH = project .. 'res/img/'
                map.PATH = project .. 'res/maps/'
 
-    for k,v in pairs(Data.Keys) do
+    for k,v in pairs(Data.key.SDLKeycodes) do
         Input.bindActionToKeyCode(k, v)
     end
     Input.bindAction('ESC', function() die('ESC says shut down!') end)

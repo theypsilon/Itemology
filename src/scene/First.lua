@@ -1,5 +1,5 @@
 local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Flow, Text, Data; import()
-local EntityManager = require 'system.EntityManager'
+local EntityManager = require 'ecs.EntityManager'
 
 scene = {}
 
@@ -15,10 +15,12 @@ function scene:load(start, hp)
     manager:add_system('RemoveEntities')
     manager:add_system('UpdateLevelScript')
     manager:add_system('UpdatePlayer')
+    manager:add_system('UpdateJumpState')
     manager:add_system('UpdateWalkingEnemy')
     manager:add_system('UpdateObject')
     manager:add_system('Animate')
     manager:add_system('UpdateCamera')
+    manager:add_system('UpdateTicks')
 
     self.manager = manager
     global{manager = manager}
@@ -73,7 +75,7 @@ end
 
 function scene:draw()
     for camera,_ in pairs(self.cameras) do
-        camera:draw()
+    --    camera:draw()
     end
 
 end
@@ -81,17 +83,17 @@ end
 function scene:update(dt)
     if self.pause then return end
     --for camera,_ in pairs(self.cameras) do
-        self.level:tick(dt)
+    --    self.level:tick(dt)
     --end
 
-    --self.manager:update(dt)
+    self.manager:update(dt)
 
     if self.player.removed then
         Text:print('Game Over', 240, 140)
             --:setAlignment(MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY)
         Text:print('Press ESPACE to restart', 170, 210)
             --:setAlignment(MOAITextBox.CENTER_JUSTIFY, MOAITextBox.CENTER_JUSTIFY)
-        Input.bindAction('b2', function()
+        Input.bindAction(self.player.keyconfig.jump, function()
             Scenes.run('First')
         end)
         self.player.removed = nil

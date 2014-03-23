@@ -1,4 +1,4 @@
-local System; import 'system'
+local System; import 'ecs'
 local RemoveEntities = class(System)
 
 function RemoveEntities:requires()

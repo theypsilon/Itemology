@@ -1,12 +1,34 @@
 local Job = {}
 
 local Chain = class()
-function Chain:_init(f, key) 
+
+local function chain_init_from_callable(self, f, key)
     assert(is_callable(f))
     key        = key and key or 1
     self.job   = f
     self.state = {[key] = f} 
     self.cur   = is_number(key) and key or 0
+end
+
+local function chain_init_from_table(self, table, key)
+    local cont = 0
+    for k, v in pairs(table) do
+        if not key then key = k end
+        assert(is_number  (k) or is_string(k))
+        assert(is_callable(v))
+        cont = cont + 1
+    end
+    assert(cont > 0)
+    self.job   = table[key]
+    self.state = table
+    self.cur   = key
+end
+
+function Chain:_init(param, key)
+    if is_callable (param) then chain_init_from_callable(self, param,   key)
+    elseif is_table(param) then chain_init_from_table   (self, param,   key)
+    elseif is_null (param) then chain_init_from_callable(self, nothing, key)
+    else error 'wrong initialization of chain object' end
 end
 
 local update_chain
@@ -33,11 +55,11 @@ function Chain:free(key)
     self.state[key] = nil
 end
 
-function Chain:__call()
+function Chain:__call(...)
     self.running = true
-    local  ret   = self.job(self)
+    local  ret   = self.job(self, ...)
     self.running = nil
-    update_chain(self)
+    update_chain(self, ...)
     return ret
 end
 
@@ -51,7 +73,7 @@ local function set_last_job(self)
     end
 end
 
-function update_chain(self)
+function update_chain(self, ...)
     if self.finished then 
         if self.state then
             
@@ -65,7 +87,7 @@ function update_chain(self)
 
             if  self.fall then
                 self.fall = nil
-                return self:__call()
+                return self:__call(...)
             end
         else set_last_job(self) end
     end

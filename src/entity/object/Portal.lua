@@ -1,12 +1,12 @@
 local Physics, Data; import()
 
 local function get_component(vertical, e)
-    local  dir = e[vertical and 'vx' or 'vy']
-    if not dir then
+    local  orientation = e[vertical and 'vx' or 'vy']
+    if not orientation then
         local x, y = e.body:getLocation()
-        dir = vertical and x or y
+        orientation = vertical and x or y
     end
-    return dir
+    return orientation
 end
 
 local function onTick(self)
@@ -17,17 +17,17 @@ local function onTick(self)
 end
 
 local function onBegin(self, e)
-    local dir = (self.dir and not self.requesting[e]) 
-        and self.dir or get_component(self.vertical, e)
-    self.travelling[e] = dir > 0 and 1 or -1
+    local orientation = (self.orientation and not self.requesting[e]) 
+        and self.orientation or get_component(self.vertical, e)
+    self.travelling[e] = orientation > 0 and 1 or -1
 end
 
 local function onEnd(self, e)
     assert(self.travelling[e])
-    local dir = get_component(self.vertical, e)
+    local orientation = get_component(self.vertical, e)
 
-    if (dir * self.travelling[e] > 0 and not self.requesting[e]) or
-       (dir * self.travelling[e] < 0 and     self.requesting[e]) 
+    if (orientation * self.travelling[e] > 0 and not self.requesting[e]) or
+       (orientation * self.travelling[e] < 0 and     self.requesting[e]) 
     then
         local exit = e.level.entityByName()[self.link][1]
 
@@ -75,6 +75,8 @@ return function(d,p,k)
     if y == h then h = 0 end
 
     local body = Physics:makeItemBody(p.x, p.y, 'rect', {x, y, w, h})
+    p.properties.orientation = p.properties.dir
+    p.properties.action = nil
     local self = table.copy(p.properties)
     self.body  = body
     self._name = k
@@ -84,11 +86,11 @@ return function(d,p,k)
     self.travelling = {}
     self.requesting = {}
 
-    if self.dir then 
-        self.dir = self.dir == 'right' and 1 or self.dir == 'left' and -1 or
-                   self.dir == 'down'  and 1 or self.dir == 'up'   and -1 or
-                   tonumber(self.dir)
-        assert(self.dir == 1 or self.dir == -1, self.dir)
+    if self.orientation then 
+        self.orientation = self.orientation == 'right' and 1 or self.orientation == 'left' and -1 or
+                   self.orientation == 'down'  and 1 or self.orientation == 'up'   and -1 or
+                   tonumber(self.orientation)
+        assert(self.orientation == 1 or self.orientation == -1, self.orientation)
     end
 
     body.fixtures.area:setCollisionHandler(function(p, fa, fb, a)

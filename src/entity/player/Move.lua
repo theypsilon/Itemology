@@ -40,8 +40,8 @@ function Player:calcMainForces()
         -- which forces apply on character
         og and def.ogHorForce or def.oaHorForce,
         -- if running, maxspeed is different
-        ((og                          and self.keyRun) or
-         (def.maxVxWalk < 0.9*abs(vx) and self.keyRun) or
+        ((og                          and self.action.run) or
+         (def.maxVxWalk < 0.9*abs(vx) and self.action.run) or
           def.alwaysRun) 
         and def.maxVxRun or def.maxVxWalk
 
@@ -85,7 +85,7 @@ function Player:moveVertical()
 end
 
 function Player:moveDoor()
-    if self.dir.up == 1 and self.door then
+    if self.action.up and self.door then
         if self.door.level and self.door.level ~= self.level.name then
             gTasks:once('changeMap', function() 
                 Scenes.run('First', self.door, self.hp) 
@@ -94,13 +94,14 @@ function Player:moveDoor()
             local link = self.door.layer.objects[self.door.link]
             if link then self.body:setTransform(link.x, link.y) end
         end
-        self.dir.up = 0
+        self.action.up = false
     end
 end
 
 local function move_on_wallhack(self)
-    local dx, dy = self.dx, -1 * self.dir.up + self.dir.down
-    local vel = self.keyRun and 15 or 5
+    local dx, dy = self.dx, 
+    -1 * (self.action.up and 1 or 0) + (self.action.down and 1 or 0)
+    local vel = self.action.run and 15 or 5
     self.body:setTransform(self.pos.x + dx*vel, self.pos.y + dy*vel)
     self.body:setLinearVelocity(0, 0)
 end

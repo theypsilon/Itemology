@@ -18,7 +18,7 @@ function Broken:tick()
 
     local current
 
-    if self._ticks > self.limit then
+    if self.ticks > self.limit then
         self.step  = self.step + 1
         if self.step > #self.sequence then
             self:remove()

@@ -8,13 +8,13 @@ function Entity:_init(level, x, y)
     validate(level, x, y)
 
 	self.pos = {x = x, y = y}
-	self._ticks = 0
+	self.ticks  = 0
     self.level  = level
     self.map    = level.map
 end
 
 function Entity:tick() 
-	self._ticks = self._ticks + 1
+	self.ticks = self.ticks + 1
 end
 
 function Entity:remove()

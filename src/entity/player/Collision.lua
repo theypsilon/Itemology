@@ -44,10 +44,10 @@ function Player.jumpSensor(p, fa, fb, a)
     if not self:onGround() and fb.name == 'head' and self.vy >= 0
     and enemy and enemy.hurtBy then
         self.tasks:once('jumpenemy', function() 
-            if self.bounce < self._ticks then
+            if self.bounce < self.ticks then
                 enemy:hurtBy(self) 
                 self:reaction(enemy)
-                self.bounce = self._ticks + 2
+                self.bounce = self.ticks + 2
             end
         end)
     end

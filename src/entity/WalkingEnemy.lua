@@ -19,15 +19,13 @@ function WalkingEnemy:_init(level, definition, p)
 
     self.body:setTransform(pos.x, pos.y)
 
-    self.walkingenemy = true
-
     self.initial_x, self.initial_y = pos.x, pos.y
 
     local _
     _, self.limit_map_y = level.map:getBorder()
 
     self.moveDef = definition.motion
-    self.dir     = p.properties and p.properties.dir or 1
+    self.walkDir = p.properties and p.properties.dir or 1
 end
 
 function WalkingEnemy:_setListeners()
@@ -84,9 +82,10 @@ function WalkingEnemy:move(dt)
     -- horizontal walk
     if self:onGround() then
         if (abs(vx) < 5 or not self:morePath(vx)) then
-            self.dir = self.dir * -1 
+            self.walkDir = self.walkDir * -1 
+            self.animation:setMirror(self.walkDir < 0)
         end
-        self.body:setLinearVelocity(self.dir*def.velocity,vy)
+        self.body:setLinearVelocity(self.walkDir*def.velocity,vy)
     else
         self.body:setLinearVelocity(0                    ,vy)
     end
@@ -105,12 +104,7 @@ function WalkingEnemy:onGround()
     return self.gRight ~= 0 or self.gLeft ~= 0
 end
 
-function WalkingEnemy:animate(vx, vy)
-    local def, maxVxWalk = self.animation.extra, self.moveDef.maxVxWalk
-
-    if not vx or not vy then vx, vy = self.body:getLinearVelocity() end
-
-    self.animation:setMirror(vx < 0)
+function WalkingEnemy:animate()
     self.animation:next()
 end
 

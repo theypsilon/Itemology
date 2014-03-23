@@ -1,46 +1,49 @@
-local Input, Text, Job; import()
+local Input, Text, Job, Data; import()
 
 local Player = {}
 
 function Player:_setInput()
 
-    -- walk
-    self.dir = iter(Input.checkAction{'left', 'right', 'up', 'down'})
-        :map(function(k, v) return k, v and 1 or 0 end):tomap()
+    local config = Data.key.Player1
 
-    for k,_ in pairs(self.dir) do
-        Input.bindAction(k, function() self.dir[k] = 1 end, function() self.dir[k] = 0 end)
+    local action_map = {
+        left    = true,
+        right   = true,
+        up      = true,
+        down    = true,
+        run     = true,
+        jump    = false,
+        special = false,
+        plus    = false,
+        select  = false,
+        hack    = false
+    }
+
+    local actions = {}
+    for action, precheck in pairs(action_map) do
+        local  key  = config[action]
+        assert(key ~= nil)
+        Input.bindAction(key, actions, action)
+        if precheck then 
+            actions[action] = Input.checkAction(key) 
+        end
     end
 
-    -- jump
-    Input.bindAction('b2', 
-        function() self.keyJump = true; self:setJump() end, 
-        function() self.keyJump = false end)
+    local function setSpecial() self:setSpecial() end
+    local function setAction( ) self:setAction( ) end
 
-    -- run
-    self.keyRun = Input.checkAction('b1')
-    Input.bindAction('b1', 
-        function() self.keyRun = true;  self:setAction() end, 
-        function() self.keyRun = false; self:setAction() end)
-
-    -- shoot
-    Input.bindAction('b3', 
-        function() self.special = true;  self:setSpecial() end,
-        function() self.special = false; self:setSpecial() end)
-
-    -- plus
-    Input.bindAction('b4', function() self.keyPlus = true  end,
-                           function() self.keyPlus = false end)
-
-    -- select jump
-    Input.bindAction('s1', function() self:selectNextJumpPower() end)
-
-    -- debug - print location
-    Input.bindAction('r', function() 
-        self.tasks:once('wallhack', function()  self:wallhack_on ()  end)
+    Input.bindAction(config.jump   , function() self:setJump() end)
+    Input.bindAction(config.run    , setAction , setAction )
+    Input.bindAction(config.special, setSpecial, setSpecial)
+    Input.bindAction(config.select , function() self:selectNextJumpPower() end)
+    Input.bindAction(config.hack   , function() 
+        self.tasks:once('wallhack' , function()  self:wallhack_on ()  end)
     end, function() 
-        self.tasks:once('wallhack', function()  self:wallhack_off()  end)
-    end)    
+        self.tasks:once('wallhack' , function()  self:wallhack_off()  end)
+    end)
+
+    self.action    = actions
+    self.keyconfig = config
 end
 
 function Player:usePower(key)

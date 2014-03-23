@@ -26,7 +26,7 @@ function System:remove_entity(entity)
 	self.entities[entity] = nil
 end
 
-function System:update_all(dt)
+function System:update_all2(dt)
 	for e,_ in pairs(self.entities) do		
 		self:update(e, dt)
 	end
@@ -37,16 +37,23 @@ function System:update(e, dt)
 end
 
 
-function System:update_components(dt)
-	local args  = table.keys(self.components)
-	local count = #self.componets + 1
+function System:update_all(dt)
+	local args = table.keys(self.components)
+	local del  = {}
+	local comp 
 	for e,_ in pairs(self.entities) do
 		for k, c in pairs(self.components) do
-			args[k] = e[c]
+			comp = e[c]
+			args[k] = comp
+			if not comp then break end
 		end
-		args[count] = dt
-		self:update(unpack(args))
+		if comp then
+			self:update(e, dt, unpack(args))
+		else
+			table.insert(del, e)
+		end
 	end
+	for _,e in pairs(del) do self:remove_entity(e) end
 end
 
 return System

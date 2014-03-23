@@ -1,4 +1,4 @@
-local System; import 'system'
+local System; import 'ecs'
 
 local EntityManager = class()
 
@@ -48,7 +48,7 @@ end
 function EntityManager:add_system(name)
 	if self.system_by_name[name] then error('already there: '..name) end
 
-	local system = require ('system.'..name)()
+	local system = require ('ecs.system.'..name)()
 	for _, c in pairs(system:requires()) do
 		self.components[c] = self.components[c] or {}
 		table.insert(self.components[c], system)

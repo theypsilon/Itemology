@@ -1,4 +1,4 @@
-local System; import 'system'
+local System; import 'ecs'
 local Animate = class(System)
 
 local Mob = require 'entity.Mob'

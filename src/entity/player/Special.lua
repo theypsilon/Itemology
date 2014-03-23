@@ -6,7 +6,7 @@ local abs = math.abs
 local Player = {}
 
 function Player:setYoshiSpecial()
-    if not self.special then return end
+    if not self.action.special then return end
     if  self.tasks.callbacks.special or 
         self.tasks.callbacks.jumping or
         self.tasks.callbacks.walljumping or
@@ -37,14 +37,14 @@ function Player:setYoshiSpecial()
 
         angle = angle + dir
         
-        if  self.dir.down == 1 or 
+        if  self.action.down == 1 or 
             self.removed       or 
             self:isWounded() then return c:exit() end
 
-        --if self.keyRun        then angle =  0 end
-        if self.dir.up   == 1 then angle = 90 end
+        --if self.action.run        then angle =  0 end
+        if self.action.up   == 1 then angle = 90 end
 
-        if self.special == (bShoot %2 == 1) then bShoot = bShoot + 1 end
+        if self.action.special == (bShoot %2 == 1) then bShoot = bShoot + 1 end
         if bShoot == 2 then c:next() end
 
         if angle < -20 or angle > 90 then dir = -dir end

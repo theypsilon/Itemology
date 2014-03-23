@@ -29,13 +29,28 @@ function Player:_init(level, def, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    self.moveDef = require 'data.motion.Mario'
+    self.moveDef    = require 'data.motion.Mario'
     if self.moveDef.update then
         self.tasks:set('def_update', function()
             package.loaded  ['data.motion.Mario']   = nil
             self.moveDef = require 'data.motion.Mario'
         end, 40)
     end
+
+    self.jumpState = { state='stand' }
+    self.jumpResource = { 
+        SingleStandardJump = math.huge, 
+        DoubleStandardJump = math.huge,
+        WallStandardJump   = math.huge,
+        BounceStandardJump = math.huge,  
+    }
+
+    self.jumpSelector = { 
+        jump        = 'SingleStandardJump', 
+        double_jump = 'DoubleStandardJump',
+        wall_jump   = 'WallStandardJump', 
+        bounce      = 'BounceStandardJump', 
+    }
 
     self.hp = self.moveDef.hitpoints
     self.damage = {}
@@ -44,10 +59,16 @@ end
 
 function Player:tick(dt)
 
+    local left, right, up, down =
+        self.action.left  and 1 or 0,
+        self.action.right and 1 or 0,
+        self.action.down  and 1 or 0,
+        self.action.up    and 1 or 0
+
     self.pos.x, self.pos.y  = self.body:getPosition()
     self.vx, self.vy  = self.body:getLinearVelocity()
-    self.dx           = -1 * self.dir.left + self.dir.right
-    self.dy           = -1 * self.dir.up   + self.dir.down
+    self.dx           = -1 * left + right
+    self.dy           = -1 * up   + down
     self.dt           = 1 / (dt * self.moveDef.timeFactor)
 
     self.tasks()
@@ -85,7 +106,7 @@ function Player:animate()
         self.animation:setAnimation('stand')
     end
 
-    local dx = -1*self.dir.left + self.dir.right
+    local dx = -1* (self.action.left and 1 or 0) + (self.action.right and 1 or 0)
     if abs(vy) > def.toleranceY then
         self.animation:setAnimation(abs(vx)*def.walkRunUmbral <= maxVxWalk and
             'jump' or (vy < 0) and
@@ -99,7 +120,7 @@ function Player:animate()
 end
 
 function Player:hurtBy(enemy, delay)
-    self.damage[enemy] = self._ticks + (delay and delay or 1)
+    self.damage[enemy] = self.ticks + (delay and delay or 1)
 end
 
 local healthyMask = Data.fixture.Filters.M_FRIEND
@@ -111,7 +132,7 @@ local PAnim = require 'entity.particle.Animation'
 function Player:applyDamage()
     local dmg = 0
 
-    local ticks = self._ticks
+    local ticks = self.ticks
 
     for enemy, expire in pairs(self.damage) do
         if enemy.removed then
@@ -168,13 +189,13 @@ function Player:reaction(enemy, attacker)
         local px = self.vx * self.dx
         local ix = px > 0 and self.vx or px < 0 and 0 or self.vx / 2
 
-        self.body:setLinearVelocity(ix, iy * (self.keyJump and 1.4 or 1))
+        self.body:setLinearVelocity(ix, iy * (self.action.jump and 1.4 or 1))
 
         self:reDoubleJump()
     else
         local ix, iy = 
-            -rx*250 * (self.keyRun  and 1.60 or 1.05), 
-            -ry*100 * (self.keyJump and 3.00 or 1)
+            -rx*250 * (self.action.run  and 1.60 or 1.05), 
+            -ry*100 * (self.action.jump and 3.00 or 1)
 
         self.body:applyLinearImpulse(ix * 1.1, iy * .5)
     end
