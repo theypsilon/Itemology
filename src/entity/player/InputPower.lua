@@ -20,27 +20,21 @@ function Player:_setInput()
     }
 
     local actions = {}
-    for action, precheck in pairs(action_map) do
-        local  key  = config[action]
-        assert(key ~= nil)
-        Input.bindAction(key, actions, action)
-        if precheck then 
-            actions[action] = Input.checkAction(key) 
-        end
-    end
+    -- for action, precheck in pairs(action_map) do
+    --     local  key  = config[action]
+    --     assert(key ~= nil)
+    --     Input.bindAction(key, actions, action)
+    --     if precheck then 
+    --         actions[action] = Input.checkAction(key) 
+    --     end
+    -- end
 
-    local function setSpecial() self:setSpecial() end
-    local function setAction( ) self:setAction( ) end
-
-    Input.bindAction(config.jump   , function() self:setJump() end)
-    Input.bindAction(config.run    , setAction , setAction )
-    Input.bindAction(config.special, setSpecial, setSpecial)
-    Input.bindAction(config.select , function() self:selectNextJumpPower() end)
-    Input.bindAction(config.hack   , function() 
-        self.tasks:once('wallhack' , function()  self:wallhack_on ()  end)
-    end, function() 
-        self.tasks:once('wallhack' , function()  self:wallhack_off()  end)
-    end)
+    -- Input.bindAction(config.select , function() self:selectNextJumpPower() end)
+    -- Input.bindAction(config.hack   , function() 
+    --     self.tasks:once('wallhack' , function()  self:wallhack_on ()  end)
+    -- end, function() 
+    --     self.tasks:once('wallhack' , function()  self:wallhack_off()  end)
+    -- end)
 
     self.action    = actions
     self.keyconfig = config
@@ -58,14 +52,14 @@ function Player:usePower(key)
 end
 
 local power_type = {
-    djump  = {'pow_jump', 'd', 'doStandardDoubleJump'},
-    pjump  = {'pow_jump', 'd', 'doPeachJump'},
-    xjump  = {'pow_jump', 'd', 'doDixieJump'},
-    fjump  = {'pow_jump', 'd', 'doFalconJump'},
-    tjump  = {'pow_jump', 'd', 'doTeleportJump'},
-    kjump  = {'pow_jump', 'd', 'doKirbyJump'},
-    sjump  = {'pow_jump', 's', 'setSpaceJump'},
-    nojump = {'none'    , 'd', 'doStandardDoubleJump'}
+    djump  = {'pow_jump', 'double_jump', 'DoubleStandardJump'},
+    pjump  = {'pow_jump', 'double_jump', 'PeachJump'},
+    xjump  = {'pow_jump', 'double_jump', 'DixieJump'},
+    fjump  = {'pow_jump', 'double_jump', 'FalconJump'},
+    tjump  = {'pow_jump', 'double_jump', 'TeleportJump'},
+    kjump  = {'pow_jump', 'double_jump', 'KirbyJump'},
+    sjump  = {'pow_jump', 'jump', 'SpaceJump'},
+    nojump = {'none'    , 'double_jump', 'DoubleStandardJump'}
 }
 
 local setupJump
@@ -79,15 +73,6 @@ function Player:_setPower()
         :tomap()
 
     self.pow_jump, self.pow_action, self.pow_special = false, false, false
-
-    for k,v in pairs(power_type) do
-        if v[1] == 'pow_jump' then 
-            Text:debug(self.power, k, nil, nil, function(v)
-                return v ~= 0 and v ~= nil
-            end)
-        end
-    end
-    Text:debug(self, 'pow_jump')
 end
 
 function Player:setupPower(power)
@@ -105,6 +90,8 @@ function Player:findPower(o)
     end
     if o.charges == 'huge' or o.charges == 'inf'then o.charges = math.huge end
     self.power[o.power] = o.charges + (o.add and self.power[o.power] or 0)
+
+    self.jumpResource[power_type[o.power][3]] = self.power[o.power]
 end
 
 function setupJump(self, ptype)
@@ -113,16 +100,8 @@ function setupJump(self, ptype)
 
     local jump_cat, func_name = ptype[2], ptype[3]
 
-    if      jump_cat == 'd'  then
-
-        self.setJump = self.setDoubleJump
-        self.doDoubleJump = self[func_name]
-
-    elseif  jump_cat == 's'  then
-
-        self.setJump = self[func_name]
-
-    else error 'what do we have here??' end
+    assert(self.jumpSelector[jump_cat], 'what?? '..jump_cat)
+    self.jumpSelector[jump_cat] = func_name
 end
 
 function Player:selectNextJumpPower()
@@ -130,9 +109,9 @@ function Player:selectNextJumpPower()
         :filter(function(k, v) return v > 0 end)
         :totable()
 
-    if power_type[self.pow_jump] and power_type[self.pow_jump][2] == 's' then
+    if power_type[self.pow_jump] and power_type[self.pow_jump][2] == 'jump' then
         local singles = iter(power_type)
-        :filter(function(k, v) return v[1] == 'pow_jump' and v[2] == 's' end)
+        :filter(function(k, v) return v[1] == 'pow_jump' and v[2] == 'jump' end)
 
         if table.count(powers) == table.count(singles) then
             self.pow_jump = false

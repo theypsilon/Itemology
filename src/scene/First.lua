@@ -10,17 +10,28 @@ function scene:load(start, hp)
     if Data.MainConfig.dev.debug_physics then Layer.main:setBox2DWorld (Physics.world) end
 
     local manager = EntityManager()
+    manager:add_system('UpdateInput')
     manager:add_system('UpdateVelocity')
+    manager:add_system('UpdateDirection')
+    manager:add_system('UpdateWalkingAI')
+    manager:add_system('UpdateGroundDetector')
+    manager:add_system('UseDoor')
+    manager:add_system('UpdateLateralTouch')
     manager:add_system('UpdateLevelPosition')
     manager:add_system('RemoveEntities')
     manager:add_system('UpdateLevelScript')
+    manager:add_system('UpdateWalker')
     manager:add_system('UpdatePlayer')
     manager:add_system('UpdateJumpState')
+    manager:add_system('UpdateAttackState')
     manager:add_system('UpdateWalkingEnemy')
+    manager:add_system('UpdateFallingMovement')
     manager:add_system('UpdateObject')
     manager:add_system('Animate')
     manager:add_system('UpdateCamera')
     manager:add_system('UpdateTicks')
+    manager:add_system('ShowSelection')
+    manager:add_system('ShowResources')
 
     self.manager = manager
     global{manager = manager}
@@ -83,7 +94,7 @@ end
 function scene:update(dt)
     if self.pause then return end
     --for camera,_ in pairs(self.cameras) do
-    --    self.level:tick(dt)
+    --   self.level:tick(dt)
     --end
 
     self.manager:update(dt)

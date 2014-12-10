@@ -4,7 +4,7 @@ local UpdateWalkingEnemy = class(System)
 local Mob = require 'entity.Mob'
 
 function UpdateWalkingEnemy:requires()
-	return {'walkDir'}
+	return {'dnoononoºººº'}
 end
 
 function UpdateWalkingEnemy:update(e, dt)

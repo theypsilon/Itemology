@@ -13,6 +13,12 @@ function WalkingEnemy:_init(level, definition, p)
     self.animation = Animation(definition.animation)
     self.prop      = self.animation.prop
 
+    self.walk      = { dx = 0, left = false}
+    self.direction = { x  = 0,    y = 0    }
+    self.velocity  = { x  = 0,    y = 0    }
+    self.ground    = { on = false          }
+    self.walkingai = true
+
     self.body = Physics:registerBody(definition.fixture, self.prop, self)
 
     self:_setListeners()
@@ -48,60 +54,14 @@ function WalkingEnemy:_setListeners()
     end
 
     local begend = MOAIBox2DArbiter.BEGIN + MOAIBox2DArbiter.END
-    fix['sensorL']:setCollisionHandler(floorSensor('gLeft' ), begend)
-    fix['sensorR']:setCollisionHandler(floorSensor('gRight'), begend)
+    fix.hole_left :setCollisionHandler(floorSensor('gLeft' ), begend)
+    fix.hole_right:setCollisionHandler(floorSensor('gRight'), begend)
 end
 
 local abs = math.abs
 
-function WalkingEnemy:tick(dt)
-    self.pos.x, self.pos.y = self.body:getPosition()
-    self.vx, self.vy  = self.body:getLinearVelocity()
-
-    self:move(dt)
-
-    self.pos.x, self.pos.y = self.body:getPosition()
-
-    if self.pos.y > self.limit_map_y then
-        self.body:setTransform(self.initial_x, self.initial_y)
-        self.body:setLinearVelocity(0, 0)
-    end
-
-    self:animate()
-
-    Mob.tick(self)
-end
-
-function WalkingEnemy:move(dt)
-    local vx, vy = self.vx, self.vy
-
-    local def = self.moveDef 
-
-    dt = dt * def.timeFactor
-
-    -- horizontal walk
-    if self:onGround() then
-        if (abs(vx) < 5 or not self:morePath(vx)) then
-            self.walkDir = self.walkDir * -1 
-            self.animation:setMirror(self.walkDir < 0)
-        end
-        self.body:setLinearVelocity(self.walkDir*def.velocity,vy)
-    else
-        self.body:setLinearVelocity(0                    ,vy)
-    end
-
-    -- falling down
-    if def.addGravity + vy > def.maxVyFall 
-    then self.body:applyLinearImpulse(0, def.maxVyFall - vy - def.addGravity)
-    else self.body:applyLinearImpulse(0, def.addGravity) end
-end
-
 function WalkingEnemy:morePath(vx)
     return self[vx > 0 and 'gRight' or 'gLeft'] ~= 0
-end
-
-function WalkingEnemy:onGround()
-    return self.gRight ~= 0 or self.gLeft ~= 0
 end
 
 function WalkingEnemy:animate()

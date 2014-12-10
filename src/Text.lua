@@ -79,7 +79,7 @@ function Text:debug(object, index, string, deactivate, filter)
                 value = s .. tostring(value)
             end
             v.t:setString(value)
-            v.t:setLoc(400, i*20)
+            v.t:setLoc(200, i*20)
         end
     end)
 end

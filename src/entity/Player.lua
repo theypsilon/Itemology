@@ -1,8 +1,9 @@
 local Animation, Physics, Text, Data, Tasks, Update, Job; import()
 local Mob , Position; import 'entity'
-local Move, Jump, Action, Special, Collision, InputPower; import 'entity.player'
+local Move, Collision, InputPower; import 'entity.player'
+local Factory; import 'ecs.component'
 
-local Player = class(Mob, Move, Jump, Action, Special, Collision, InputPower)
+local Player = class(Mob, Move, Collision, InputPower)
 
 function Player:_init(level, def, p)
 	Mob._init(self, level, p.x, p.y)
@@ -10,7 +11,41 @@ function Player:_init(level, def, p)
     self.animation = Animation(def.animation)
     self.prop      = self.animation.prop
 
-    self.body = Physics:registerBody(def.fixture, self.prop, self)
+    for k, v 
+    in pairs(Factory.makeAllFromFixtures(def.fixture, self.prop, self)) do
+        self[k] = v
+    end
+
+    self.input  = Data.key.Player1
+    self.action = {}
+
+    self.jumpState = { state='stand' }
+    self.jumpResource = { 
+        SingleStandardJump = math.huge,
+        DoubleStandardJump = 0,
+        WallStandardJump   = math.huge,
+        BounceStandardJump = math.huge,  
+    }
+    self.jumpSelector = { 
+        jump        = 'SingleStandardJump', 
+        double_jump = 'DoubleStandardJump',
+        wall_jump   = 'WallStandardJump', 
+        bounce      = 'BounceStandardJump', 
+    }
+
+    self.attackState = { state='rest' }
+    self.attackResource = {
+        Bullet = math.huge,
+        Yoshi  = math.huge
+    }
+    self.attackSelector = {
+        attack  = 'Bullet',
+        special = 'Yoshi'
+    }
+
+    self.walk      = { dx = 0, left = false}
+    self.direction = { x = 0, y = 0 }
+    self.velocity  = { x = 0, y = 0 }
 
     self:_setListeners(self)
     self:_setInput(p)
@@ -37,21 +72,6 @@ function Player:_init(level, def, p)
         end, 40)
     end
 
-    self.jumpState = { state='stand' }
-    self.jumpResource = { 
-        SingleStandardJump = math.huge, 
-        DoubleStandardJump = math.huge,
-        WallStandardJump   = math.huge,
-        BounceStandardJump = math.huge,  
-    }
-
-    self.jumpSelector = { 
-        jump        = 'SingleStandardJump', 
-        double_jump = 'DoubleStandardJump',
-        wall_jump   = 'WallStandardJump', 
-        bounce      = 'BounceStandardJump', 
-    }
-
     self.hp = self.moveDef.hitpoints
     self.damage = {}
     Text:debug(self, 'hp')
@@ -69,13 +89,16 @@ function Player:tick(dt)
     self.vx, self.vy  = self.body:getLinearVelocity()
     self.dx           = -1 * left + right
     self.dy           = -1 * up   + down
-    self.dt           = 1 / (dt * self.moveDef.timeFactor)
+    self.dt           =  1 / (dt * self.moveDef.timeFactor)
 
     self.tasks()
     self:monitorTasks()
-    self:move()
+    self:move(dt)
 
-    if self.pos.y > self.limit_map_y + 100 then self:remove() end
+    self:runSystem('UpdateLateralTouch', dt)
+    self:runSystem('UpdateGroundDetector', dt)
+    self:runSystem('UpdateJumpState', dt)
+    self:runSystem('UpdateAttackState', dt)
 
     self:applyDamage()
 
@@ -191,7 +214,7 @@ function Player:reaction(enemy, attacker)
 
         self.body:setLinearVelocity(ix, iy * (self.action.jump and 1.4 or 1))
 
-        self:reDoubleJump()
+        --self.physics.onEnemy = true
     else
         local ix, iy = 
             -rx*250 * (self.action.run  and 1.60 or 1.05), 

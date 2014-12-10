@@ -2,24 +2,24 @@ local f = require 'data.fixture.Filters'
 return {
     option = 'dynamic',
     fixtures = {
-        ['area']={
+        area = {
                 option = 'rect',
                 args = {-6, 0, 6, 8},
                 restitution = 0,
                 friction = 0,
                 kills = true
         },
-        ['sensorL']={
+        hole_left = {
                 option = 'circle',
                 args = {-10, 8, 2},
                 sensor = true
         },
-        ['sensorR']={
+        hole_right = {
                 option = 'circle',
                 args = { 10, 8, 2},
                 sensor = true
         },
-        ['head']={
+        head = {
                 option = 'rect',
                 args = { -6, -6, 6, 2},
                 sensor = true

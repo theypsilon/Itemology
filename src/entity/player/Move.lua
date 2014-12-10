@@ -10,15 +10,23 @@ function Player:_setInitialMove(p)
     --self.moveVertical = nothing
 end
 
-function Player:move ()
-    self:moveDoor    ()
-    self:moveFalling ()
-    self:moveLateral (self:calcMainForces())
-    self:moveVertical()
+function Player:move (dt)
+    self:runSystem('UseDoor')
+    self:runSystem('UpdateDirection')
+    self:runSystem('UpdateGroundDetector')
+    if self.walk then
+        self:runSystem('UpdateWalker', dt)
+    else
+        self:runSystem('UpdateRunner', dt)
+    end
+    self:runSystem('UpdateFallingMovement', dt)
+    --self:moveFalling ()
+    --self:moveLateral (self:calcMainForces())
+    --self:moveVertical()
 end
 
 function Player:moveFalling()
-    if self:onGround() then self.lastwalljump = nil; return end
+    if self.ground.on then self.lastwalljump = nil; return end
     
     local occupied = 
         self.tasks.callbacks.jumping or 
@@ -35,7 +43,7 @@ end
 function Player:calcMainForces()
     local vx  = self.vx
     local def = self.moveDef
-    local og  = self:onGround()
+    local og  = self.ground.on
     return 
         -- which forces apply on character
         og and def.ogHorForce or def.oaHorForce,
@@ -61,7 +69,7 @@ function Player:moveLateral(force, maxVel)
     end
 
     -- fake friction in horizontal axis
-    if vx ~= 0 and (dx*vx < 0 or (dx == 0 and self:onGround())) then
+    if vx ~= 0 and (dx*vx < 0 or (dx == 0 and self.ground.on)) then
         -- if fast, slowdown is weaker
         local def      = self.moveDef
         local slowdown = abs(vx) > maxVel and def.slowRun or def.slowWalk

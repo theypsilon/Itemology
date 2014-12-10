@@ -68,40 +68,49 @@ function Physics:registerBody(def, prop, parent)
     return body
 end
 
-function Physics.registerFixtures(fixtures, body, category, mask, group)
-    local filters = category or mask or group
-
+function Physics.registerFixtures(def, body, category, mask, group)
     local outFixtures = {}
-
-    local density
-
-    for k, value in pairs(fixtures) do
-        local fix = dict[value.option](body,  unpack(value.args))
-        if value.restitution then fix:setRestitution(value.restitution) end
-        if value.friction    then fix:setFriction   (value.friction   ) end
-        if value.sensor      then fix:setSensor     (value.sensor     ) end
-        if value.density     then fix:setDensity    (value.density    ) 
-                                                         density = true end
-
-        if filters then
-            local categoryBits, maskBits, groupIndex = fix:getFilter()
-            fix:setFilter(
-                category or categoryBits, 
-                mask     or maskBits, 
-                group    or groupIndex
-            )
-        end
-
-        fix.kills  = value.kills
-        fix.name   = k
-        fix.sensor = value.sensor
-
-        outFixtures[k] = fix
+    for k, v in pairs(def) do
+        outFixtures[k] = Physics.addFixture(v, body, category, mask, group)
+        outFixtures[k].name = k
     end
 
-    if density then body:resetMassData() end
+    if body.density then body:resetMassData() end
 
     return outFixtures
+end
+
+function Physics.addFixture(def, body, category, mask, group)
+    if is_array(def) then
+        local fixtures  = {}
+        for k, v in pairs(def) do
+            fixtures[k] = Physics.addFixture(v, body, category, mask, group)
+            fixtures[k].name = k
+        end
+        return fixtures
+    end
+
+    local fix = dict[def.option](body,  unpack(def.args))
+    if def.restitution then fix:setRestitution(def.restitution) end
+    if def.friction    then fix:setFriction   (def.friction   ) end
+    if def.sensor      then fix:setSensor     (def.sensor     ) end
+    if def.density     then fix:setDensity    (def.density    ) 
+                                            body.density = true end
+
+    local filters = category or mask or group
+    if filters then
+        local categoryBits, maskBits, groupIndex = fix:getFilter()
+        fix:setFilter(
+            category or categoryBits, 
+            mask     or maskBits, 
+            group    or groupIndex
+        )
+    end
+
+    fix.kills  = def.kills
+    fix.sensor = def.sensor
+
+    return fix
 end
 
 function Physics:makeItemBody(x, y, option, params, prop)

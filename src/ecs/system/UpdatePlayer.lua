@@ -16,16 +16,10 @@ function UpdatePlayer:update(e, dt, player, action)
     e.dy           = -1 * to(action.up  ) + to(action.down )
     e.dt           = 1 / (dt * e.moveDef.timeFactor)
 
+    e:monitorTasks()
     e.tasks()
-    --e:monitorTasks()
-    e:move()
+    e:moveDoor()
     e:applyDamage()
-
-    e.physics = {
-    	onGround  = e:onGround(),
-    	touchWall = e.touch
-	}
-
 end
 
 

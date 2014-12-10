@@ -11,6 +11,7 @@ function input.initialState()
 	}
 end
 input.initialState()
+input.state = state
 
 local function bindActionCallback( keyCode, callback1, callback2 )
 	local callbacks = state.keyboardCallbacks
@@ -112,7 +113,7 @@ local function onKeyboardEvent ( keyCode, down )
 		  callback()
 	end
 
-	if callback == nil and table == nil and down then print(keyCode) end
+	if callback == nil and table == nil and down then print('\t'..keyCode) end
 	state.keyboardStatus[keyCode] = down and true or nil
 end
 

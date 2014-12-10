@@ -8,7 +8,7 @@ end
 function UpdateMove:update(e, _, controller, ability, move)
     ability = {
         {'jump', 'setJump'},
-        {},
+        {'run' , ''},
     }
 
 

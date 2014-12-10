@@ -14,7 +14,7 @@ function Entity:_init(level, x, y)
 end
 
 function Entity:tick() 
-	self.ticks = self.ticks + 1
+	self:runSystem('UpdateTicks')
 end
 
 function Entity:remove()
@@ -23,6 +23,16 @@ function Entity:remove()
 end
 
 function Entity:draw()	
+end
+
+function Entity:runSystem(system, dt)
+    dt = dt or self.dt
+    local syst = require('ecs.system.'..system)
+    local args = {syst, self, dt}
+    for _,component in pairs(syst:requires()) do
+        table.insert(args, self[component])
+    end
+    syst.update(unpack(args))
 end
 
 return Entity
