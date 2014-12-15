@@ -14,4 +14,4 @@ if jit then print(jit.version) end
 
 project = calculate_current_dirpath()
 
-require(project .. 'src.Itemology')
+require(project .. 'src.Bootstrap')

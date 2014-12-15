@@ -226,6 +226,12 @@ function Player:reaction(enemy, attacker)
 end
 
 local function setFixtureMask(fix, mask)
+    if not is_userdata(fix) then
+        for _,f in pairs(fix) do
+            setFixtureMask(f, mask)
+        end
+        return
+    end
     local categoryBits, maskBits, groupIndex = fix:getFilter()
     fix:setFilter(categoryBits, mask, groupIndex)
 end
@@ -240,7 +246,9 @@ function Player:maskFixtures (value, name)
 
     if is_string(name) then setFixtureMask(self.body.fixtures[name], value)
     else 
-        for _,f in pairs(self.body.fixtures) do setFixtureMask(f, value) end
+        for _,f in pairs(self.body.fixtures) do
+            setFixtureMask(f, value)
+        end
     end
 end
 

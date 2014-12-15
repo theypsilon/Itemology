@@ -20,9 +20,10 @@ local function lazyLoadEntityByName(self)
     end)
 end
 
-function Level:_init(mapfile)
-    self.name = mapfile 
-    self.map  = Map(mapfile)
+function Level:_init(mapfile, manager)
+    self.manager = manager
+    self.name    = mapfile 
+    self.map     = Map(mapfile)
     self.map:setLayer(Layer.main)
 
     self.entitiesInMap = {}
@@ -54,14 +55,14 @@ function Level:add(entity)
     self.entities[entity] = true
     self:insertEntity(entity, self.map:toXYO(entity.pos.x, entity.pos.y))
     self.entityByName = lazyLoadEntityByName(self)
-    manager:add_entity(entity)
+    self.manager:add_entity(entity)
 end
 
 function Level:remove(entity)
     self.entities[entity] = nil
     self:removeEntity(entity, self.map:toXYO(entity.pos.x, entity.pos.y))
     self.entityByName = lazyLoadEntityByName(self)
-    manager:remove_entity(entity)
+    self.manager:remove_entity(entity)
 end
 
 function Level:getEntities(xo, yo, x1, y1)

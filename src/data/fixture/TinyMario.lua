@@ -8,7 +8,8 @@ return {
                 restitution = 0,
                 friction = 0
         },
-        foot = {{
+        foot = {
+            {
                 option = 'circle',
                 args = {-4, 8, 2},
                 sensor = true

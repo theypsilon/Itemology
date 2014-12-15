@@ -1,11 +1,12 @@
 local System = class()
 
-function System:_init()
+function System:_init(manager)
 	local array = self:requires()
 	assert(is_array(array) and #array >= 1)
 
 	self.components = array
 	self.entities   = {}
+	self.manager    = manager
 end
 
 function System:requires()

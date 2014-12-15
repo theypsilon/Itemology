@@ -71,8 +71,9 @@ end
 function Physics.registerFixtures(def, body, category, mask, group)
     local outFixtures = {}
     for k, v in pairs(def) do
-        outFixtures[k] = Physics.addFixture(v, body, category, mask, group)
-        outFixtures[k].name = k
+        local out = Physics.addFixture(v, body, category, mask, group)
+        if is_userdata(out) then out.name = k end
+        outFixtures[k] = out
     end
 
     if body.density then body:resetMassData() end

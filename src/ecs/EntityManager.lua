@@ -48,7 +48,7 @@ end
 function EntityManager:add_system(name)
 	if self.system_by_name[name] then error('already there: '..name) end
 
-	local system = require ('ecs.system.'..name)()
+	local system = require ('ecs.system.'..name)(self)
 	for _, c in pairs(system:requires()) do
 		self.components[c] = self.components[c] or {}
 		table.insert(self.components[c], system)
