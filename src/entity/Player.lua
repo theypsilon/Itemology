@@ -64,13 +64,7 @@ function Player:_init(level, def, p)
     local _
     _, self.limit_map_y = level.map:getBorder()
 
-    self.moveDef    = require 'data.motion.Mario'
-    if self.moveDef.update then
-        self.tasks:set('def_update', function()
-            package.loaded  ['data.motion.Mario']   = nil
-            self.moveDef = require 'data.motion.Mario'
-        end, 40)
-    end
+    self.moveDef = require 'data.motion.Mario'
 
     self.hp = self.moveDef.hitpoints
     self.damage = {}
