@@ -29,8 +29,16 @@ dict['chain'    ] = bodyTable.addChain
 
 local function clear_error() error 'im already cleared' end
 
+local function destroyFixtures(fixtures)
+    for k,v in pairs(fixtures) do
+        if v.destroy       then v:destroy()
+        elseif is_table(v) then destroyFixtures(v)
+        else error 'Logic' end
+    end
+end
+
 function bodyTable:clear()
-    for k,v in pairs(self.fixtures) do v:destroy() end
+    destroyFixtures(self.fixtures)
     self:destroy()
     self.fixtures = nil
     self.clear    = false--clear_error

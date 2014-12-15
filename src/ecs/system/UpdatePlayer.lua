@@ -18,7 +18,6 @@ function UpdatePlayer:update(e, dt, player, action)
 
     e:monitorTasks()
     e.tasks()
-    e:moveDoor()
     e:applyDamage()
 end
 

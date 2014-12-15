@@ -92,18 +92,6 @@ function Player:moveVertical()
     if vy < -400 then self.body:applyLinearImpulse(0, -vy - 400) end
 end
 
-function Player:moveDoor()
-    if self.action.up and self.door then
-        if self.door.level and self.door.level ~= self.level.name then
-            self.change_scene = {'First', self.door, self.hp}
-        else
-            local link = self.door.layer.objects[self.door.link]
-            if link then self.body:setTransform(link.x, link.y) end
-        end
-        self.action.up = false
-    end
-end
-
 local function move_on_wallhack(self)
     local dx, dy = self.dx, 
     -1 * (self.action.up and 1 or 0) + (self.action.down and 1 or 0)

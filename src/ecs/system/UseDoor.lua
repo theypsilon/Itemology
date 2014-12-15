@@ -18,5 +18,4 @@ function UseDoor:update(e, dt, door, action, level, body, hp)
     end
 end
 
-
 return UseDoor

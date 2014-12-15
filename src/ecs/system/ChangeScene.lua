@@ -1,4 +1,4 @@
-local Scenes, Physics; import()
+local Scenes, Physics, Layer, Application; import()
 local System; import 'ecs'
 local ChangeScene = class(System)
 
@@ -7,7 +7,10 @@ function ChangeScene:requires()
 end
 
 function ChangeScene:update(e, _, change_scene)
-    Physics:clear()
+    Layer.text:clear()
+    Physics   :clear()
+    Layer.main:clear()
+    Layer.text = nil
     Scenes.run(unpack(change_scene))
 end
 
