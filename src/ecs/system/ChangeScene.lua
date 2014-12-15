@@ -12,6 +12,7 @@ function ChangeScene:update(e, _, change_scene)
     Layer.main:clear()
     Layer.text = nil
     Scenes.run(unpack(change_scene))
+    e.change_scene = nil
 end
 
 

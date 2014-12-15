@@ -42,15 +42,7 @@ end
 function Player.object.Power(self, o, p)
     if p ~= BEGIN then return end
 
-    self.tasks:once('object.Power '..o.power, function()
-        self:findPower(o)
-
-        local remove = tonumber(o.remove) or 1
-
-        if remove <= 1 
-        then o:remove()
-        else o.remove = remove - 1 end
-    end)
+    self.collision_power = o
 end
 
 return Player

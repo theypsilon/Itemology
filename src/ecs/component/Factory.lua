@@ -26,13 +26,7 @@ local function head_foot_sensor(p, fa, fb, a)
 
     if not self.ground.on and fb.name == 'head' and self.vy >= 0
     and enemy and enemy.hurtBy then
-        self.tasks:once('jumpenemy', function() 
-            if self.bounce < self.ticks then
-                enemy:hurtBy(self) 
-                self:reaction(enemy)
-                self.bounce = self.ticks + 2
-            end
-        end)
+        self.jump_enemy = enemy
     end
 end
 
