@@ -103,32 +103,34 @@ local function apply_bases(klass, base)
     return base
 end
 
-local function get_metaindex(klass)
-    local index = rawget(klass, '__index')
-    if index then
-        return function(t, key) 
-            return rawget(t, key) or index(t, key) 
-        end
-    else
-        return klass
-    end
-end
-
 local function local_name_of(t, level)
     local idx = 1
 
     while true do
         local ln, lv = debug.getlocal(level, idx)
         if lv == t then return ln  end
-        if not ln  then return nil end
+        if not ln  then return "nil" end
         idx = 1 + idx
     end
+    return "wtf"
 end
 
 local function metanewindex(t, k, v)
     getmetatable(t).__newindex  = nil
-    if not t._name then t._name = local_name_of(t, 3) or '<none>' end
+    if not rawget(t, '_name') then rawset(t, '_name', local_name_of(t, 3) or '<none>') end
     t[k] = v
+end
+
+local function get_metaindex(klass)
+    local index = rawget(klass, '__index')
+    if index then
+        return function(t, key)
+            if not rawget(t, '_name') then rawset(t, '_name', local_name_of(t, 3) or '<none>') end
+            return rawget(t, key) or index(t, key) 
+        end
+    else
+        return klass
+    end
 end
 
 -- class public methods

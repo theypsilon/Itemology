@@ -40,36 +40,6 @@ local function hand_sensor(side)
     end
 end
 
-function Physics:extractComponents(fixtures, prop, parent)
-    local components = {}
-
-    local body   = self:registerBody(fixtures, prop, parent)
-    local fix    = body.fixtures
-
-    if fix.foot1 and fix.foot2 then
-        body.groundCount   = 0
-        for _,sensor in pairs{fix.foot1, fix.foot2} do
-            sensor:setCollisionHandler(ground_foot_sensor, BEGEND)
-        end
-        components.ground  = { on = false }
-    end
-
-    if fix.foot3 then
-        fix.foot3:setCollisionHandler(head_foot_sensor, BEGIN)
-        components.bounce  = 0
-    end
-
-    if fix.hand1 and fix.hand2 then
-        body.lateralTouch  = 0
-        fix.hand1:setCollisionHandler(hand_sensor(-1), BEGEND)
-        fix.hand2:setCollisionHandler(hand_sensor( 1), BEGEND)
-        components.touch   = { on = 0 }
-    end
-
-    components.body = body
-    return components
-end
-
 function Factory.makeAllFromFixtures(fixtures, prop, parent)
     local components = {}
 

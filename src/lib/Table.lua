@@ -32,10 +32,13 @@ local function count( tab )
     return i
 end
 
-local function deep_copy(from, to)
+local function deep_copy(from, to, already)
     local ret = (to == nil) and {} or to
-    for k, v in pairs(from) do 
-        ret[k] = type(v) == 'table' and deep_copy(v) or v 
+    if not already then already = {} end
+    if already[from] then return "<recursion>" end
+    already[from] = true
+    for k, v in pairs(from) do
+        ret[k] = type(v) == 'table' and deep_copy(v, nil, already) or v 
     end
     return ret
 end

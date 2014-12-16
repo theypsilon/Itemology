@@ -39,7 +39,6 @@ function UpdateJumpState:update(e, dt, state, selector, resource)
         assert(resource [jump_name], 'resource doesnt know about jump_name: '..jump_name)
         local res = resource[jump_name]
         if res >= 1 then
-            print(jump_type)
             resource[jump_name]   = res - 1
             local jump_class = Jumps[jump_name]
             state.jumping    = jump_class(e)
@@ -47,7 +46,6 @@ function UpdateJumpState:update(e, dt, state, selector, resource)
             change_state(jump_type, state)
         end
     else
-        print(next_state)
         state.state = next_state
     end
 end

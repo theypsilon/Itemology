@@ -1,0 +1,35 @@
+
+local common = {}
+
+function common.set_systems(manager)
+    manager:add_system('UpdateInput')
+    manager:add_system('UpdateVelocity')
+    manager:add_system('UpdateDirection')
+    manager:add_system('UpdateWalkingAI')
+    manager:add_system('UpdateGroundDetector')
+    manager:add_system('UseDoor')
+    manager:add_system('UpdateLateralTouch')
+    manager:add_system('UpdateLevelPosition')
+    manager:add_system('RemoveEntities')
+    manager:add_system('UpdateLevelScript')
+    manager:add_system('UpdateWalker')
+    manager:add_system('MovePlayer')
+    manager:add_system('ApplyDamage')
+    manager:add_system('JumpEnemy')
+    manager:add_system('ReactionPlayer')
+    manager:add_system('WoundedPlayer')
+    manager:add_system('PlayerCollisionPower')
+    manager:add_system('MaskFixtures')
+    manager:add_system('UpdateJumpState')
+    manager:add_system('UpdateWalkingEnemy')
+    manager:add_system('UpdateFallingMovement')
+    manager:add_system('UpdateObject')
+    manager:add_system('Animate')
+    manager:add_system('UpdateCamera')
+    manager:add_system('UpdateTicks')
+    manager:add_system('ShowSelection')
+    manager:add_system('ShowResources')
+    manager:add_system('ChangeScene')
+end
+
+return common

@@ -52,8 +52,6 @@ function Player:_init(level, def, p)
     self:_setPower(p)
     self:_setInitialMove(p)
 
-    self.tasks = Tasks()
-
     self.body:setTransform(p.x, p.y)
     self.prop:setPriority(5000)
 

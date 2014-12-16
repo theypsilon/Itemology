@@ -113,7 +113,7 @@ local function onKeyboardEvent ( keyCode, down )
 		  callback()
 	end
 
-	if callback == nil and table == nil and down then print('\t'..keyCode) end
+	if callback == nil and table == nil and down then print('\tkeyCode:'..keyCode) end
 	state.keyboardStatus[keyCode] = down and true or nil
 end
 

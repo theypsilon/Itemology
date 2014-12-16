@@ -2,11 +2,12 @@ local System; import 'ecs'
 
 local EntityManager = class()
 
-function EntityManager:_init()
+function EntityManager:_init(di)
 	self.systems        = {}
 	self.entities       = {}
 	self.system_by_name = {}
 	self.components     = {}
+	self.di             = di or {}
 
 	self.new_index = function(entity, k, v)
 		rawset(entity, k, v)
@@ -48,7 +49,9 @@ end
 function EntityManager:add_system(name)
 	if self.system_by_name[name] then error('already there: '..name) end
 
-	local system = require ('ecs.system.'..name)(self)
+	local system_class = require ('ecs.system.'..name)
+	if not rawget(system_class, '_name') then rawset(system_class, '_name', name) end
+	local system = system_class(self, self.di.system_logger)
 	for _, c in pairs(system:requires()) do
 		self.components[c] = self.components[c] or {}
 		table.insert(self.components[c], system)
