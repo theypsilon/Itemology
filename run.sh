@@ -8,6 +8,8 @@ echo ''
 
 cd "$(dirname $0)"
 
+rm log/systems/*.log || true
+
 echo "$@" > arguments
 
 cd src

@@ -29,6 +29,10 @@ local function is_negative(n)
     return is_number(n) and n < 0
 end
 
+local function is_fundamental(v)
+    return is_number(v) or is_boolean(v) or is_nil(v) or is_string(v)
+end
+
 local function is_object(o)
     return is_table(o) or is_userdata(o)
 end
@@ -96,6 +100,7 @@ local exports = {
     is_integer  = is_integer ,
     is_positive = is_positive,
     is_negative = is_negative,
+    is_fundamental = is_fundamental,
 
     is_relative_path = is_relative_path,
 }

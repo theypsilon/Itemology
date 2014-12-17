@@ -1,8 +1,12 @@
-local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Text, Data, CommonScene; import()
+local Scenes, Layer, Camera, Level, Data, Physics, Tasks, Input, Text, Data, CommonScene, Logger; import()
 local SystemLogger  = require 'ecs.SystemLogger'
 local EntityManager = require 'ecs.EntityManager'
 
 scene = {}
+
+local function logger_factory(filename)
+    return Logger(project .. "/log/systems/" .. filename)
+end
 
 function scene:load(start, hp)
 
@@ -11,7 +15,7 @@ function scene:load(start, hp)
     if Data.MainConfig.dev.debug_physics then Layer.main:setBox2DWorld (Physics.world) end
 
     local di = {}
-    di.system_logger = SystemLogger()
+    di.system_logger = SystemLogger(logger_factory)
     local manager = EntityManager(di)
 
     CommonScene.set_systems(manager)
@@ -26,6 +30,7 @@ function scene:load(start, hp)
     local player    = level.player
     local cameras   = {}
 
+    if defined('tickClock') then manager:add_entity(tickClock) end
     manager:add_entity(player)
     manager:add_entity(level)
     for e, _ in pairs(level.entities) do
@@ -81,6 +86,8 @@ function scene:update(dt)
         end)
         self.player.removed = nil
     end
+
+    MOAISim:forceGC()
 
     gTasks()
 end

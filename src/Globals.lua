@@ -22,6 +22,7 @@ local Tasks = require 'Tasks'
 
 global{gTasks    = Tasks  ()}
 global{timeStart = os.time()}
+global{tickClock = {ticks = 0}}
 
 global{nothing = function(   )                      end}
 global{die     = function(...) dump(...); os.exit() end}

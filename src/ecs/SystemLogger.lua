@@ -1,31 +1,45 @@
 local SystemLogger = class()
 
-function SystemLogger:_init(logger, folderpath, is_deep_diff)
-    self.folderpath   = folderpath
-    self.is_deep_diff = is_deep_diff
-    self.system_set   = {}
-    self.logger       = logger
-end
-
-local function copy(entity)
-    local result = {}
-    if not is_table(entity) then die(entity) end
-    for component_key, component_value in pairs(entity) do
-        result[component_key] = is_table(component_value) and table.shallow_copy(component_value) or component_value
-    end
-    return result
+function SystemLogger:_init(logger_factory, folderpath, is_deep_diff)
+    self.folderpath     = folderpath
+    self.is_deep_diff   = is_deep_diff
+    self.system_set     = {}
+    self.logger_factory = logger_factory
+    self.entity_id      = 0
+    self.entities       = {}
 end
 
 local function compare(c1, c2)
+    if not is_table(c1) then
+        return c1 == c2
+    end
+
     local bool = true
-    if is_table(c1) then
-        for k, v in pairs(c1) do
-            bool = bool and c2[k] == v
-        end
-    else
-        bool = bool and c1 == c2
+    for k, v in pairs(c1) do
+        bool = bool and c2[k] == v
     end
     return bool
+end
+
+local function to_string(key, value)
+    local format
+    if is_number(value) then
+        format = "%s:%.2g"
+    elseif is_table(value) then
+        local temp = ""
+        for k, v in pairs(value) do
+            if not is_fundamental(v) then
+                temp = false
+                break
+            end
+            temp = temp .. (temp == "" and "" or ",") .. to_string(k, v)
+        end
+        value  = temp
+        format = value and "%s:{%s}" or "%s"
+    else
+        format = "%s:%s"
+    end
+    return string.format(format, key, value)
 end
 
 function SystemLogger:proxy_updating_methods(system)
@@ -36,7 +50,7 @@ function SystemLogger:proxy_updating_methods(system)
     local update = class_instance.update
     assert(update)
     local update_proxy = function(system, e, dt, ...)
-        local backup = self:copy_for_diff(e)
+        local backup = SystemLogger.copy_for_diff(e)
         update(system, e, dt, ...)
         self:add_diff(id, backup, e)
     end
@@ -55,40 +69,82 @@ function SystemLogger:get_id(system)
     local system_descriptor = self.system_set[system]
     if not system_descriptor then
         local count = table.count(self.system_set) + 1
+        local file  = count .. "_" .. system._name .. ".log"
+        if count < 100 then file = "0" .. file end
+        if count <  10 then file = "0" .. file end
         system_descriptor = {
-            file = count .. "_" .. system._name .. ".log", 
-            entities = {}
+            file     = file,
+            logger   = self.logger_factory(file)
         }
         self.system_set[system] = system_descriptor
     end
     return system_descriptor
 end
 
-function SystemLogger:copy_for_diff(entity)
-    return copy(entity)
+function SystemLogger.copy_for_diff(entity)
+    local result = {}
+    for component_key, component_value in pairs(entity) do
+        if is_table(component_value) then
+            result[component_key] = table.shallow_copy(component_value)
+        else
+            result[component_key] = component_value
+        end
+    end
+    return result
 end
 
-function SystemLogger:add_diff(system_descriptor, before, after)
+function SystemLogger:add_diff(system_descriptor, before, entity)
     local added, modified, missing = {}, {}, {}
-    for after_k, after_v in pairs(after) do
+
+    for after_k, after_v in pairs(entity) do
         local before_v = before[after_k]
-        if not before_v then
-            table.insert(added, after_k)
+        if is_nil(before_v) then
+            table.insert(added, to_string(after_k, after_v))
         elseif not compare(before_v, after_v) then
-            table.insert(modified, after_k)
+            table.insert(modified, to_string(after_k, after_v))
         end
         before[after_k] = nil
     end
-    for before_k, _ in pairs(before) do
-        table.insert(missing, before_k)
+
+    for before_k, before_v in pairs(before) do
+        if not is_nil(before_v) then 
+            table.insert(missing, to_string(before_k, before_v)) 
+        end
     end
-    local entry = "added:{" .. table.concat(added, ",") .. "}"
-           .. ", missing:{" .. table.concat(missing, ",") .. "}"
-           ..", modified:{" .. table.concat(modified, ",") .. "}"
-    if not system_descriptor[after] or system_descriptor[after] ~= entry then
-        system_descriptor[after] = entry
-        print(system_descriptor.file .. " > " .. entry)
+
+    self:insert_entry(system_descriptor, entity, added, modified, missing)
+end
+
+function SystemLogger:insert_entry(system_descriptor, entity, added, modified, missing)
+    if not system_descriptor[entity] then
+        local id = self.entities[entity]
+        if not id then 
+            id = tostring(entity) .. " " .. self.entity_id
+            self.entity_id = self.entity_id + 1
+            self.entities[entity] = id
+        end
+        system_descriptor[entity] = {
+            id         = id,
+            last_entry = SystemLogger.create_entry(id)
+        }
     end
+
+    local descriptor_entity = system_descriptor[entity]
+
+    local entry = SystemLogger.create_entry(descriptor_entity.id, added, missing, modified)
+
+    if descriptor_entity.last_entry ~= entry then
+        descriptor_entity.last_entry = entry
+        system_descriptor.logger:info(entry)
+    end
+end
+
+function SystemLogger.create_entry(id, added, missing, modified)
+    return string.format("(%s) +{%s} -{%s} ~{%s}", 
+        id, 
+        added and table.concat(added, ",") or '',
+        missing and table.concat(missing, ",") or '', 
+        modified and table.concat(modified, ",") or '')
 end
 
 function SystemLogger:add_remove(system_descriptor, entity)
