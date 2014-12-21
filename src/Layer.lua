@@ -40,7 +40,7 @@ function layer.clear_all()
     for _, value in pairs(MOAIRenderMgr.getRenderTable()) do
         value:clear()
     end
-    MOAIRenderMgr.setRenderTable{}
+    --MOAIRenderMgr.setRenderTable{}
 end
 
 return setmetatable(layer, {
