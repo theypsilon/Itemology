@@ -7,11 +7,10 @@ function ChangeScene:requires()
 end
 
 function ChangeScene:update(e, _, change_scene)
-    Layer.text:clear()
-    Physics   :clear()
-    Layer.main:clear()
-    Layer.text = nil
-    Scenes.run(unpack(change_scene))
+    Layer.clear_all()
+
+    self.manager.next = change_scene
+
     e.change_scene = nil
 end
 

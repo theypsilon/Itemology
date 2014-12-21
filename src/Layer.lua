@@ -23,8 +23,6 @@ local function make_layer(t, index)
         newLayer:removeProp(prop) 
     end
 
-
-
     newLayer:setViewport(Application.viewport)
 
     local renderTable = MOAIRenderMgr.getRenderTable() or {}
@@ -37,7 +35,15 @@ local function make_layer(t, index)
     return newLayer
 end
 
-return setmetatable({}, { 
+local layer = {}
+function layer.clear_all()
+    for _, value in pairs(MOAIRenderMgr.getRenderTable()) do
+        value:clear()
+    end
+    MOAIRenderMgr.setRenderTable{}
+end
+
+return setmetatable(layer, {
     __index    = make_layer, 
     __newindex = function() error 'impossible' end 
 })

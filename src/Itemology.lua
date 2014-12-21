@@ -25,10 +25,11 @@ function Itemology._init(args)
     Input.bindAction(1    , function() debug.debug()              end)
 
     if args[1] == 'test' and  args[2] then
-        Scenes.run("test." .. args[2])
+        scene = Scenes.load("test." .. args[2])
     else
-        Scenes.run('First')
+        scene = Scenes.load('First')
     end
+    scene.init_package = {}
 end
 
 -- public interface
@@ -44,9 +45,23 @@ end
 
 -- private use
 function Itemology.loop(dt)
-    if scene then
-        scene:update(dt)
-        scene:draw()
+    if not scene then
+        print 'Itemology ends now!'
+        os.exit()
+    end
+
+    if not scene.manager then
+        scene:init()
+    end
+
+    scene:update(dt)
+    scene:draw()
+
+    if scene.manager.next then
+        scene:clear()
+        local next_scene   = scene.manager.next
+        scene              = Scenes.load(next_scene.name)
+        scene.init_package = next_scene.params
     end
 end
 

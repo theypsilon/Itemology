@@ -9,7 +9,7 @@ end
 function UseDoor:update(e, dt, door, action, level, body, hp)
     if action.up or action.door then
         if door.level and door.level ~= level.name then
-            e.change_scene = {'First', door, hp}
+            e.change_scene = {name='First', params={door, hp}}
         else
             local link = door.layer.objects[door.link]
             if link then body:setTransform(link.x, link.y) end

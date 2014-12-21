@@ -38,13 +38,15 @@ function Camera:_init(target, area, padding)
 end
 
 local function validateTarget(target)
-    if target:is_a(Entity) == false then
-        error 'the target is not a valid "Entity" object'
-    end
+    return target and target.pos and
+        (target.pos.x or target.x) and
+        (target.pos.y or target.y)
 end
 
 function Camera:setTarget(target)
-    validateTarget(target)
+    if not validateTarget(target) then
+        error 'target not valid!'
+    end
 
     local endx, endy = target.map:getBorder()
 
