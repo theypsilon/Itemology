@@ -122,8 +122,8 @@ function common.get_prototype(start_prototype)
     end
 
     function common_scene:clear()
-        Layer.text:clear()
-        Layer.text = nil
+        Physics:clear()
+        Layer.clear_all()
     end
 
     return common_scene

@@ -7,8 +7,6 @@ function ChangeScene:requires()
 end
 
 function ChangeScene:update(e, _, change_scene)
-    Layer.clear_all()
-
     self.manager.next = change_scene
 
     e.change_scene = nil

@@ -19,7 +19,7 @@ function Player:_init(level, def, p)
     self.input  = Data.key.Player1
     self.action = {}
 
-    self.jumpState = { state='stand' }
+    self.jumpState = { state = 'stand', jumped = true }
     self.jumpResource = { 
         SingleStandardJump = math.huge,
         DoubleStandardJump = 0,
