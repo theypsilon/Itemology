@@ -1,8 +1,8 @@
 local System; import 'ecs'
 local Jumps; import()
 
-local UpdateJumpState = class(System)
-function UpdateJumpState:requires()
+local UpdateState = class(System)
+function UpdateState:requires()
 	return {'jumpState', 'jumpSelector', 'jumpResource'}
 end
 
@@ -22,7 +22,7 @@ local function change_state(jump_type, state)
     else error('wrong jump_type: '..jump_type) end
 end
 
-function UpdateJumpState:update(e, dt, state, selector, resource)
+function UpdateState:update(e, dt, state, selector, resource)
 
     if state.jumped and not e.action.jump then
         state.jumped = nil
@@ -39,10 +39,9 @@ function UpdateJumpState:update(e, dt, state, selector, resource)
         assert(resource [jump_name], 'resource doesnt know about jump_name: '..jump_name)
         local res = resource[jump_name]
         if res >= 1 then
-            resource[jump_name]   = res - 1
-            local jump_class = Jumps[jump_name]
-            state.jumping    = jump_class(e)
-            state.state      = 'jump'
+            resource[jump_name] = res - 1
+            e[jump_name]        = Jumps[jump_name](e)
+            state.state         = 'jump'
             change_state(jump_type, state)
         end
     else
@@ -50,7 +49,7 @@ function UpdateJumpState:update(e, dt, state, selector, resource)
     end
 end
 
-function UpdateJumpState:stand(state, e)
+function UpdateState:stand(state, e)
     state.djumped = nil
     state.wjumped = nil
     if not state.jumped and e.action.jump then
@@ -60,14 +59,10 @@ function UpdateJumpState:stand(state, e)
     end
 end
 
-function UpdateJumpState:jump(state, e)
-    if not state.jumping(e) then
-        state.jumping = nil
-        return 'fall'
-    end
+function UpdateState:jump(state, e)
 end
 
-function UpdateJumpState:fall(state, e)
+function UpdateState:fall(state, e)
     if not state.djumped and not state.jumped and e.action.jump then
         return 'jump', 'double_jump'
     elseif e.onEnemy then
@@ -81,7 +76,7 @@ function UpdateJumpState:fall(state, e)
     end
 end
 
-function UpdateJumpState:slide(state, e)
+function UpdateState:slide(state, e)
     if e.touch.on ~= state.sliding then
         return 'fall'
     elseif not state.jumped and e.action.jump then
@@ -91,4 +86,4 @@ function UpdateJumpState:slide(state, e)
     end
 end
 
-return UpdateJumpState
+return UpdateState

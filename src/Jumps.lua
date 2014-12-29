@@ -1,78 +1,33 @@
 local Job, Physics; import()
 
-local SingleStandardJump = class()
-function SingleStandardJump:_init(e)
-	self.step = 1
-	self.body = e.body
-	self.def  = e.moveDef.jumpImp
-	self.action = e.action
+local function SingleStandardJump(e)
+    local component = {}
+	component.step   = 1
+	component.def    = e.moveDef.jumpImp
+	component.action = e.action
+    return component
 end
 
-function SingleStandardJump:__call()
-	self.body:applyLinearImpulse(0, -self.def[self.step])
-	self.step = self.step + 1
-	return self.step <= #self.def and self.action.jump
+local function DoubleStandardJump(e)
+    local component = {}
+	component.def  = e.moveDef
+    return component
 end
 
-local DoubleStandardJump = class()
-function DoubleStandardJump:_init(e)
-	self.body = e.body
-	self.def  = e.moveDef
-	self.e    = e
+local function WallStandardJump(e)
+    local component = {}
+	component.def  = e.moveDef
+    return component
 end
 
-function DoubleStandardJump:__call()
-	local e = self.e
-	local vx, vy = e.vx, e.vy
-	local def = self.def
-    if vx > def.djumpMaxVx then vx = def.djumpMaxVx end
-    self.body:setLinearVelocity(vx, -def.djumpUp)
+local function BounceStandardJump(e)
+    local component = {}
+	component.def  = e.moveDef
+    return component
 end
 
-local WallStandardJump = class()
-function WallStandardJump:_init(e)
-	self.body = e.body
-	self.def  = e.moveDef
-	self.e    = e
-end
-
-local abs = math.abs
-local function sig(value) return value < 0 and -1 or 1 end
-
-function WallStandardJump:__call()
-	local touch = self.e.jumpState.sliding
-	local def = self.def
-	local dx = self.e.dx
-
-    self.body:setLinearVelocity(
-        -touch * ( def.wjumpVxPlus + abs(dx) * def.wjumpVxBase ),
-        -def.wjumpUp
-    )
-end
-
-local BounceStandardJump = class()
-function BounceStandardJump:_init(e)
-	self.body = e.body
-	self.def  = e.moveDef
-	self.e    = e
-end
-
-function BounceStandardJump:__call()
-	local e      = self.e
-	local vx, vy = e.vx, e.vy
-	local def    = self.def
-    if vx > def.djumpMaxVx then vx = def.djumpMaxVx end
-    self.body:setLinearVelocity(vx, -def.djumpUp)
-end
-
-local SMJump = {}
-function SMJump:__call()
-	self.sm()
-	return self.sm.finished ~= true
-end
-
-local FalconJump = class(SMJump)
-function FalconJump:_init(e)
+local function FalconJump(e)
+    local component = {}
 
     local vx, vy = e.vx, e.vy
     local dx, dy = vx > 0 and 1 or -1, vy > 0 and 1 or -1
@@ -111,7 +66,7 @@ function FalconJump:_init(e)
         if cancel == cancelled then c:fallthrough(3) end
     end
 
-    self.sm = Job.interval(function(c)
+    component.sm = Job.interval(function(c)
         x, y = x + e.dx, y - e.dy
         try_cancel(c)
     end, 0, charge_t):after(function(c)
@@ -128,10 +83,11 @@ function FalconJump:_init(e)
         e.move = nil
         e.body:setGravityScale(gravity)
     end)
+    return component
 end
 
-local SpaceJump = class(SMJump)
-function SpaceJump:_init(e)
+local function SpaceJump(e)
+    local component = {}
 
     local def = e.moveDef
 
@@ -140,7 +96,7 @@ function SpaceJump:_init(e)
 
     local maxFallSp = e.moveDef.sjumpMaxFallSpeed
 
-    self.sm = Job.interval(function(c)
+    component.sm = Job.interval(function(c)
         if not e.action.jump then return c:next() end
         e.body:applyLinearImpulse(0, -150)
     end, 0, #e.moveDef.jumpImp) :after(function(c)
@@ -151,23 +107,22 @@ function SpaceJump:_init(e)
     :finally(function()
         e.body:setGravityScale(gravity)
     end)
+    return component
 end
 
-local KirbyJump = class(SMJump)
-function KirbyJump:_init(e)
+local function KirbyJump(e)
+    local component = {}
 
-	self.body = e.body
-	self.def  = e.moveDef
-	self.e    = e
+	component.def  = e.moveDef
 
-	DoubleStandardJump.__call(self)
+	DoubleStandardJump.__call(component)
 
     local time, cadence, maxFallSp = e.moveDef.kjumpFullTime,
                                      e.moveDef.kjumpCadenceTime,
                                      e.moveDef.kjumpFallSpeedLimit
 
     local step = 0
-    self.sm = Job.chain(function(c)
+    component.sm = Job.chain(function(c)
         step = step + 1
         if not e.action.jump then c:next() end
         if e.ground.on or step > time then c:exit() end
@@ -177,7 +132,7 @@ function KirbyJump:_init(e)
         step = step + 1
         if e.action.jump then
             if c.last <= step then 
-                DoubleStandardJump.__call(self)
+                DoubleStandardJump.__call(component)
                 c.last = step + cadence 
             end
             return c:next(1)
@@ -187,11 +142,12 @@ function KirbyJump:_init(e)
         if e.vy > maxFallSp then e.body:setLinearVelocity(e.vx, maxFallSp) end
     end)
 
-    self.sm.last = cadence
+    component.sm.last = cadence
+    return component
 end
 
-local TeleportJump = class(SMJump)
-function TeleportJump:_init(e)
+local function TeleportJump(e)
+    local component = {}
 
     local vx, vy, dx, dy = e.vx, e.vy, e.dx, e.dy
     local vdx, vdy = vx > 50 and 1 or vx < -50 and -1 or dx,
@@ -230,7 +186,7 @@ function TeleportJump:_init(e)
         e.body:setGravityScale(0)
         e.moveVertical = nothing
 
-        self.sm = Job.chain(function(c)
+        component.sm = Job.chain(function(c)
             if not e.action.jump or freezing <= 0 then c:exit() end
             e.body:setTransform(tx, ty)
             freezing = freezing - 1
@@ -241,14 +197,11 @@ function TeleportJump:_init(e)
             e.moveVertical = nil
         end)
     end
+    return component
 end
 
-local function movePeach(self)
-    self:moveLateral(self:calcMainForces())    
-end
-
-local PeachJump = class(SMJump)
-function PeachJump:_init(e)
+local function PeachJump(e)
+    local component = {}
     local gravity = e.body:getGravityScale()
 
     print(gravity)
@@ -260,7 +213,7 @@ function PeachJump:_init(e)
     local fly = e.moveDef.pjumpFlyTime
     local rep = e.moveDef.pjumpRepeat
 
-    self.sm = Job.interval(function(c)
+    component.sm = Job.interval(function(c)
         if not e.action.jump then c:next() end
     end, 0, fly):after(function(c)
         if e.move == movePeach then
@@ -277,10 +230,11 @@ function PeachJump:_init(e)
             c:next(1)  
         end
     end)
+    return component
 end
 
-local DixieJump = class(SMJump)
-function DixieJump:_init(e)
+local function DixieJump(e)
+    local component = {}
     local gravity = e.body:getGravityScale()
 
     e.body:setLinearVelocity(e.vx, 0)
@@ -290,7 +244,7 @@ function DixieJump:_init(e)
     local speed, vxLimit = e.moveDef.xjumpJumpSpeed, 
                            e.moveDef.xjumpJumpVertLimit
 
-    self.sm = Job.interval(function()
+    component.sm = Job.interval(function()
         local vx = abs(e.vx) < vxLimit and e.vx or sig(e.vx)*vxLimit
         e.body:setLinearVelocity(vx, -speed)
     end, 0, e.moveDef.xjumpJumpTime):after(function(c)
@@ -318,7 +272,8 @@ function DixieJump:_init(e)
 
     if (e.vy > e.moveDef.xjumpRejumpVyLimit) or 
        (not e.moveDef.xjumpRejumpFalling and e.tasks.callbacks.falling)
-    then self.sm:next(3) end
+    then component.sm:next(3) end
+    return component
 end
 
 local Jumps = {}
