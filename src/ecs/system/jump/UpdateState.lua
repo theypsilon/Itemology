@@ -23,6 +23,7 @@ local function change_state(jump_type, state)
 end
 
 function UpdateState:update(e, dt, state, selector, resource)
+    state, selector, resource = self:get_components(e)
 
     if state.jumped and not e.action.jump then
         state.jumped = nil

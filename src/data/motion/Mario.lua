@@ -48,7 +48,7 @@ return {
 
     tjumpDiagonalFactor = 65,
     tjumpStraightFactor = 110,
-    tjumpFreezing       = math.huge,
+    tjumpFreezing       = 0,
 
     pjumpGravity        = 0,
     pjumpFlyTime        = 60,

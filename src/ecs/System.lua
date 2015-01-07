@@ -6,6 +6,7 @@ function System:_init(manager, logger)
 	assert(getmetatable(self).update_all == System.update_all, "don't overwrite update_all")
 
 	self.components = array
+	self.buffer     = table.keys(array)
 	self.entities   = {}
 	self.manager    = manager
 
@@ -28,6 +29,14 @@ function System:add_entity(entity)
 	self.entities[entity] = true
 end
 
+function System:get_components(entity)
+	local pack = self.buffer
+	for key, c in pairs(self.components) do
+		pack[key] = entity[c]
+	end
+	return unpack(pack)
+end
+
 function System:remove_entity(entity)
 	self.entities[entity] = nil
 end
@@ -36,14 +45,13 @@ function System:update(e, dt)
 	error 'system must overwrite "update" or "update_all" method'
 end
 
+local next = next
 function System:update_all(dt)
-	local args = table.keys(self.components)
-	local del  = {}
-	local logger = self.logger
-	local comp
-	local backup
-	for e,_ in pairs(self.entities) do
-		for k, c in pairs(self.components) do
+	local entities = self.entities
+	if next(entities) == nil then return end
+	local components, args, del, comp, backup = self.components, table.keys(self.components), {}
+	for e,_ in pairs(entities) do
+		for k, c in pairs(components) do
 			comp = e[c]
 			args[k] = comp
 			if not comp then break end

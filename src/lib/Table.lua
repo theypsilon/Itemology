@@ -160,8 +160,7 @@ end
 
 local function empty(t)
     if not_table(t) then return true  end
-    for k,v in pairs(t) do return false end
-    return true
+    return next(t) == nil
 end
 
 local function each(t, f)
