@@ -25,6 +25,7 @@ local function JumpingText(level, msg, x, y)
         za = rand()*0.7 + 2,
         z  = 2
     }
+    e._name="particle.JumpingText"
     return e
 end
 

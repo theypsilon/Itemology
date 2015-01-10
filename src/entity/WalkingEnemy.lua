@@ -55,6 +55,7 @@ local function WalkingEnemy(level, definition, p)
 
     e.moveDef = definition.motion
     e.walkDir = p.properties and p.properties.dir or 1
+    e._name = "WalkingEnemy"
     return e
 end
 

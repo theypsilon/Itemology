@@ -20,9 +20,6 @@ end
 
 function EntityManager:add_entity(entity)
 	local m = getmetatable(entity)
-	if m then
-		dump(m)
-	end
 	if not m then
 		m = {}
 		setmetatable(entity, m)

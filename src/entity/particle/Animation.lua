@@ -14,6 +14,7 @@ local function ParticleAnimation(level, def, default, p, prop, skip, ...)
     e.animation_result = {}
 
     e.prop = e.animation.prop
+    e._name="particle.Animation"
     return e
 end
 

@@ -25,6 +25,7 @@ local function Spawn(level, definition, p)
     spawn.entity     = require(spawn.definition.class)
 
     e.spawn = spawn
+    e._name = "Spawn"
     return e
 end
 

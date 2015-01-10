@@ -19,6 +19,7 @@ function UpdateInput:update(e, _, input, action)
         if not pushed then
         	pushed   = self.keys[string.byte(code)]
         end
+        if pushed then print(action_name) end
         action[action_name] = pushed
     end
 end

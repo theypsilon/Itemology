@@ -8,12 +8,6 @@ function ShowResources:_init(...)
     self.jumpResource_texts = {}
 end
 
-function ShowResources:__gc()
-    for _, text in pairs(self.jumpResource_texts) do
-        --Layer.Debug:removeProp(text)
-    end
-end
-
 function ShowResources:requires()
 	return {'jumpResource'}
 end

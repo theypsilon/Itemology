@@ -7,6 +7,7 @@ local function Object(level, definition, p, layer, k)
     if o.body then 
         o.layer = layer
         if not o._name then o._name = 'Object' end
+        print ("parent")
         o.body.parent = o
     end
 
