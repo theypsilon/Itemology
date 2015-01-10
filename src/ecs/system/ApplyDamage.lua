@@ -30,7 +30,7 @@ function ApplyDamage:update(e, dt, damage, level, hp, ticks, pos)
         e.hp = hp - dmg
         if e.hp <= 0 then 
             level:add(PAnim(level, Data.animation.TinyMario, 'die', pos))
-            e:remove()
+            e.removed = true
         end
         level:add(PText(level, tostring(-dmg), pos.x, pos.y))
         e.mask_fixture = {area = woundedMask}

@@ -1,5 +1,3 @@
-local Text; import()
-
 local Player = {}
 
 local BEGIN = MOAIBox2DArbiter.BEGIN
@@ -25,7 +23,9 @@ Player.contact = {}
 function Player.contact.WalkingEnemy(self, enemy, p, a, fb)
     if p ~= BEGIN then return end
 
-    if fb.kills then self:hurtBy(enemy) end
+    if fb.kills then
+        self.damage[enemy] = self.ticks + 1
+    end
 end
 
 function Player.contact.Object (self, object, p)

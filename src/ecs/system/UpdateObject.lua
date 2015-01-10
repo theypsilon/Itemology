@@ -1,8 +1,6 @@
 local System; import 'ecs'
 local UpdateObject = class(System)
 
-local Mob = require 'entity.Mob'
-
 function UpdateObject:requires()
 	return {'isobject'}
 end

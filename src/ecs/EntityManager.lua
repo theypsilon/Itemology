@@ -53,7 +53,7 @@ function EntityManager:add_system(name)
 	if self.system_by_name[name] then error('already there: '..name) end
 
 	local system_class = require ('ecs.system.'..name)
-	if not rawget(system_class, '_name') then rawset(system_class, '_name', name) end
+	rawset(system_class, '_name', name)
 	local system = system_class(self, self.di.system_logger)
 	for _, c in pairs(system:requires()) do
 		self.components[c] = self.components[c] or {}

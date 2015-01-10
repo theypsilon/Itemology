@@ -10,8 +10,6 @@ function Space:update(e, dt, jump, state, body)
 end
 
 function Space.state_1(e, dt, jump, state, body)
-    local def = e.moveDef
-
     jump.gravity = body:getGravityScale()
     body:setGravityScale(jump.def.sjumpGravity)
 

@@ -1,7 +1,5 @@
 local Layer, Graphics, Data; import()
 
-local Entity = require 'entity.Entity'
-
 local Camera = class()
 
 local function validate(area, padding)

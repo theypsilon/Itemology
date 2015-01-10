@@ -1,8 +1,6 @@
 local System; import 'ecs'
 local UpdateWalkingEnemy = class(System)
 
-local Mob = require 'entity.Mob'
-
 function UpdateWalkingEnemy:requires()
 	return {'dnoononoºººº'}
 end

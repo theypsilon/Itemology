@@ -1,4 +1,4 @@
-local Input, Text, Job, Data; import()
+local Data; import()
 
 local Player = {}
 

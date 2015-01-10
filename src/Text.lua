@@ -44,7 +44,10 @@ function Text:print(string, x, y, style, rect, yflip, layer)
     if yflip then textbox:setYFlip(true)    end
 
     if not layer then layer = Layer.text end
-    if layer then layer:insertProp(textbox) end
+    if layer then
+        layer:insertProp(textbox)
+        textbox.clear = layer.clearProp
+    end
 
     table.insert(self.store, textbox)
     return textbox

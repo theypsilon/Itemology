@@ -25,7 +25,7 @@ local function head_foot_sensor(p, fa, fb, a)
     local enemy = fb:getBody().parent
 
     if not self.ground.on and fb.name == 'head' and self.vy >= 0
-    and enemy and enemy.hurtBy then
+    and enemy and enemy.walkingai then
         self.jump_enemy = enemy
     end
 end

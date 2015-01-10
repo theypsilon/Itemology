@@ -15,7 +15,7 @@ function UpdateLevelPosition:update(e, _, level, body, pos)
 
     local _, limit = level.map:getBorder()
     if y > limit + 100 then
-    	e:remove()
+        e.removed = true
     end
 
     if e.removed then

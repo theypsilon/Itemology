@@ -1,41 +1,31 @@
-local Entity; import 'entity'
-
-local Spawn = class(Entity)
-
-function Spawn:_init   (level, definition, p)
-    Entity._init(self, level, p.x, p.y)
+local function Spawn(level, definition, p)
+    local e = {}
+    e.pos = {x = p.x, y = p.y}
+    e.ticks  = 0
+    e.level  = level
+    e.map    = level.map
 
     local pref  = definition.preferenceData
 
+    local spawn = {}
     if pref then
-        self.entity = definition.entity
-        self.num    = definition.total
-        self.rate   = definition.rate
-        self.offset = definition.offset
+        spawn.entity = definition.entity
+        spawn.num    = definition.total
+        spawn.rate   = definition.rate
+        spawn.offset = definition.offset
     else
         p = p.properties
-        self.entity = p.entity or p.class
-        self.num    = p.total
-        self.rate   = p.rate
-        self.offset = p.offset
+        spawn.entity = p.entity or p.class
+        spawn.num    = p.total
+        spawn.rate   = p.rate
+        spawn.offset = p.offset
     end
 
-    definition = nil
+    spawn.definition = require('data.entity.' .. spawn.entity)
+    spawn.entity     = require(spawn.definition.class)
 
-    self.definition = require('data.entity.' .. self.entity)
-    self.entity     = require(self.definition.class)
-end
-
-function Spawn:tick()
-    if self.offset then
-        self.offset = self.offset - 1
-        if self.offset < 0 then self.offset = nil end
-    elseif self.ticks % self.rate == 0 and self.num > 0 then
-        self.level:add(self.entity(self.level, self.definition, self.pos))
-        self.num = self.num - 1
-    end
-
-    Entity.tick(self)
+    e.spawn = spawn
+    return e
 end
 
 return Spawn

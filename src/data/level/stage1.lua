@@ -51,8 +51,8 @@ return function(level, camera)
 
         if not visible:contains(player) then
             player.jumpState.can_wall_jump = true
-            player.attackState.can_attack  = true
-            player.attackState.can_special = true
+            -- player.attackState.can_attack  = true
+            -- player.attackState.can_special = true
             c:next() 
         end
     end):after(function(c)

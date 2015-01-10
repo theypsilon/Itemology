@@ -1,40 +1,6 @@
-local Animation, Physics, Data; import()
-local Mob, Position; import 'entity'
+local Animation, Physics; import()
 
-local WalkingEnemy = class(Mob)
-
-function WalkingEnemy:_init(level, definition, p)
-    local pos = p.x and p or p.pos
-
-    if not pos then pos = {x = 100, y = 400} end
-
-    Mob._init(self, level, pos.x, pos.y)
-
-    self.animation = Animation(definition.animation)
-    self.prop      = self.animation.prop
-
-    self.walk      = { dx = 0, left = false}
-    self.direction = { x  = 0,    y = 0    }
-    self.velocity  = { x  = 0,    y = 0    }
-    self.ground    = { on = false          }
-    self.walkingai = true
-
-    self.body = Physics:registerBody(definition.fixture, self.prop, self)
-
-    self:_setListeners()
-
-    self.body:setTransform(pos.x, pos.y)
-
-    self.initial_x, self.initial_y = pos.x, pos.y
-
-    local _
-    _, self.limit_map_y = level.map:getBorder()
-
-    self.moveDef = definition.motion
-    self.walkDir = p.properties and p.properties.dir or 1
-end
-
-function WalkingEnemy:_setListeners()
+local function setListeners(self)
     local fix = self.body.fixtures
     local function floorSensor(var)
         self[var] = 0
@@ -58,26 +24,38 @@ function WalkingEnemy:_setListeners()
     fix.hole_right:setCollisionHandler(floorSensor('gRight'), begend)
 end
 
-local abs = math.abs
+local function WalkingEnemy(level, definition, p)
+    local e = {}
+    local pos = {x = p.x, y = p.y}
 
-function WalkingEnemy:morePath(vx)
-    return self[vx > 0 and 'gRight' or 'gLeft'] ~= 0
-end
+    e.pos = pos
+    e.ticks  = 0
+    e.level  = level
+    e.map    = level.map
 
-function WalkingEnemy:animate()
-    self.animation:next()
-end
+    e.animation = Animation(definition.animation)
+    e.prop      = e.animation.prop
 
-function WalkingEnemy:draw(...)
-    Mob.draw(self, ...)
-end
+    e.walk      = { dx = 0, left = false}
+    e.direction = { x  = 0,    y = 0    }
+    e.velocity  = { x  = 0,    y = 0    }
+    e.ground    = { on = false          }
+    e.walkingai = true
 
-function WalkingEnemy:hurtBy(rival)
-    if rival._name == 'Player' then
-        local P = require 'entity.particle.Animation'
-        self.level:add(P(self.level, Data.animation.Goomba, 'die', self.pos))
-        self:remove()
-    end
+    e.body = Physics:registerBody(definition.fixture, e.prop, e)
+
+    setListeners(e)
+
+    e.body:setTransform(pos.x, pos.y)
+
+    e.initial_x, e.initial_y = pos.x, pos.y
+
+    local _
+    _, e.limit_map_y = level.map:getBorder()
+
+    e.moveDef = definition.motion
+    e.walkDir = p.properties and p.properties.dir or 1
+    return e
 end
 
 return WalkingEnemy

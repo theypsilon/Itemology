@@ -1,16 +1,17 @@
 local System; import 'ecs'
 local Animate = class(System)
 
-local Mob = require 'entity.Mob'
-
 function Animate:requires()
 	return {'animation'}
 end
 
-function Animate:update(e, dt)
-    if e.animate then e:animate()
-    elseif e.tick then e:tick()
-    else e.animation:next() end
+function Animate:update(e, dt, animation)
+    local animation_result = e.animation_result
+    if animation_result then
+        animation_result.changed, animation_result.alive = animation:next()
+    else
+        animation:next()
+    end
 end
 
 
