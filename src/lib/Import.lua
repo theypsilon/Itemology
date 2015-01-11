@@ -40,7 +40,7 @@ local function make_exportable(exports)
     return exports
 end
 
-return make_exportable {
+return {
     add_package_path = add_package_path,
     import           = import,
     make_exportable  = make_exportable

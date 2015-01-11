@@ -105,6 +105,4 @@ local exports = {
     is_relative_path = is_relative_path,
 }
 
-require('lib.Import').make_exportable(exports)
-
 return exports

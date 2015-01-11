@@ -1,19 +1,19 @@
-local Scenes, Layer, Camera, Level, Physics, Tasks, Input, Text, Data, Logger; import()
+local Scenes, Layer, Camera, Level, Physics, Tasks, Input, Text, Data, TickLogger; import()
 local SystemLogger  = require 'ecs.SystemLogger'
 local EntityManager = require 'ecs.EntityManager'
 
 local common = {}
 
 function common.set_systems(manager)
-    manager:add_system('UpdateInput')
+    manager:add_system('InputToAction')
     manager:add_system('SelectNextJump')
     manager:add_system('UpdateSpawn')
     manager:add_system('UpdateVelocity')
     manager:add_system('UpdateDirection')
     manager:add_system('UpdateWalkingAI')
-    manager:add_system('UpdateGroundDetector')
+    manager:add_system('SenseGround')
     manager:add_system('UseDoor')
-    manager:add_system('UpdateLateralTouch')
+    manager:add_system('SenseLateralTouch')
     manager:add_system('UpdateLevelPosition')
     manager:add_system('RemovePlayer')
     manager:add_system('RemoveEntities')
@@ -52,7 +52,7 @@ function common.set_systems(manager)
 end
 
 local function logger_factory(filename)
-    return Logger(project .. "/log/systems/" .. filename)
+    return TickLogger(project .. "/log/systems/" .. filename)
 end
 
 function common.get_prototype(start_prototype)

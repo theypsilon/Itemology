@@ -1,1 +1,0 @@
-inspect = require 'inspect.inspect'

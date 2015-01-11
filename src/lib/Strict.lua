@@ -1,10 +1,13 @@
-local function strict(env, main)
+local env, main, mt
+
+local function set_strict(environment, is_in_main)
+    env, main = environment, is_in_main
 
     main = env == _G and main
 
     if type(env) ~= 'table' then error 'env must be a table' end
 
-    local mt = getmetatable(env)
+    mt = getmetatable(env)
     if mt == nil then
         mt = {}
         setmetatable(env, mt)
@@ -35,30 +38,22 @@ local function strict(env, main)
         end
         return rawget(t, n)
     end
-
-    local function global(...)
-        local params = {...}
-        if params[1]  and  type(params[1]) == 'table' 
-        then for k, v in  pairs(params[1]) do mt.__declared[k] = true; env[k] = v end
-        else for _, v in ipairs(params)    do mt.__declared[v] = true end 
-        end
-    end
-
-    local function defined (var) return mt.__declared[var] and rawget(env,var) ~= nil end
-    local function declared(var) return mt.__declared[var] end
-
-    return {
-        global   = global,
-        defined  = defined,
-        declared = declared
-    }
 end
 
-local exports = strict(_G)
+local function global(...)
+    local params = {...}
+    if params[1]  and  type(params[1]) == 'table' 
+    then for k, v in  pairs(params[1]) do mt.__declared[k] = true; env[k] = v end
+    else for _, v in ipairs(params)    do mt.__declared[v] = true end 
+    end
+end
 
-exports['strict'  ] = strict
-exports['__STRICT'] = true
+local function defined (var) return mt.__declared[var] and rawget(env,var) ~= nil end
+local function declared(var) return mt.__declared[var] end
 
-require('lib.Import').make_exportable(exports)
-
-return exports
+return {
+    set_strict = set_strict,
+    global     = global,
+    defined    = defined,
+    declared   = declared
+}

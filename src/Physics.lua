@@ -125,7 +125,7 @@ end
 function Physics:makeItemBody(x, y, option, params, prop)
     assert(is_number(x) and is_number(y), tostring(x) .. ':' .. tostring(y))
     assert(is_string(option), option)
-    assert(is_array(params), var_export(params))
+    assert(is_array(params), dump_string(params))
     return Physics:registerBody({
         option = 'static',
         fixtures = {

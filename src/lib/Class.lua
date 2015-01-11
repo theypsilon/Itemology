@@ -259,6 +259,4 @@ local exports = {
     gc         = class.gc,
 }
 
-require('lib.Import').make_exportable(exports)
-
 return exports

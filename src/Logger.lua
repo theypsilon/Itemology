@@ -14,12 +14,12 @@ function Logger:_init(filepath)
     self.file = io.open(filepath, "a")
 end
 
-function Logger.get_timestamp()
-    return defined('tickClock') and tickClock.ticks or os.clock()
+function Logger.timer()
+    return os.clock()
 end
 
 function Logger:log(level, message)
-    local entry = string.format("%g |%s| %s\n", Logger.get_timestamp(), level, message)
+    local entry = string.format("%g |%s| %s\n", self.timer(), level, message)
     self.file:write(entry)
     self.file:flush()
 end 

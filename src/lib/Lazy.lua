@@ -51,6 +51,4 @@ local exports = {
     restart_lazy = restart_lazy
 }
 
-require('lib.Import').make_exportable(exports)
-
 return exports

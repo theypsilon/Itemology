@@ -225,6 +225,4 @@ local exports = {
     explode         = explode,
 }
 
-require('lib.Import').make_exportable(exports)
-
 return exports
