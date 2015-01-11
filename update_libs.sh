@@ -23,3 +23,4 @@ install https://github.com/theypsilon/lua-strict.git
 install https://github.com/theypsilon/lua-type.git
 install https://github.com/theypsilon/lua-table.git
 install https://github.com/theypsilon/lua-lazy.git
+install https://github.com/theypsilon/luafun.git

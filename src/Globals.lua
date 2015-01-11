@@ -1,9 +1,6 @@
 -- require 3rd party libs
 
-local Fun = require 'lib.fun'
-
--- own lua libs
-
+local Fun = require 'lib.luafun.fun'
 local Import = require 'lib.lua-import'
 local Strict = require 'lib.lua-strict'
 local Type = require 'lib.lua-type'
