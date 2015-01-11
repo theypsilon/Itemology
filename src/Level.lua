@@ -97,50 +97,6 @@ function Level:removeEntity (entity, xo, yo)
     self:getEntities(xo, yo)[entity] = nil
 end
 
-function Level:tick(dt, xo, yo, x1, y1)
-    for e,_ in pairs(self.entities) do
-        local pos = e.pos
-        local ixo, iyo = self.map:toXYO(pos.x, pos.y)
-        e:tick(dt)
-        assert(type(ixo) == 'number')
-        assert(type(iyo) == 'number')
-        if e.removed then
-            if e.prop then e.prop:clear(); e.prop = nil end
-            if e.body then e.body:clear(); e.body = nil end
-            self.entities[e] = nil
-            self:removeEntity(e, ixo, iyo)
-        else
-            local fxo, fyo = self.map:toXYO(pos.x, pos.y)
-            assert(type(fxo) == 'number')
-            assert(type(fyo) == 'number')
-            if fxo ~= ixo or fyo ~= iyo then
-                self:removeEntity(e, ixo, iyo)
-                self:insertEntity(e, fxo, fyo)
-            end
-        end
-    end
-    if self.script then self.script() end
-end
-
-function Level:clear()
-    self:clearEntities()
-    self:clearStructure()
-end
-
-function Level:clearEntities()
-    for e,_ in pairs(self.entities) do
-        if e.clear then e:clear(); e.clear = nil end
-    end
-end
-
-function Level:clearStructure()
-    if self.structure and self.structure.clear then
-        self.structure:clear()
-        self.structure.clear = nil
-        self.structure = nil
-    end
-end
-
 function Level:initEntities(layer)
     layer = layer._name == 'LayerObject' and layer or self.map(layer)
     for k,v in pairs(layer.objects) do

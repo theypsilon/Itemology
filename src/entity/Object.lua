@@ -7,13 +7,10 @@ local function Object(level, definition, p, layer, k)
     if o.body then 
         o.layer = layer
         if not o._name then o._name = 'Object' end
-        print ("parent")
         o.body.parent = o
     end
 
     if not o.pos then o.pos = {x = o.x, y = o.y} end
-
-    o.isobject = true
 
     if not o.tick then o.tick = nothing end
 

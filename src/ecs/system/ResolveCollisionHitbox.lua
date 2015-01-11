@@ -14,6 +14,7 @@ function ResolveCollisionHitbox:update(e, dt, collision)
     pcall(function()
         ResolveCollisionHitbox.contact[contact._name](e, contact, p, a, fb)
     end)
+    e.hitbox_collision = nil
 end
 
 local BEGIN = MOAIBox2DArbiter.BEGIN
