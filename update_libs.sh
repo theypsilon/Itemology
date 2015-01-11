@@ -14,9 +14,9 @@ install() {
     local repo=$1
     local dir=$2
     if [ -z "$dir" ]; then
-        git clone $repo || true
+        git clone --recursive $repo || true
     else
-        git clone $repo $dir || true
+        git clone --recursive $repo $dir || true
     fi
 }
 
