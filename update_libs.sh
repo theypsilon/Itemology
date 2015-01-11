@@ -12,7 +12,8 @@ cd "$LIB_FOLDER"
 
 install() {
     local repo=$1
-    git clone $repo
+    git clone $repo || true
 }
 
 install https://github.com/theypsilon/lua-dump.git
+install https://github.com/theypsilon/lua-class.git

@@ -8,7 +8,7 @@ local Import = require 'lib.Import'
 local Strict = require 'lib.Strict'
 local Type = require 'lib.Type'
 local Table = require 'lib.Table'
-local Class = require 'lib.Class'
+local Class = require 'lib.lua-class.class'
 local Dump = require 'lib.lua-dump'
 local Lazy = require 'lib.Lazy'
 
