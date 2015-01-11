@@ -4,8 +4,8 @@ libpath = '../lib/'
 srcpath = './'
 
 --package.path = package.path .. ";../lib/?.lua"
-require(srcpath .. 'lib.Import').add_package_path(srcpath)
-require(srcpath .. 'lib.Import').add_package_path(project)
+require(srcpath .. 'lib.lua-import/init').add_package_path(srcpath)
+require(srcpath .. 'lib.lua-import/init').add_package_path(project)
 
 -- loading game main module
 local Itemology   = require 'Itemology'
