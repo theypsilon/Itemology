@@ -12,15 +12,21 @@ cd "$LIB_FOLDER"
 
 install() {
     local repo=$1
-    git clone $repo || true
+    local dir=$2
+    if [ -z "$dir" ]; then
+        git clone $repo || true
+    else
+        git clone $repo $dir || true
+    fi
 }
 
-install https://github.com/theypsilon/lua-dump.git
-install https://github.com/theypsilon/lua-class.git
-install https://github.com/theypsilon/lua-arg-file.git
-install https://github.com/theypsilon/lua-import.git
-install https://github.com/theypsilon/lua-strict.git
-install https://github.com/theypsilon/lua-type.git
-install https://github.com/theypsilon/lua-table.git
-install https://github.com/theypsilon/lua-lazy.git
-install https://github.com/theypsilon/luafun.git
+install https://github.com/theypsilon/lua-dump.git Dump
+install https://github.com/theypsilon/lua-class.git Class
+install https://github.com/theypsilon/lua-arg-file.git ArgFile
+install https://github.com/theypsilon/lua-import.git Import
+install https://github.com/theypsilon/lua-strict.git Strict
+install https://github.com/theypsilon/lua-type.git Type
+install https://github.com/theypsilon/lua-table.git Table
+install https://github.com/theypsilon/lua-lazy.git Lazy
+install https://github.com/theypsilon/luafun.git Fun
+install https://github.com/Kadoba/Advanced-Tiled-Loader.git ATL

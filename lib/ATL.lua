@@ -1,1 +1,0 @@
-tiled = require "ATL/Loader"

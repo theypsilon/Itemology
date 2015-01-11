@@ -1,11 +1,7 @@
 -- setting folder base structure
-project = project and project or '../'
-libpath = '../lib/'
-srcpath = './'
+project = '../'
 
---package.path = package.path .. ";../lib/?.lua"
-require(srcpath .. 'lib.lua-import/init').add_package_path(srcpath)
-require(srcpath .. 'lib.lua-import/init').add_package_path(project)
+require 'lib.Import/init' .add_package_path("./")
 
 -- loading game main module
 local Itemology   = require 'Itemology'

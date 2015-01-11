@@ -1,13 +1,13 @@
--- require 3rd party libs
+-- libs
 
-local Fun = require 'lib.luafun.fun'
-local Import = require 'lib.lua-import'
-local Strict = require 'lib.lua-strict'
-local Type = require 'lib.lua-type'
-local Table = require 'lib.lua-table'
-local Class = require 'lib.lua-class'
-local Dump = require 'lib.lua-dump'
-local Lazy = require 'lib.lua-lazy'
+local Fun = require 'lib.Fun.fun'
+local Import = require 'lib.Import'
+local Strict = require 'lib.Strict'
+local Type = require 'lib.Type'
+local Table = require 'lib.Table'
+local Class = require 'lib.Class'
+local Dump = require 'lib.Dump'
+local Lazy = require 'lib.Lazy'
 
 -- export inner definitions to scope
 

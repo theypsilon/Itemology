@@ -1,7 +1,7 @@
 -- defining global variables, after this, declaring a global is forbidden
 require 'Globals'
 
-local ArgFile = require 'lib.lua-arg-file'
+local ArgFile; import('lib')
 local Scenes, Data, Input, map, resource; import()
 
 local Itemology = {}
