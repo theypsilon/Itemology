@@ -1,13 +1,15 @@
 -- libs
 
-local Fun = require 'lib.Fun.fun'
-local Import = require 'lib.Import'
-local Strict = require 'lib.Strict'
-local Type = require 'lib.Type'
-local Table = require 'lib.Table'
-local Class = require 'lib.Class'
-local Dump = require 'lib.Dump'
-local Lazy = require 'lib.Lazy'
+local libpath = "lib/"
+
+local Import = require (libpath .. 'Import')
+local Strict = require (libpath .. 'Strict')
+local Type   = require (libpath .. 'Type')
+local Table  = require (libpath .. 'Table')
+local Class  = require (libpath .. 'Class')
+local Dump   = require (libpath .. 'Dump')
+local Lazy   = require (libpath .. 'Lazy')
+local Fun    = require (libpath .. 'Fun.fun')
 
 -- export inner definitions to scope
 

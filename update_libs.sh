@@ -2,7 +2,7 @@
 
 set -e
 
-readonly LIB_FOLDER="src/lib/"
+readonly LIB_FOLDER="lib/"
 
 cd "$(dirname $0)"
 

@@ -8,7 +8,7 @@ local Itemology = {}
 
 -- private use
 function Itemology._get_arguments()
-    return ArgFile.parse("../arguments")
+    return ArgFile.parse("arguments")
 end
 
 -- private use

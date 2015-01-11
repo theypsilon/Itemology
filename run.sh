@@ -12,6 +12,4 @@ rm log/systems/*.log || true
 
 echo "$@" > arguments
 
-cd src
-
-moai Bootstrap.lua
+moai src/Bootstrap.lua
