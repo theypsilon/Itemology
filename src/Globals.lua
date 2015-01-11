@@ -11,14 +11,14 @@ local Lazy = require 'lib.Lazy'
 
 -- export inner definitions to scope
 
-Fun() -- already includes helper for exporting to global scope
-Import.make_exportable(Import)(_G)
-Import.make_exportable(Strict)(_G)
-Import.make_exportable(Type)(_G)
-Import.make_exportable(Table)(table)
-Import.make_exportable(Class)(_G)
-Import.make_exportable(Dump)(_G)
-Import.make_exportable(Lazy)(_G)
+Import.export(Import)
+Import.export(Strict)
+Import.export(Type)
+Import.export(Table, table)
+Import.export(Class)
+Import.export(Dump)
+Import.export(Lazy)
+Import.export(Fun)
 
 -- setting strict mode to avoid defining more globals by mistake
 

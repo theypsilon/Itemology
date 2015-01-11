@@ -1,7 +1,6 @@
 -- setting folder base structure
 project = '../'
-
-require 'lib.Import/init' .add_package_path("./")
+package.path = package.path .. ';?/init.lua'
 
 -- loading game main module
 local Itemology   = require 'Itemology'

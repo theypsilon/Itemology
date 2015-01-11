@@ -33,4 +33,4 @@ function resource.getDirectoryPath(path)
     return path:match("(.*"..resource.DIRECTORY_SEPARATOR..")")
 end
 
-return make_exportable(resource)
+return resource
