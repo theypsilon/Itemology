@@ -6,11 +6,8 @@ function UpdateFallingMovement:requires()
 end
 
 function UpdateFallingMovement:update(e, _, def, v, body)
-    if def.addGravity + v.y > def.maxVyFall 
-    then body:applyLinearImpulse(0, def.maxVyFall - v.y - def.addGravity)
-    else body:applyLinearImpulse(0, def.addGravity) end
-
-    if v.y < -400 then body:applyLinearImpulse(0, -v.y - 400) end
+    local apply = def.addGravity
+    body:applyLinearImpulse(0, apply)
 end
 
 

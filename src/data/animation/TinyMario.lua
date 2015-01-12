@@ -21,7 +21,7 @@ return {
             y = y + e
 
             coroutine.yield()
-            body:applyLinearImpulse(0, -175)
+            body:setLinearVelocity(0, -130)
             body:setGravityScale(.5)
 
             local v

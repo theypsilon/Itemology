@@ -1,7 +1,7 @@
 return {
     update              = true,
 
-    hitpoints           = 1,
+    hitpoints           = 10,
 
     -- MOTION
 
@@ -11,15 +11,15 @@ return {
     maxVxRun            = 250, -- maximum speed by running
     alwaysRun           = false,
 
-    slowWalk            = 1.5, -- slowdown rate when stop walking (friction-like)
-    slowRun             = 0.4, -- slowdown rate when stop running (friction-like)
+    slowWalk            = .6258, -- slowdown rate when stop walking (friction-like)
+    slowRun             = .9,  -- slowdown rate when stop running (friction-like)
     maxVyFall           = 250, -- maximum speed when falling down
     addGravity          = 10,  -- additional gravity for the character
     timeFactor          = 40,  -- factor rate: multiplies time differential
 
     -- JUMPS
 
-    jumpImp             = {250, 00, 20, 20, 40, 20, 20, 20}, -- progressive jump impulse
+    jumpImp             = {340, 340, 315, 315, 290, 290, 240, 240}, -- progressive jump impulse
 
     wjumpVxBase         = 150, -- wall jump lateral base velocity
     wjumpVxPlus         = 25, -- wall jump additional velocity if move keys are pressed

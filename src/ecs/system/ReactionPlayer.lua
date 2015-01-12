@@ -36,7 +36,9 @@ function ReactionPlayer:reaction(e, enemy, attacker)
             -rx*250 * (e.action.run  and 1.60 or 1.05), 
             -ry*100 * (e.action.jump and 3.00 or 1)
 
-        e.body:applyLinearImpulse(ix * 1.1, iy * .5)
+        ix, iy = ix * 1.1 * .8, iy * .5 *.9
+
+        e.body:setLinearVelocity(ix, iy)
     end
     
 end

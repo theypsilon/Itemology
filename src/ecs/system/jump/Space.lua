@@ -22,11 +22,11 @@ end
 function Space.state_2(e, dt, jump, state, body)
     local step = jump.step + 1
     jump.step = step
-    if step == #jump.def.jumpImp or not e.action.jump then
+    if step == 30 or not e.action.jump then
         jump.state = "state_3"
         if not e.action.jump then return end
     end
-    body:applyLinearImpulse(0, -150)
+    body:setLinearVelocity(e.vx, -150)
 end
 
 function Space.state_3(e, dt, jump, state, body)
