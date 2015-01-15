@@ -13,11 +13,8 @@ cd "$LIB_FOLDER"
 install() {
     local repo=$1
     local dir=$2
-    if [ -z "$dir" ]; then
-        git clone --recursive $repo || true
-    else
-        git clone --recursive $repo $dir || true
-    fi
+    git clone --recursive --depth=1 $repo $dir || true
+    rm -rf "$dir/.git" || true
 }
 
 install https://github.com/theypsilon/lua-dump.git Dump
