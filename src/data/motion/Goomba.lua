@@ -8,6 +8,6 @@ return {
     oaHorForce = 2.4, -- on air horizontal force
     maxVxWalk  = 30, -- maximum speed by walking
 
-    slowWalk   = 10, -- slowdown rate when stop walking (friction-like)
-    slowRun    = 0.4, -- slowdown rate when stop running (friction-like)
+    slowWalk   = .6258, -- slowdown rate when stop walking (friction-like)
+    slowRun    = .9, -- slowdown rate when stop running (friction-like)
 }

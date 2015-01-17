@@ -9,7 +9,7 @@ function BounceStandard:update(e, dt, jump, state, body)
     local vx, vy = e.vx, e.vy
     local def    = jump.def
     if vx > def.djumpMaxVx then vx = def.djumpMaxVx end
-    body:setLinearVelocity(vx, -def.djumpUp)
+    e.physic_change:setLinearVelocity(vx, -def.djumpUp)
     state.state = 'fall'
     e.BounceStandardJump = nil
 end

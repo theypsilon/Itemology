@@ -16,6 +16,8 @@ local function Player(level, def, p)
         e[k] = v
     end
 
+    e.physic_change = Factory.makePhysicChange()
+
     e.input  = Data.key.Player1
     e.action = {}
 

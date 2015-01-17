@@ -26,7 +26,7 @@ function Space.state_2(e, dt, jump, state, body)
         jump.state = "state_3"
         if not e.action.jump then return end
     end
-    body:setLinearVelocity(e.vx, -150)
+    e.physic_change:setLinearVelocity(e.vx, -150)
 end
 
 function Space.state_3(e, dt, jump, state, body)
@@ -35,7 +35,7 @@ function Space.state_3(e, dt, jump, state, body)
         return
     end
     local maxFallSp = jump.def.sjumpMaxFallSpeed
-    if e.vy > maxFallSp then body:setLinearVelocity(e.vx, maxFallSp) end
+    if e.vy > maxFallSp then e.physic_change:setLinearVelocity(e.vx, maxFallSp) end
 end
 
 function Space.state_4(e, dt, jump, state, body)

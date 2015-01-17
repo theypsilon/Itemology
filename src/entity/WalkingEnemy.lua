@@ -1,4 +1,5 @@
 local Animation, Physics; import()
+local Factory; import 'ecs.component'
 
 local function setListeners(self)
     local fix = self.body.fixtures
@@ -43,6 +44,7 @@ local function WalkingEnemy(level, definition, p)
     e.walkingai = true
 
     e.body = Physics:registerBody(definition.fixture, e.prop, e)
+    e.physic_change = Factory.makePhysicChange()
 
     setListeners(e)
 

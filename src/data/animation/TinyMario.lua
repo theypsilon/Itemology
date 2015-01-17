@@ -21,7 +21,7 @@ return {
             y = y + e
 
             coroutine.yield()
-            body:setLinearVelocity(0, -130)
+            e.physic_change:setLinearVelocity(0, -130)
             body:setGravityScale(.5)
 
             local v
@@ -29,7 +29,7 @@ return {
                 _, y = body:getPosition()
                 y = y + e
                 _, v = body:getLinearVelocity()
-                if v > 150 then body:setLinearVelocity(0, 150) end
+                if v > 150 then e.physic_change:setLinearVelocity(0, 150) end
                 coroutine.yield('dead')
             end
         end

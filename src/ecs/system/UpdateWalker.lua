@@ -25,29 +25,37 @@ function UpdateWalker:update(e, dt, walk, dir, v, def, body)
 
     local apply
 
+    if not e.physic_change.setLinearVelocity then
+        die(e.physic_change)
+    end
+
     if dir.x ~= 0 and abs(v.x) < maxVel then
         local vel = maxVel - abs(v.x)
-        apply = v.x + (vel * factor * force * dir.x * dt)
+        local change = (vel * factor * force * dir.x * dt)
+        apply = v.x + change
     end
 
     if v.x ~= 0 then
+        force = force / 10
         if dir.x == 0 and ground then
             -- if fast, slowdown is weaker
-            local slowdown = abs(v.x) > maxVel and def.slowRun or def.slowWalk
+            local slowdown = abs(v.x) > def.maxVxWalk and def.slowRun or def.slowWalk
             local vel = apply and apply or v.x
-            apply = vel * slowdown * (force / 10)
+            apply = vel * slowdown * force
         end
 
         if dir.x * v.x < 0 then
-            if e._name == "Player" then print(dir.x, apply) end
+            local margin = abs(v.x - (sig(dir.x) * maxVel))
+
             -- if fast, slowdown is weaker
-            local slowdown = abs(v.x) > maxVel and def.slowRun or def.slowWalk
+            local slowdown = abs(v.x) > def.maxVxWalk and def.slowRun or def.slowWalk
             local vel = apply and apply or v.x
-            apply = vel * slowdown * (force / 10)
+            local change = margin * slowdown * force * dir.x * .1
+            apply = vel + change
         end
     end
 
-    if apply then body:setLinearVelocity(apply, e.vy) end
+    if apply then e.physic_change:setLinearVelocity(apply, e.vy) end
 end
 
 return UpdateWalker

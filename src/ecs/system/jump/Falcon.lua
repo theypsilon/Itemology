@@ -24,7 +24,7 @@ function Falcon.state_1(e, dt, jump, state, body)
 
     jump.gravity = body:getGravityScale()
 
-    body:setLinearVelocity(vx * ifactor, vy * ifactor)
+    e.physic_change:setLinearVelocity(vx * ifactor, vy * ifactor)
     body:setGravityScale(def.fjumpGravity) --TODO NOT WORKING
     jump.walk = e.walk
     e.walk = nil
@@ -71,7 +71,7 @@ function Falcon.state_3(e, dt, jump, state, body)
 end
 
 function Falcon.state_4(e, dt, jump, state, body)
-    body:setLinearVelocity(jump.x, jump.y)
+    e.physic_change:setLinearVelocity(jump.x, jump.y)
     if jump.step <= 0 then
         jump.state = "state_5"
     else

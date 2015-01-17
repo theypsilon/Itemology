@@ -5,6 +5,16 @@ function Factory.makeBody(fixtures, prop, parent)
 	return Physics:registerBody(fixtures, prop, parent)
 end
 
+local PhysicChange = {}
+PhysicChange.__index = PhysicChange
+function PhysicChange.setLinearVelocity(c, vx, vy)
+    c.vx, c.vy = vx, vy
+end
+
+function Factory.makePhysicChange()
+    return setmetatable({}, PhysicChange)
+end
+
 local BEGIN  = MOAIBox2DArbiter.BEGIN
 local BEGEND = BEGIN + MOAIBox2DArbiter.END 
 
