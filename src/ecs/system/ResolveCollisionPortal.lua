@@ -35,7 +35,7 @@ local function onEnd(self, e)
         if exit.vertical ~= self.vertical then
             offset = -offset
             local vx, vy = e.body:getLinearVelocity()
-            e.physic_change:setLinearVelocity(vy, vx)
+            e.body:setLinearVelocity(vy, vx)
         end
         local x, y
         if exit.vertical then

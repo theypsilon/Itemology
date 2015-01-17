@@ -28,7 +28,7 @@ end
 function Peach.state_2(e, dt, jump, state, body)
     local fly = jump.fly
     if e.action.jump and fly > 0 then
-        e.physic_change:setLinearVelocity(e.vx, 0)
+        e.body:setLinearVelocity(e.vx, 0)
         jump.fly = fly - 1
     else
         jump.state = "state_3"

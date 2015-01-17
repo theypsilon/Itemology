@@ -40,7 +40,7 @@ function Dixie.state_2(e, dt, jump, state, body)
     local speed, vxLimit = jump.def.xjumpJumpSpeed,
                            jump.def.xjumpJumpVertLimit
     local vx = abs(e.vx) < vxLimit and e.vx or sig(e.vx)*vxLimit
-    e.physic_change:setLinearVelocity(vx, -speed)
+    e.body:setLinearVelocity(vx, -speed)
 end
 
 function Dixie.state_3(e, dt, jump, state, body)
@@ -51,7 +51,7 @@ function Dixie.state_3(e, dt, jump, state, body)
     local vxLimit = jump.def.xjumpJumpVertLimit
 
     if abs(e.vx) > vxLimit then
-        e.physic_change:setLinearVelocity(vxLimit * sig(e.vx), e.vy)
+        e.body:setLinearVelocity(vxLimit * sig(e.vx), e.vy)
     end
 
     if e.vy > jump.def.xjumpFallSpeedLimit then 
@@ -68,7 +68,7 @@ function Dixie.state_4(e, dt, jump, state, body)
 
     local v = jump.def.xjumpFallSpeedLimit
     if e.vy > v then
-        e.physic_change:setLinearVelocity(e.vx, v )
+        e.body:setLinearVelocity(e.vx, v )
     end
 end
 

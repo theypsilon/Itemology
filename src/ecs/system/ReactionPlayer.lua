@@ -28,7 +28,7 @@ function ReactionPlayer:reaction(e, enemy, attacker)
         local px = e.vx * e.dx
         local ix = px > 0 and e.vx or px < 0 and 0 or e.vx / 2
 
-        e.physic_change:setLinearVelocity(ix, iy * (e.action.jump and 1.4 or 1))
+        e.body:setLinearVelocity(ix, iy * (e.action.jump and 1.4 or 1))
 
         --e.physics.onEnemy = true
     else
@@ -38,7 +38,7 @@ function ReactionPlayer:reaction(e, enemy, attacker)
 
         ix, iy = ix * 1.1 * .8, iy * .5 *.9
 
-        e.physic_change:setLinearVelocity(ix, iy)
+        e.body:setLinearVelocity(ix, iy)
     end
     
 end

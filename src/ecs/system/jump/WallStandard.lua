@@ -12,7 +12,7 @@ function WallStandard:update(e, dt, jump, state, body)
     local def = jump.def
     local dx = e.dx
 
-    e.physic_change:setLinearVelocity(
+    e.body:setLinearVelocity(
         -touch * ( def.wjumpVxPlus + abs(dx) * def.wjumpVxBase ),
         -def.wjumpUp
     )

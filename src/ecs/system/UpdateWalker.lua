@@ -55,7 +55,7 @@ function UpdateWalker:update(e, dt, walk, dir, v, def, body)
         end
     end
 
-    if apply then e.physic_change:setLinearVelocity(apply, e.vy) end
+    if apply then e.body:setLinearVelocity(apply, e.vy) end
 end
 
 return UpdateWalker
