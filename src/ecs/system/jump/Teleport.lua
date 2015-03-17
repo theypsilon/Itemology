@@ -38,7 +38,7 @@ function Teleport.state_1(e, dt, jump, state, body)
     if hit then tx, ty = hx - (x*10), hy - (y*10) end
 
     body:setTransform(tx, ty)
-    e.body:setLinearVelocity(vx, 0)
+    e.physic_change:setLinearVelocity(vx, 0)
 
     local freezing = jump.def.tjumpFreezing
     if freezing > 0 then

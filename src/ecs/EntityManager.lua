@@ -47,7 +47,7 @@ function EntityManager:update(dt)
 end
 
 function EntityManager:add_system(name)
-	if self.system_by_name[name] then error('already there: '..name) end
+	--if self.system_by_name[name] then error('already there: '..name) end
 
 	local system_class = require ('ecs.system.'..name)
 	rawset(system_class, '_name', name)
