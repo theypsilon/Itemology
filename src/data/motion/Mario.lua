@@ -1,7 +1,7 @@
 return {
     update              = true,
 
-    hitpoints           = 10,
+    hitpoints           = 1,
 
     -- MOTION
 
@@ -13,8 +13,8 @@ return {
 
     slowWalk            = .6258, -- slowdown rate when stop walking (friction-like)
     slowRun             = .9,  -- slowdown rate when stop running (friction-like)
-    maxVyFall           = 250, -- maximum speed when falling down
-    addGravity          = 10,  -- additional gravity for the character
+    maxVyFall           = 350, -- maximum speed when falling down
+    addGravity          = 20,  -- additional gravity for the character
     timeFactor          = 40,  -- factor rate: multiplies time differential
 
     -- JUMPS

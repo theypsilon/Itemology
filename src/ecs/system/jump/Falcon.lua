@@ -2,15 +2,15 @@ local System; import 'ecs'
 local Falcon = class(System)
 
 function Falcon:requires()
-    return {'FalconJump', 'jumpState', 'body'}
+    return {'FalconJump', 'jumpState', 'physic_change'}
 end
 
-function Falcon:update(e, dt, jump, state, body)
-    Falcon[jump.state](e, dt, jump, state, body)
+function Falcon:update(e, dt, jump, state, physic_change)
+    Falcon[jump.state](e, dt, jump, state, physic_change)
 end
 
 local abs = math.abs
-function Falcon.state_1(e, dt, jump, state, body)
+function Falcon.state_1(e, dt, jump, state, physic_change)
     local vx, vy = e.vx, e.vy
     local def    = jump.def
 
@@ -22,10 +22,10 @@ function Falcon.state_1(e, dt, jump, state, body)
     if abs(vy) < vlimit then vy = 0
     else vy = vy > 0 and 1 or -1 end
 
-    jump.gravity = body:getGravityScale()
+    jump.gravity = physic_change:getGravityScale()
 
-    e.physic_change:setLinearVelocity(vx * ifactor, vy * ifactor)
-    body:setGravityScale(def.fjumpGravity) --TODO NOT WORKING
+    physic_change:setLinearVelocity(vx * ifactor, vy * ifactor)
+    physic_change:setGravityScale(def.fjumpGravity) --TODO NOT WORKING
     jump.walk = e.walk
     e.walk = nil
     jump.x = 0
@@ -43,7 +43,7 @@ function Falcon.is_cancelled(e, jump)
     return cancel == cancelled
 end
 
-function Falcon.state_2(e, dt, jump, state, body)
+function Falcon.state_2(e, dt, jump, state, physic_change)
     jump.x, jump.y = jump.x + e.dx, jump.y - e.dy
     if jump.step <= 0 then
         jump.state = "state_3"
@@ -51,11 +51,11 @@ function Falcon.state_2(e, dt, jump, state, body)
         jump.step = jump.step - 1
     end
     if Falcon.is_cancelled(e, jump) then
-        Falcon.state_5(e, dt, jump, state, body)
+        Falcon.state_5(e, dt, jump, state, physic_change)
     end
 end
 
-function Falcon.state_3(e, dt, jump, state, body)
+function Falcon.state_3(e, dt, jump, state, physic_change)
     local def = jump.def
     local charge_m = def.fjumpMinChargeValue
     local charge_f = def.fjumpChargeFactor
@@ -70,21 +70,21 @@ function Falcon.state_3(e, dt, jump, state, body)
     jump.state = "state_4"
 end
 
-function Falcon.state_4(e, dt, jump, state, body)
-    e.physic_change:setLinearVelocity(jump.x, jump.y)
+function Falcon.state_4(e, dt, jump, state, physic_change)
+    physic_change:setLinearVelocity(jump.x, jump.y)
     if jump.step <= 0 then
         jump.state = "state_5"
     else
         jump.step = jump.step - 1
     end
     if Falcon.is_cancelled(e, jump) then
-        Falcon.state_5(e, dt, jump, state, body)
+        Falcon.state_5(e, dt, jump, state, physic_change)
     end
 end
 
-function Falcon.state_5(e, dt, jump, state, body)
+function Falcon.state_5(e, dt, jump, state, physic_change)
     e.walk = jump.walk
-    body:setGravityScale(jump.gravity)
+    physic_change:setGravityScale(jump.gravity)
     e.FalconJump = nil
     state.state = "fall"
 end

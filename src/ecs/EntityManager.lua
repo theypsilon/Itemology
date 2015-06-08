@@ -19,6 +19,8 @@ function EntityManager:_init(di)
 end
 
 function EntityManager:add_entity(entity)
+	entity.manager = self
+	
 	local m = getmetatable(entity)
 	if not m then
 		m = {}

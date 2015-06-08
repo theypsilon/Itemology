@@ -7,12 +7,20 @@ end
 
 local PhysicChange = {}
 PhysicChange.__index = PhysicChange
-function PhysicChange.setLinearVelocity(c, vx, vy)
-    c.vx, c.vy = vx, vy
+function PhysicChange:setLinearVelocity(vx, vy)
+    self.vx, self.vy = vx, vy
+end
+
+function PhysicChange:setGravityScale(gs)
+    self.gs = gs
+end
+
+function PhysicChange:getGravityScale(gs)
+    return self.gs
 end
 
 function Factory.makePhysicChange()
-    return setmetatable({}, PhysicChange)
+    return setmetatable({gs = 1}, PhysicChange)
 end
 
 local BEGIN  = MOAIBox2DArbiter.BEGIN

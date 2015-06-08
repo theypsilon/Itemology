@@ -2,7 +2,7 @@ local System; import 'ecs'
 local UpdateWalker = class(System)
 
 function UpdateWalker:requires()
-	return {'walk', 'direction', 'velocity', 'moveDef', 'body'}
+	return {'walk', 'direction', 'velocity', 'moveDef', 'physic_change'}
 end
 
 local abs = math.abs
@@ -10,7 +10,7 @@ local function sig(v) return v > 0 and 1 or v < 0 and -1 or 0 end
 
 local factor = 0.1/6.0
 
-function UpdateWalker:update(e, dt, walk, dir, v, def, body)
+function UpdateWalker:update(e, dt, walk, dir, v, def, physic_change)
 	assert(dir.x ~= nil)
 
     dt           = 1 / (dt * def.timeFactor)
@@ -24,10 +24,6 @@ function UpdateWalker:update(e, dt, walk, dir, v, def, body)
 	end
 
     local apply
-
-    if not e.physic_change.setLinearVelocity then
-        die(e.physic_change)
-    end
 
     if dir.x ~= 0 and abs(v.x) < maxVel then
         local vel = maxVel - abs(v.x)
@@ -50,12 +46,12 @@ function UpdateWalker:update(e, dt, walk, dir, v, def, body)
             -- if fast, slowdown is weaker
             local slowdown = abs(v.x) > def.maxVxWalk and def.slowRun or def.slowWalk
             local vel = apply and apply or v.x
-            local change = margin * slowdown * force * dir.x * .1
+            local change = margin * slowdown * force * dir.x
             apply = vel + change
         end
     end
 
-    if apply then e.physic_change:setLinearVelocity(apply, e.vy) end
+    if apply then physic_change:setLinearVelocity(apply, e.vy) end
 end
 
 return UpdateWalker

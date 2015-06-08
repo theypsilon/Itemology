@@ -20,16 +20,20 @@ return {
             local _,  y = body:getPosition()
             y = y + e
 
+            local particle = {
+                physic_change = {vx = 0, vy = -130},
+                body          = body,
+                modeDef       = {addGravity = 50, maxVyFall = 150}
+            }
+
+            entity.level.manager:add_entity(particle)
+
             coroutine.yield()
-            e.physic_change:setLinearVelocity(0, -130)
-            body:setGravityScale(.5)
 
             local v
             while y < l do
                 _, y = body:getPosition()
                 y = y + e
-                _, v = body:getLinearVelocity()
-                if v > 150 then e.physic_change:setLinearVelocity(0, 150) end
                 coroutine.yield('dead')
             end
         end

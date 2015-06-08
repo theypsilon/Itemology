@@ -7,9 +7,7 @@ end
 
 function SetLinearVelocity:update(e, _, change, body)
     if change.vx or change.vy then
-        body:setLinearVelocity(change.vx or e.vx, change.vy or e.vy)
-        change.vx = nil
-        change.vy = nil
+        body:setLinearVelocity(change.vx or 0, change.vy or 0)
     end
 end
 
