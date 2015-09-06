@@ -17,7 +17,7 @@ function common.set_systems(manager)
         'infra.SenseLateralTouch',
         'UpdateLevelPosition',
         'RemovePlayer',
-        'RemoveEntities',
+        'infra.RemoveEntities',
         'domain.Callback',
         'domain.UpdateWalker',
         'domain.MovePlayer',
