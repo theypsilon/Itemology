@@ -6,15 +6,15 @@ local common = {}
 
 function common.set_systems(manager)
     local systems = {
-        'InputToAction',
+        'infra.InputToAction',
         'domain.SelectNextJump',
         'domain.UpdateSpawn',
-        'UpdateVelocity',
+        'infra.UpdateVelocity',
         'domain.UpdateDirection',
         'domain.UpdateWalkingAI',
-        'SenseGround',
+        'infra.SenseGround',
         'UseDoor',
-        'SenseLateralTouch',
+        'infra.SenseLateralTouch',
         'UpdateLevelPosition',
         'RemovePlayer',
         'RemoveEntities',
@@ -41,7 +41,7 @@ function common.set_systems(manager)
         'domain.jump.Peach',
         'domain.jump.Dixie',
         'domain.UpdateFallingMovement',
-        'SetLinearVelocity',
+        'infra.SetLinearVelocity',
         'Animate',
         'AnimateJumper',
         'AnimateJumpingText',
