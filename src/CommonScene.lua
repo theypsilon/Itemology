@@ -18,7 +18,7 @@ function common.set_systems(manager)
         'UpdateLevelPosition',
         'RemovePlayer',
         'RemoveEntities',
-        'Callback',
+        'domain.Callback',
         'domain.UpdateWalker',
         'domain.MovePlayer',
         'ResolveCollisionHitbox',
@@ -50,7 +50,7 @@ function common.set_systems(manager)
         'domain.UpdateTicks',
         'ShowSelection',
         'ShowResources',
-        'ChangeScene'
+        'infra.ChangeScene'
     }
 
     for _, system in pairs(systems) do
