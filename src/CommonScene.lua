@@ -24,7 +24,7 @@ function common.set_systems(manager)
         'ResolveCollisionHitbox',
         'ResolveCollisionPortal',
         'domain.ApplyDamage',
-        'JumpEnemy',
+        'domain.JumpEnemy',
         'ReactionPlayer',
         'WoundedPlayer',
         'PlayerCollisionPower',
