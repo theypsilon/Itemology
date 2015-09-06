@@ -1,7 +1,7 @@
 return {
     update              = true,
 
-    hitpoints           = 1,
+    hitpoints           = 5,
 
     -- MOTION
 
