@@ -45,7 +45,7 @@ function common.set_systems(manager)
         'Animate',
         'AnimateJumper',
         'AnimateJumpingText',
-        'RemoveAnimationEntity',
+        'domain.RemoveAnimationEntity',
         'UpdateCamera',
         'domain.UpdateTicks',
         'ShowSelection',
