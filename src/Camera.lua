@@ -49,7 +49,6 @@ function Camera:setTarget(target)
     local endx, endy = target.map:getBorder()
 
     self._target             = target
-    self._map                = target.map
     self._limit =  {x = 0, y = 0, w = endx, h = endy}
     (target.prop.layer or Layer.main):setCamera(self.cam)
 end
