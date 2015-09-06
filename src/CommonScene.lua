@@ -23,7 +23,7 @@ function common.set_systems(manager)
         'MovePlayer',
         'ResolveCollisionHitbox',
         'ResolveCollisionPortal',
-        'ApplyDamage',
+        'domain.ApplyDamage',
         'JumpEnemy',
         'ReactionPlayer',
         'WoundedPlayer',
