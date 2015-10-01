@@ -36,7 +36,8 @@ end
 function Itemology.run(app)
     local args = Itemology._get_arguments()
     if args.error then
-        error "Arguments could not be retrieved"
+        print "Arguments could not be retrieved"
+        args = {}
     end
     app.init(Data.MainConfig)
     Itemology._init(args)
