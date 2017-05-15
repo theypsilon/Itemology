@@ -1,10 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 readonly LIB_FOLDER="lib/"
-
-cd "$(dirname $0)"
 
 mkdir -p $LIB_FOLDER
 

@@ -22,8 +22,10 @@ local function compare(c1, c2)
 end
 
 local function to_string(key, value)
-    local format
-    if is_number(value) then
+    local format = "%s:%s"
+    if is_boolean(value) then
+        value = value and "true" or "false"
+    elseif is_number(value) then
         format = "%s:%.2g"
     elseif is_table(value) then
         local temp = ""
@@ -36,8 +38,6 @@ local function to_string(key, value)
         end
         value  = temp
         format = value and "%s:{%s}" or "%s"
-    else
-        format = "%s:%s"
     end
     return string.format(format, key, value)
 end

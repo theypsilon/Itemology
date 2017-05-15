@@ -1,15 +1,13 @@
-#/bin/sh
+#/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 echo ''
 echo '## STARTING ITEMOLOGY ##'
 echo ''
 
-cd "$(dirname $0)"
-
-rm log/systems/*.log || true
+rm log/systems/*.log 2>/dev/null || true
 
 echo "$@" > arguments
 
-moai src/Bootstrap.lua
+./moai src/Bootstrap.lua
