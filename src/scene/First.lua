@@ -7,7 +7,7 @@ function scene:load(start, hp)
 
     Physics:init(Data.world.First)
 
-    if Data.MainConfig.dev.debug_physics then Layer.main:setBox2DWorld (Physics.world) end
+    if Data.MainConfig.dev.debug_physics then Layer.main:setUnderlayTable (Physics.world) end
 
     local manager = EntityManager()
     manager:add_system('UpdateVelocity')
