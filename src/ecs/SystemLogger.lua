@@ -38,6 +38,9 @@ local function to_string(key, value)
         end
         value  = temp
         format = value and "%s:{%s}" or "%s"
+    elseif is_userdata(value) then
+        -- @FIXME: something more concrete, please
+        value = "<userdata>"
     end
     return string.format(format, key, value)
 end

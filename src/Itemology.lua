@@ -21,6 +21,7 @@ function Itemology._init(args)
     for k,v in pairs(Data.key.SDLKeycodes) do
         Input.bindActionToKeyCode(k, v)
     end
+
     Input.bindAction('ESC', function() die('ESC says shut down!') end)
     Input.bindAction(1    , function() debug.debug()              end)
 

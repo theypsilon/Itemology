@@ -39,10 +39,10 @@ local function toKeyCode( action )
 	return string.byte(action)
 end
 
-function input.bindAction( action, arg, ... )
+function input.bindAction( action, arg1, arg2 )
 	if is_table(action) then 
 		for _,suba in pairs(action) do 
-			input.bindAction(suba, arg, ... )
+			input.bindAction(suba, arg1, arg2 )
 		end
 		return
 	end
@@ -52,17 +52,20 @@ function input.bindAction( action, arg, ... )
 	assert(keyCode ~= nil, 'oldKeyCode   ~= nil')
 
 	if keyCode == nil then 
-		state.toBind[action] = {arg, ...}
+		state.toBind[action] = {arg1, arg2}
 		return
 	end
 
-	if is_boolean(arg) then
-		bindActionBoolean (keyCode, arg, ...)
-	elseif is_callable(arg) then
-		bindActionCallback(keyCode, arg, ...)
+	if is_boolean(arg1) then
+		bindActionBoolean (keyCode, arg1, arg2)
+	elseif is_callable(arg1) then
+		bindActionCallback(keyCode, arg1, arg2)
+	elseif is_table(arg1) then
+		bindActionTable   (keyCode, arg1, arg2)
 	else
-		bindActionTable   (keyCode, arg, ...)
+		die("Cant bind action", action, arg1)
 	end
+
 end
 
 function input.checkAction( action )
@@ -105,6 +108,7 @@ local function onKeyboardEvent ( keyCode, down )
 	
 	local table  = state.keyboardTables[keyCode]
 	if    table ~= nil then
+		die(table)
 		table[1][table[2]] = down
 	end
 
@@ -112,8 +116,7 @@ local function onKeyboardEvent ( keyCode, down )
 	if    callback ~= nil then 
 		  callback()
 	end
-
-	--if callback == nil and table == nil and down then print('\tkeyCode:'..keyCode) end
+	-- if callback == nil and table == nil and down then print('\tkeyCode:'..keyCode) end
 	state.keyboardStatus[keyCode] = down and true or nil
 end
 

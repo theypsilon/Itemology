@@ -16,6 +16,7 @@ function InputToAction:update(e, _, input, action)
     for action_name, key_name in pairs(input) do
         local code   = self.codes[key_name] or key_name
         local pushed = self.keys[code]
+        
         if not pushed then
         	pushed   = self.keys[string.byte(code)]
         end

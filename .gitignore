@@ -16,3 +16,5 @@ moai
 moai-dev/
 *.sublime-*
 log/
+
+arguments
