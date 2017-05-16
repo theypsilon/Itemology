@@ -6,7 +6,8 @@ function SingleStandard:requires()
 end
 
 function SingleStandard:update(e, dt, jump, state, physic_change)
-    physic_change:setLinearVelocity(e.vx, -jump.def[jump.step])
+    local vy = jump.def[jump.step]
+    physic_change:setLinearVelocity(e.vx, -vy)
     jump.step = jump.step + 1
     if not (jump.step <= #jump.def and jump.action.jump) then
         state.state = 'fall'
