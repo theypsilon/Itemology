@@ -5,7 +5,7 @@ local Camera = class()
 local z = 527
 
 function Camera:_init(target, area, padding)
-    self.cam = MOAICamera.new()
+    self.cam = {}
     self:setTarget(target)
     self:setPadding(padding)
     self:setArea(area)
@@ -24,19 +24,19 @@ function Camera:setPadding(padding)
     if padding and (not padding.x or not padding.y) then
         error 'incorrect padding: not recognized {x,y}'
     end
-    self.padding = padding or { x = 0, y = 0 }
+    self.cam.padding = padding or { x = 0, y = 0 }
 end
 
 function Camera:setArea(area)
     if area and (not area.x or not area.y or not area.w or not area.h) then
         error 'incorrect area: not recognized {x,y,w,h}'
     end
-    self.area    = area or { 
+    self.cam.area = area or { 
         x = 0, y = 0, 
-        w = Graphics.getWidth () <  self._limit.w and
-            Graphics.getWidth () or self._limit.w, 
-        h = Graphics.getHeight() <  self._limit.h and
-            Graphics.getHeight() or self._limit.h,
+        w = Graphics.getWidth () <  self.cam.limit.w and
+            Graphics.getWidth () or self.cam.limit.w, 
+        h = Graphics.getHeight() <  self.cam.limit.h and
+            Graphics.getHeight() or self.cam.limit.h,
     }
 end
 
@@ -47,9 +47,8 @@ function Camera:setTarget(target)
 
     local endx, endy = target.map:getBorder()
 
-    self._target             = target
-    self._limit =  {x = 0, y = 0, w = endx, h = endy}
-    (target.prop.layer or Layer.main):setCamera(self.cam)
+    self.cam.target = target
+    self.cam.limit  =  {x = 0, y = 0, w = endx, h = endy}
 end
 
 return Camera

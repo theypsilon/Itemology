@@ -47,11 +47,13 @@ function common.set_systems(manager)
         'AnimateJumper',
         'AnimateJumpingText',
         'domain.RemoveAnimationEntity',
-        'UpdateCamera',
+        'domain.UpdateCamera',
         'domain.UpdateTicks',
-        'ShowSelection',
-        'ShowResources',
-        'infra.ChangeScene'
+        'domain.ShowSelection',
+        'domain.ShowResources',
+        'infra.ChangeScene',
+        'infra.DrawUI',
+        'infra.DrawCamera',
     }
 
     for _, system in pairs(systems) do
@@ -94,6 +96,7 @@ function common.get_prototype(start_prototype)
         player.first_scene = "First"
 
         if defined('tickClock') then manager:add_entity(tickClock) end
+        if defined('debugUI') then manager:add_entity(debugUI) end
         manager:add_entity(player)
         manager:add_entity(level)
         for e, _ in pairs(level.entities) do
