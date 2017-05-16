@@ -41,7 +41,7 @@ function common.set_systems(manager)
         'domain.jump.Peach',
         'domain.jump.Dixie',
         'domain.UpdateFallingMovement',
-        'domain.DEBUGFallingMovement',
+--        'domain.DEBUGFallingMovement',
         'infra.SetLinearVelocity',
         'Animate',
         'AnimateJumper',
